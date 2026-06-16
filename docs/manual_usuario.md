@@ -28,8 +28,17 @@ La pestaña `Registros` muestra lo guardado en el dispositivo. Los estados princ
 
 Usar `Enviar pendientes` cuando haya conexión. La app no elimina registros locales hasta recibir confirmación del backend.
 
+También existen botones globales en la barra superior:
+
+- `Instalar`: instala la app como PWA cuando el navegador lo permite.
+- `Actualizar`: limpia caché local y recarga la app.
+- `Sincronizar`: envía registros pendientes.
+- `Hoja online`: visible solo para `admin`, abre el Google Sheet operativo.
+
 ## Administración de usuarios
 
 Desde `Administración`, un usuario `admin` puede registrar nuevos usuarios. El nombre de usuario debe tener formato `nombre.apellido` y la contraseña debe tener al menos 6 caracteres.
+
+Los usuarios que se registran solos desde la pantalla de ingreso solo pueden ser `encuestador` o `censista`.
 
 La misma pantalla permite cambiar la contraseña del usuario conectado. Si el backend GAS todavía no está configurado, estos cambios quedan en el almacenamiento local del navegador.

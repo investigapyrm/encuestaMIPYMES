@@ -21,7 +21,7 @@ function login(payload) {
   var session = {
     username: found.usuario,
     name: found.nombre || found.usuario,
-    role: found.rol || 'cargador',
+    role: found.rol || 'encuestador',
     createdAt: nowIso(),
     expiresAt: new Date(Date.now() + APP_CONFIG.SESSION_TTL_SECONDS * 1000).toISOString()
   };
@@ -36,11 +36,11 @@ function createUser(payload) {
   requireAdminRole(session);
   var username = String(payload.username || '').trim();
   var name = String(payload.name || '').trim();
-  var role = String(payload.role || 'cargador').trim();
+  var role = String(payload.role || 'encuestador').trim();
   var password = String(payload.password || '');
   validateUsername(username);
   if (!name) throw new Error('El nombre es obligatorio.');
-  if (['admin', 'supervisor', 'cargador'].indexOf(role) < 0) throw new Error('Rol no soportado.');
+  if (['admin', 'supervisor', 'encuestador', 'censista'].indexOf(role) < 0) throw new Error('Rol no soportado.');
   if (password.length < 6) throw new Error('La contraseña debe tener al menos 6 caracteres.');
 
   var sh = getSheet(SHEETS.USUARIOS, USER_HEADERS);
@@ -102,7 +102,7 @@ function upsertUserRow(sh, user, allowDefaultMigration) {
     user.passwordHash,
     user.name,
     user.correo || '',
-    user.role || 'cargador',
+    user.role || 'encuestador',
     user.active || 'SI',
     now,
     '',

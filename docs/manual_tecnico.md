@@ -62,3 +62,14 @@ La prueba anónima de `/exec` devolvió acceso denegado. Falta habilitar el web 
 ## Manejo de login colgado
 
 `app.js` aplica timeout de 12 segundos a llamadas `fetch` contra Apps Script. Si GAS devuelve HTML de Google, acceso denegado o no responde, el usuario recibe un mensaje claro y el botón de ingreso se rehabilita.
+
+## Acciones globales obligatorias
+
+La barra superior incluye controles operativos persistentes:
+
+- `Instalar`: usa `beforeinstallprompt` si está disponible y muestra orientación si el navegador no expone el evento.
+- `Actualizar`: actualiza service workers, elimina cachés `encuesta-mipymes-*` y recarga.
+- `Sincronizar`: ejecuta la misma cola de pendientes que la pestaña `Sincronización`.
+- `Hoja online`: visible solo para usuarios `admin`, abre `spreadsheetUrl`.
+
+El autorregistro público queda limitado a roles `encuestador` y `censista`. Roles `supervisor` y `admin` solo deben asignarse desde sesión administradora.

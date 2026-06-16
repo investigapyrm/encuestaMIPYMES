@@ -11,7 +11,8 @@
     session: null,
     records: [],
     users: [],
-    currentView: 'inicio'
+    currentView: 'inicio',
+    installPrompt: null
   };
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -32,9 +33,19 @@
     }
     window.addEventListener('online', updateConnection);
     window.addEventListener('offline', updateConnection);
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      state.installPrompt = event;
+      updateInstallButton();
+    });
+    window.addEventListener('appinstalled', () => {
+      state.installPrompt = null;
+      updateInstallButton();
+    });
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js').catch(() => {});
     }
+    updateInstallButton();
   }
 
   function bindGlobalEvents() {
@@ -44,6 +55,10 @@
     $('#public-register-form').addEventListener('submit', publicRegisterUser);
     $('#password-help-form').addEventListener('submit', requestPasswordHelp);
     $('#logout-btn').addEventListener('click', logout);
+    $('#install-btn').addEventListener('click', installApp);
+    $('#update-app-btn').addEventListener('click', updateApp);
+    $('#global-sync-btn').addEventListener('click', syncPending);
+    $('#open-sheet-btn').addEventListener('click', openSpreadsheet);
     $$('.tab').forEach((btn) => btn.addEventListener('click', () => switchView(btn.dataset.view)));
     $$('[data-go]').forEach((btn) => btn.addEventListener('click', () => switchView(btn.dataset.go)));
     $('#sync-btn').addEventListener('click', syncPending);
@@ -117,7 +132,7 @@
       if (!result.success) throw new Error(result.message || 'No se pudo iniciar sesión.');
       state.session = {
         token: result.token,
-        user: result.user || { username: user, name: user, role: 'cargador' },
+        user: result.user || { username: user, name: user, role: 'encuestador' },
         createdAt: new Date().toISOString()
       };
       saveSession();
@@ -147,7 +162,7 @@
           username: user.username,
           passwordHash: user.passwordHash,
           name: user.name || user.username,
-          role: user.role || 'cargador',
+          role: user.role || 'encuestador',
           active: user.active !== false,
           createdAt: new Date().toISOString(),
           source: 'default'
@@ -159,7 +174,7 @@
             ...current,
             passwordHash: user.passwordHash,
             name: current.name || user.name || user.username,
-            role: current.role || user.role || 'cargador',
+            role: current.role || user.role || 'encuestador',
             active: true,
             source: 'default',
             migratedAt: new Date().toISOString()
@@ -197,7 +212,7 @@
     return {
       username: found.username,
       name: found.name || found.username,
-      role: found.role || 'cargador'
+      role: found.role || 'encuestador'
     };
   }
 
@@ -241,15 +256,17 @@
     try {
       const username = $('#public-new-user').value.trim();
       const name = $('#public-new-user-name').value.trim();
+      const role = $('#public-new-user-role').value;
       const password = $('#public-new-user-password').value;
       validateUsername(username);
       if (!name) throw new Error('El nombre es obligatorio.');
+      if (!['encuestador', 'censista'].includes(role)) throw new Error('El autorregistro solo permite usuarios encuestadores o censistas.');
       if (password.length < 6) throw new Error('La contraseña debe tener al menos 6 caracteres.');
 
       if (cfg.gasExecUrl) {
         throw new Error('El registro público requiere habilitar el flujo de aprobación en GAS. Use un administrador o registre en modo local.');
       }
-      upsertLocalUser({ username, name, role: 'cargador', passwordHash: await hashText(password), active: true, source: 'self_registered' });
+      upsertLocalUser({ username, name, role, passwordHash: await hashText(password), active: true, source: 'self_registered' });
       $('#public-register-form').reset();
       $('#public-register-form').hidden = true;
       status.textContent = `Usuario ${username} creado localmente. Ya puede ingresar.`;
@@ -283,6 +300,7 @@
     $('#login-view').hidden = true;
     $('#app-view').hidden = false;
     $('#session-user').textContent = `${state.session.user.name || state.session.user.username} · ${state.session.user.role || 'usuario'}`;
+    updateAdminActions();
     refreshAll();
   }
 
@@ -504,6 +522,58 @@
     $('#sync-status').textContent = 'Proceso de sincronización finalizado.';
   }
 
+  async function installApp() {
+    if (state.installPrompt) {
+      state.installPrompt.prompt();
+      await state.installPrompt.userChoice.catch(() => null);
+      state.installPrompt = null;
+      updateInstallButton();
+      return;
+    }
+    $('#sync-status').textContent = 'Si el navegador no muestra instalación automática, use el menú del navegador y elija Agregar a pantalla de inicio o Instalar app.';
+    switchView('sync');
+  }
+
+  async function updateApp() {
+    $('#sync-status').textContent = 'Actualizando la app local...';
+    try {
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map((registration) => registration.update()));
+      }
+      if (window.caches) {
+        const keys = await caches.keys();
+        await Promise.all(keys.filter((key) => key.startsWith('encuesta-mipymes-')).map((key) => caches.delete(key)));
+      }
+    } catch (err) {
+      $('#sync-status').textContent = 'No se pudo limpiar completamente la caché. Se recargará la app.';
+    }
+    window.location.reload();
+  }
+
+  function openSpreadsheet() {
+    if (state.session?.user?.role !== 'admin') {
+      $('#sync-status').textContent = 'Solo un usuario admin puede abrir la hoja online desde la app.';
+      switchView('sync');
+      return;
+    }
+    window.open(cfg.spreadsheetUrl || `https://docs.google.com/spreadsheets/d/${cfg.spreadsheetId}/edit`, '_blank', 'noopener');
+  }
+
+  function updateInstallButton() {
+    const btn = $('#install-btn');
+    if (!btn) return;
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    btn.textContent = standalone ? 'Instalada' : 'Instalar';
+    btn.disabled = !!standalone;
+  }
+
+  function updateAdminActions() {
+    const isAdmin = state.session?.user?.role === 'admin';
+    const sheetBtn = $('#open-sheet-btn');
+    if (sheetBtn) sheetBtn.hidden = !isAdmin;
+  }
+
   function buildLegacyPayload(record) {
     const blockById = new Map(state.schema.blocks.map((block) => [block.id, block]));
     const header = state.schema.fields.map((field) => field.code);
@@ -631,7 +701,7 @@
       username: user.username,
       passwordHash: user.passwordHash,
       name: user.name || user.username,
-      role: user.role || 'cargador',
+      role: user.role || 'encuestador',
       active: user.active !== false,
       createdAt: user.createdAt || new Date().toISOString(),
       updatedAt: user.updatedAt || new Date().toISOString(),
@@ -751,6 +821,7 @@
     if (!tbody) return;
     const canAdmin = state.session?.user?.role === 'admin';
     $('#user-create-form').hidden = !canAdmin;
+    updateAdminActions();
     tbody.innerHTML = state.users.map((user) => `
       <tr>
         <td>${escapeHtml(user.username)}</td>

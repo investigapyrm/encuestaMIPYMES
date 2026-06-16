@@ -827,3 +827,114 @@
 ### Recomendaciones
 
 * Mantener siempre una regla global `[hidden] { display: none !important; }` en apps que alternan vistas con el atributo `hidden`.
+
+## 2026-06-16 16:30
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES - FAEDPYME 2026
+* Cliente o institución: investigapyrm / MID
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: pendiente de GitHub Pages
+* Responsable: Codex
+* Versión: 0.1.4
+
+### Objetivo de la intervención
+
+* Incorporar botones globales obligatorios para instalar, actualizar, sincronizar y abrir hoja online.
+* Limitar autorregistro a usuarios de campo `encuestador` o `censista`.
+* Registrar la regla como estándar en el Manual Maestro institucional.
+
+### Diagnóstico inicial
+
+* La app tenía sincronización solo dentro de la pestaña `Sincronización`.
+* No existían botones visibles para instalar ni actualizar PWA.
+* No existía botón permanente para que `admin` abra la hoja online.
+* El autorregistro local usaba rol genérico previo.
+
+### Acciones realizadas
+
+* Se agregó botón global `Instalar`.
+* Se agregó botón global `Actualizar`, que actualiza service workers, limpia cachés `encuesta-mipymes-*` y recarga.
+* Se agregó botón global `Sincronizar`.
+* Se agregó botón global `Hoja online`, visible solo para rol `admin`.
+* Se agregó `spreadsheetUrl` en `config.js`.
+* Se restringió autorregistro a `encuestador` o `censista`.
+* Se actualizó creación de usuarios admin para aceptar `encuestador`, `censista`, `supervisor` y `admin`.
+* Se eliminó uso de rol `cargador`.
+* Se actualizó caché PWA a `encuesta-mipymes-v20260616-6`.
+* Se agregó nota operativa al Manual Maestro: acciones globales PWA, sincronización y usuarios de campo.
+* Se subió GAS y se creó deployment versión 6.
+
+### Archivos modificados
+
+* `index.html`
+* `styles.css`
+* `app.js`
+* `config.js`
+* `service-worker.js`
+* `gas/Config.gs`
+* `gas/Usuarios.gs`
+* `README.md`
+* `docs/manual_usuario.md`
+* `docs/manual_tecnico.md`
+* `BITACORA.md`
+* Manual Maestro: `Manual maestro para creación de appweb.txt`
+
+### Comandos o scripts ejecutados
+
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* `python3 -m json.tool manifest.json`
+* `python3 -m json.tool gas/appsscript.json`
+* `clasp push -f`
+* `clasp version "Acciones globales PWA y roles de campo"`
+* `clasp deploy -V 6 -d "Encuesta MIPYMES acciones globales"`
+* `python3 -m http.server 4173`
+* `curl` para verificar HTML y JS locales.
+
+### Resultados verificados
+
+* `index.html` contiene `install-btn`, `update-app-btn`, `global-sync-btn` y `open-sheet-btn`.
+* `app.js` contiene `installApp`, `updateApp` y `openSpreadsheet`.
+* `config.js` contiene `spreadsheetUrl`.
+* No quedan referencias al rol `cargador` en app, GAS, README ni docs vigentes.
+* `service-worker.js` usa cache `encuesta-mipymes-v20260616-6`.
+* GAS subido correctamente.
+* Deployment GAS creado: `AKfycbwVP8kMSplPe2xAp8LrZX0QqipcZSY9xR1UipeOfIBN1bKhk2Nw072AH-hw_nvl2SLAYw @6`.
+* Manual Maestro actualizado con la nota operativa 2026-06-16.
+
+### Pruebas realizadas
+
+* Validación de sintaxis JavaScript.
+* Validación JSON.
+* Verificación HTTP local.
+* Verificación de referencias con `rg`.
+* Push/deployment GAS con `clasp`.
+
+### Errores o incidentes
+
+* No se ejecutó prueba visual Playwright porque no está instalado en el entorno.
+
+### Soluciones aplicadas
+
+* Acciones críticas de operación quedan visibles sin depender de navegación a pestañas secundarias.
+* Autorregistro queda limitado a perfiles de campo.
+* Admin conserva acceso directo a la base online.
+
+### Pendientes
+
+* Publicar cambios en GitHub.
+* Verificar cambios remotos.
+* Activar/verificar GitHub Pages si aún no está activo.
+
+### Riesgos
+
+* El botón `Instalar` depende de soporte del navegador y criterios PWA; si no aparece prompt, la app muestra orientación.
+* El botón `Hoja online` abre la hoja solo si el usuario del navegador tiene permiso Google sobre la planilla.
+
+### Recomendaciones
+
+* Mantener esta regla como estándar para todas las apps PWA/offline: instalar, actualizar, sincronizar y acceso admin a base online siempre visibles.

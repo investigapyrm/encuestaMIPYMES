@@ -7,9 +7,9 @@
   <title>FAEDPYME 2026 - Mipymes</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=20260616-5">
-  <script src="config.js?v=20260616-4" defer></script>
-  <script src="app.js?v=20260616-4" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260616-6">
+  <script src="config.js?v=20260616-6" defer></script>
+  <script src="app.js?v=20260616-6" defer></script>
 </head>
 <body>
   <div id="login-view" class="login-shell">
@@ -43,6 +43,13 @@
           <input id="public-new-user-name" autocomplete="name">
         </label>
         <label>
+          Tipo de usuario
+          <select id="public-new-user-role">
+            <option value="encuestador">Encuestador</option>
+            <option value="censista">Censista</option>
+          </select>
+        </label>
+        <label>
           Contraseña
           <input id="public-new-user-password" type="password" autocomplete="new-password" minlength="6">
         </label>
@@ -71,6 +78,10 @@
       <div class="session-block">
         <span id="connection-pill" class="pill">Sin verificar</span>
         <span id="session-user"></span>
+        <button id="install-btn" class="ghost-btn icon-action" type="button">Instalar</button>
+        <button id="update-app-btn" class="ghost-btn icon-action" type="button">Actualizar</button>
+        <button id="global-sync-btn" class="secondary-btn icon-action" type="button">Sincronizar</button>
+        <button id="open-sheet-btn" class="ghost-btn icon-action admin-only" type="button" hidden>Hoja online</button>
         <button id="logout-btn" class="ghost-btn" type="button">Salir</button>
       </div>
     </header>
@@ -189,9 +200,10 @@
                 <input id="new-user-name" autocomplete="name" required>
               </label>
               <label>
-                Rol
+                Tipo de usuario
                 <select id="new-user-role">
-                  <option value="cargador">Cargador</option>
+                  <option value="encuestador">Encuestador</option>
+                  <option value="censista">Censista</option>
                   <option value="supervisor">Supervisor</option>
                   <option value="admin">Admin</option>
                 </select>

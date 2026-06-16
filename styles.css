@@ -217,6 +217,15 @@ textarea:focus {
   gap: 12px;
 }
 
+.session-block {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.icon-action {
+  white-space: nowrap;
+}
+
 .topbar h1 {
   font-size: 1.1rem;
 }
@@ -593,6 +602,10 @@ th {
 
   .topbar {
     position: static;
+  }
+
+  .session-block {
+    width: 100%;
   }
 
   .main-layout {
