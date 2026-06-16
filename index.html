@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0B5D3B">
+  <title>FAEDPYME 2026 - Mipymes</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="styles.css?v=20260616">
+  <script src="config.js?v=20260616" defer></script>
+  <script src="app.js?v=20260616" defer></script>
+</head>
+<body>
+  <div id="login-view" class="login-shell">
+    <main class="login-panel" aria-labelledby="login-title">
+      <img src="assets/logoMID.jpg" alt="MID" class="brand-logo">
+      <p class="eyebrow">Instrumento institucional</p>
+      <h1 id="login-title">FAEDPYME 2026: Factores de continuidad de la Mipyme</h1>
+      <p class="login-copy">Acceso para carga, sincronización y revisión de encuestas.</p>
+      <form id="login-form" class="login-form">
+        <label>
+          Usuario
+          <input id="login-user" autocomplete="username" required>
+        </label>
+        <label>
+          Contraseña
+          <input id="login-password" type="password" autocomplete="current-password" required>
+        </label>
+        <button class="primary-btn" type="submit">Ingresar</button>
+      </form>
+      <p id="login-status" class="status-text" role="status"></p>
+    </main>
+  </div>
+
+  <div id="app-view" class="app-shell" hidden>
+    <header class="topbar">
+      <div class="brand-block">
+        <img src="assets/logoMID.jpg" alt="MID" class="top-logo">
+        <div>
+          <span class="eyebrow">Encuesta MIPYMES</span>
+          <h1>FAEDPYME 2026</h1>
+        </div>
+      </div>
+      <div class="session-block">
+        <span id="connection-pill" class="pill">Sin verificar</span>
+        <span id="session-user"></span>
+        <button id="logout-btn" class="ghost-btn" type="button">Salir</button>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Módulos">
+      <button class="tab active" data-view="inicio" type="button">Inicio</button>
+      <button class="tab" data-view="formulario" type="button">Formulario</button>
+      <button class="tab" data-view="registros" type="button">Registros</button>
+      <button class="tab" data-view="dashboard" type="button">Indicadores</button>
+      <button class="tab" data-view="sync" type="button">Sincronización</button>
+      <button class="tab" data-view="admin" type="button">Administración</button>
+    </nav>
+
+    <main class="main-layout">
+      <section id="view-inicio" class="view active-view">
+        <div class="intro-band">
+          <div>
+            <p class="eyebrow">Carga de campo</p>
+            <h2>Instrumento FAEDPYME 2026 reproducido desde el PDF maestro</h2>
+            <p>La app guarda primero en el dispositivo y luego sincroniza contra Google Apps Script cuando el backend está configurado.</p>
+          </div>
+          <button class="primary-btn" data-go="formulario" type="button">Nueva encuesta</button>
+        </div>
+        <div class="kpi-grid">
+          <article class="kpi-card"><span>Locales</span><strong id="kpi-local">0</strong></article>
+          <article class="kpi-card"><span>Pendientes</span><strong id="kpi-pending">0</strong></article>
+          <article class="kpi-card"><span>Sincronizadas</span><strong id="kpi-synced">0</strong></article>
+          <article class="kpi-card"><span>Preguntas</span><strong id="kpi-fields">0</strong></article>
+        </div>
+      </section>
+
+      <section id="view-formulario" class="view">
+        <div class="work-header">
+          <div>
+            <p class="eyebrow">Formulario</p>
+            <h2>Registro de encuesta</h2>
+          </div>
+          <div class="progress-box">
+            <span id="progress-label">0%</span>
+            <div class="progress-track"><span id="progress-bar"></span></div>
+          </div>
+        </div>
+        <form id="survey-form" class="survey-form"></form>
+      </section>
+
+      <section id="view-registros" class="view">
+        <div class="work-header">
+          <div>
+            <p class="eyebrow">Control operativo</p>
+            <h2>Registros locales</h2>
+          </div>
+          <button id="export-csv-btn" class="secondary-btn" type="button">Exportar CSV</button>
+        </div>
+        <div class="filter-row">
+          <input id="search-records" placeholder="Buscar por empresa, sector o estado">
+          <select id="status-filter">
+            <option value="">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="sincronizado">Sincronizado</option>
+            <option value="error">Error</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Fecha</th><th>Empresa</th><th>Sector</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody id="records-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="view-dashboard" class="view">
+        <div class="work-header">
+          <div>
+            <p class="eyebrow">Indicadores</p>
+            <h2>Resumen de captura</h2>
+          </div>
+        </div>
+        <div id="dashboard-grid" class="dashboard-grid"></div>
+      </section>
+
+      <section id="view-sync" class="view">
+        <div class="work-header">
+          <div>
+            <p class="eyebrow">Offline</p>
+            <h2>Cola de sincronización</h2>
+          </div>
+          <button id="sync-btn" class="primary-btn" type="button">Enviar pendientes</button>
+        </div>
+        <div id="sync-status" class="notice"></div>
+        <div id="queue-list" class="queue-list"></div>
+      </section>
+
+      <section id="view-admin" class="view">
+        <div class="work-header">
+          <div>
+            <p class="eyebrow">Administración</p>
+            <h2>Estado técnico</h2>
+          </div>
+        </div>
+        <dl class="admin-list">
+          <dt>Backend GAS</dt><dd id="admin-gas">No configurado</dd>
+          <dt>Spreadsheet</dt><dd id="admin-sheet"></dd>
+          <dt>Versión app</dt><dd id="admin-version"></dd>
+          <dt>Última sincronización</dt><dd id="admin-last-sync">Sin sincronización</dd>
+        </dl>
+      </section>
+    </main>
+  </div>
+
+  <template id="field-template">
+    <div class="field-row">
+      <label></label>
+      <div class="field-control"></div>
+      <p class="field-hint"></p>
+    </div>
+  </template>
+</body>
+</html>

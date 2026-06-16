@@ -1,0 +1,884 @@
+{
+  "schema_version": "2026-06-16.2",
+  "title": "FAEDPYME 2026: Factores de continuidad de la Mipyme",
+  "source": {
+    "document": "encuestaMIPYMES.pdf",
+    "spreadsheet_shortcut": "encuestaMIPYMES.gsheet",
+    "spreadsheet_id": "1lfasg9YkGM_4jAuP6LDoZd-0aFxePBUksZB_1lJDKtQ",
+    "extraction_date": "2026-06-16",
+    "notes": "Esquema construido desde el PDF local indicado por el usuario como instrumento maestro. No contiene respuestas individuales."
+  },
+  "scales": {
+    "likert_1_5_measure": {
+      "min": 1,
+      "max": 5,
+      "labels": {
+        "1": "En ninguna medida / nada",
+        "3": "Intermedio",
+        "5": "En gran medida / mucho"
+      }
+    },
+    "evolution_1_3_last": {
+      "options": [
+        {
+          "value": "1",
+          "label": "Ha disminuido"
+        },
+        {
+          "value": "2",
+          "label": "Sigue igual"
+        },
+        {
+          "value": "3",
+          "label": "Ha aumentado"
+        }
+      ]
+    },
+    "evolution_1_3_current": {
+      "options": [
+        {
+          "value": "1",
+          "label": "Disminuirá"
+        },
+        {
+          "value": "2",
+          "label": "Seguirá igual"
+        },
+        {
+          "value": "3",
+          "label": "Aumentará"
+        }
+      ]
+    },
+    "yes_no_1_0": {
+      "options": [
+        {
+          "value": "1",
+          "label": "Sí"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    }
+  },
+  "fields": [
+    {
+      "code": "empresa",
+      "label": "Empresa",
+      "type": "text",
+      "required": true,
+      "block": "identificacion"
+    },
+    {
+      "code": "correo_electronico",
+      "label": "Correo electrónico",
+      "type": "email",
+      "required": false,
+      "block": "identificacion"
+    },
+    {
+      "code": "nif",
+      "label": "NIF",
+      "type": "text",
+      "required": false,
+      "block": "identificacion"
+    },
+    {
+      "code": "q01_sector",
+      "label": "1. Sector de actividad",
+      "type": "radio",
+      "required": true,
+      "block": "general",
+      "options": [
+        {
+          "value": "1",
+          "label": "Industria"
+        },
+        {
+          "value": "2",
+          "label": "Construcción"
+        },
+        {
+          "value": "3",
+          "label": "Comercio"
+        },
+        {
+          "value": "4",
+          "label": "Servicios"
+        }
+      ]
+    },
+    {
+      "code": "q02_anio_fundacion",
+      "label": "2. ¿En qué año se fundó su empresa?",
+      "type": "number",
+      "required": true,
+      "block": "general",
+      "min": 1800,
+      "max": 2026,
+      "step": 1
+    },
+    {
+      "code": "q03a_tamano_empresa",
+      "label": "3a. Tamaño de la empresa",
+      "type": "radio",
+      "required": true,
+      "block": "general",
+      "options": [
+        {
+          "value": "1",
+          "label": "6 a 9 empleados"
+        },
+        {
+          "value": "2",
+          "label": "10 a 49 empleados"
+        },
+        {
+          "value": "3",
+          "label": "50 a 249 empleados"
+        }
+      ]
+    },
+    {
+      "code": "q03b_numero_medio_empleados",
+      "label": "3b. Número medio de empleados",
+      "type": "number",
+      "required": true,
+      "block": "general",
+      "min": 0,
+      "step": 1
+    },
+    {
+      "code": "q04_empresa_familiar",
+      "label": "4. ¿Considera que su empresa es familiar?",
+      "type": "radio",
+      "required": true,
+      "block": "gobierno",
+      "scale": "yes_no_1_0",
+      "hint": "Una o varias personas de una misma familia son los principales propietarios de la empresa."
+    },
+    {
+      "code": "q05a_genero_gerente",
+      "label": "5a. ¿Quién ocupa el puesto del director general / gerente?",
+      "type": "radio",
+      "required": true,
+      "block": "gobierno",
+      "options": [
+        {
+          "value": "1",
+          "label": "Hombre"
+        },
+        {
+          "value": "0",
+          "label": "Mujer"
+        }
+      ]
+    },
+    {
+      "code": "q05b_edad_gerente",
+      "label": "5b. Edad del director general / gerente",
+      "type": "number",
+      "required": true,
+      "block": "gobierno",
+      "min": 18,
+      "max": 99,
+      "step": 1
+    },
+    {
+      "code": "q06_mujeres_equipo_directivo_pct",
+      "label": "6. Porcentaje de mujeres en el equipo directivo",
+      "type": "number",
+      "required": true,
+      "block": "gobierno",
+      "min": 0,
+      "max": 100,
+      "step": 0.01,
+      "suffix": "%"
+    },
+    {
+      "code": "q07_gerente_estudios_universitarios",
+      "label": "7. ¿Dispone de estudios universitarios el director/gerente general?",
+      "type": "radio",
+      "required": true,
+      "block": "gobierno",
+      "scale": "yes_no_1_0"
+    },
+    {
+      "code": "q08_socios_capital",
+      "label": "8.1 Incorporar nuevos socios (ampliación de capital social)",
+      "type": "likert",
+      "required": true,
+      "block": "gobierno",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q08_directivos_externos",
+      "label": "8.2 Incorporar directivos externos (profesionales, no familiares)",
+      "type": "likert",
+      "required": true,
+      "block": "gobierno",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q08_transmision_generacional",
+      "label": "8.3 Transmisión generacional",
+      "type": "likert",
+      "required": true,
+      "block": "gobierno",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q08_venta_empresa",
+      "label": "8.4 Venta total o parcial de la empresa",
+      "type": "likert",
+      "required": true,
+      "block": "gobierno",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q08_cierre_empresa",
+      "label": "8.5 Cierre de la empresa",
+      "type": "likert",
+      "required": true,
+      "block": "gobierno",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q09_ventas_2025",
+      "label": "9.1 Ventas - último año 2025",
+      "type": "radio",
+      "required": true,
+      "block": "innovacion",
+      "scale": "evolution_1_3_last"
+    },
+    {
+      "code": "q09_ventas_2026",
+      "label": "9.1 Ventas - este año 2026",
+      "type": "radio",
+      "required": true,
+      "block": "innovacion",
+      "scale": "evolution_1_3_current"
+    },
+    {
+      "code": "q09_trabajadores_2025",
+      "label": "9.2 Número de trabajadores - último año 2025",
+      "type": "radio",
+      "required": true,
+      "block": "innovacion",
+      "scale": "evolution_1_3_last"
+    },
+    {
+      "code": "q09_trabajadores_2026",
+      "label": "9.2 Número de trabajadores - este año 2026",
+      "type": "radio",
+      "required": true,
+      "block": "innovacion",
+      "scale": "evolution_1_3_current"
+    },
+    {
+      "code": "q09_inversiones_2025",
+      "label": "9.3 Inversiones - último año 2025",
+      "type": "radio",
+      "required": true,
+      "block": "innovacion",
+      "scale": "evolution_1_3_last"
+    },
+    {
+      "code": "q09_inversiones_2026",
+      "label": "9.3 Inversiones - este año 2026",
+      "type": "radio",
+      "required": true,
+      "block": "innovacion",
+      "scale": "evolution_1_3_current"
+    },
+    {
+      "code": "q10_exportaciones_pct",
+      "label": "10. Porcentaje de ventas en 2025 que proviene de mercados internacionales",
+      "type": "number",
+      "required": true,
+      "block": "innovacion",
+      "min": 0,
+      "max": 100,
+      "step": 0.01,
+      "suffix": "%"
+    },
+    {
+      "code": "q10_paises_exportacion",
+      "label": "10.2 Si el porcentaje anterior es superior a 0, ¿a cuántos países?",
+      "type": "number",
+      "required": true,
+      "block": "innovacion",
+      "min": 0,
+      "step": 1,
+      "condition": {
+        "field": "q10_exportaciones_pct",
+        "operator": ">",
+        "value": 0
+      }
+    },
+    {
+      "code": "q11_situacion_economica",
+      "label": "11.1 Situación económica general (inflación, tipos de interés, demanda...)",
+      "type": "likert",
+      "required": true,
+      "block": "entorno",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q11_infraestructuras",
+      "label": "11.2 Infraestructuras (transporte, tecnológicas...)",
+      "type": "likert",
+      "required": true,
+      "block": "entorno",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q11_burocracia",
+      "label": "11.3 Burocracia y obligaciones legales",
+      "type": "likert",
+      "required": true,
+      "block": "entorno",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q11_estabilidad_politica",
+      "label": "11.4 Estabilidad política y seguridad jurídica",
+      "type": "likert",
+      "required": true,
+      "block": "entorno",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q11_provision_recursos",
+      "label": "11.5 Provisión de recursos (humanos, financieros, energía, materias primas...)",
+      "type": "likert",
+      "required": true,
+      "block": "entorno",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q12_calidad_productos",
+      "label": "12.1 Calidad de sus productos",
+      "type": "likert",
+      "required": true,
+      "block": "rendimiento",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q12_eficiencia_procesos",
+      "label": "12.2 Eficiencia de los procesos",
+      "type": "likert",
+      "required": true,
+      "block": "rendimiento",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q12_satisfaccion_clientes",
+      "label": "12.3 Satisfacción de clientes",
+      "type": "likert",
+      "required": true,
+      "block": "rendimiento",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q12_adaptacion_cambios",
+      "label": "12.4 Rapidez de adaptación a los cambios en el mercado",
+      "type": "likert",
+      "required": true,
+      "block": "rendimiento",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q12_crecimiento_ventas",
+      "label": "12.5 Rapidez de crecimiento de las ventas",
+      "type": "likert",
+      "required": true,
+      "block": "rendimiento",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q12_rentabilidad",
+      "label": "12.6 Rentabilidad",
+      "type": "likert",
+      "required": true,
+      "block": "rendimiento",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q12_satisfaccion_empleados",
+      "label": "12.7 Satisfacción de los empleados",
+      "type": "likert",
+      "required": true,
+      "block": "rendimiento",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q13_01_realizo",
+      "label": "13.1 Cambios o mejoras en productos/servicios existentes - ¿ha realizado?",
+      "type": "radio",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "yes_no_1_0"
+    },
+    {
+      "code": "q13_01_importancia",
+      "label": "13.1 Cambios o mejoras en productos/servicios existentes - nivel de importancia",
+      "type": "likert",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "likert_1_5_measure",
+      "condition": {
+        "field": "q13_01_realizo",
+        "operator": "=",
+        "value": "1"
+      }
+    },
+    {
+      "code": "q13_02_realizo",
+      "label": "13.2 Lanzamiento al mercado de nuevos productos/servicios - ¿ha realizado?",
+      "type": "radio",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "yes_no_1_0"
+    },
+    {
+      "code": "q13_02_importancia",
+      "label": "13.2 Lanzamiento al mercado de nuevos productos/servicios - nivel de importancia",
+      "type": "likert",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "likert_1_5_measure",
+      "condition": {
+        "field": "q13_02_realizo",
+        "operator": "=",
+        "value": "1"
+      }
+    },
+    {
+      "code": "q13_03_realizo",
+      "label": "13.3 Acceso a nuevos mercados - ¿ha realizado?",
+      "type": "radio",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "yes_no_1_0"
+    },
+    {
+      "code": "q13_03_importancia",
+      "label": "13.3 Acceso a nuevos mercados - nivel de importancia",
+      "type": "likert",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "likert_1_5_measure",
+      "condition": {
+        "field": "q13_03_realizo",
+        "operator": "=",
+        "value": "1"
+      }
+    },
+    {
+      "code": "q13_04_realizo",
+      "label": "13.4 Establecimiento nuevas alianzas o colaboraciones - ¿ha realizado?",
+      "type": "radio",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "yes_no_1_0"
+    },
+    {
+      "code": "q13_04_importancia",
+      "label": "13.4 Establecimiento nuevas alianzas o colaboraciones - nivel de importancia",
+      "type": "likert",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "likert_1_5_measure",
+      "condition": {
+        "field": "q13_04_realizo",
+        "operator": "=",
+        "value": "1"
+      }
+    },
+    {
+      "code": "q13_05_realizo",
+      "label": "13.5 Cambios o mejoras en los procesos - ¿ha realizado?",
+      "type": "radio",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "yes_no_1_0"
+    },
+    {
+      "code": "q13_05_importancia",
+      "label": "13.5 Cambios o mejoras en los procesos - nivel de importancia",
+      "type": "likert",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "likert_1_5_measure",
+      "condition": {
+        "field": "q13_05_realizo",
+        "operator": "=",
+        "value": "1"
+      }
+    },
+    {
+      "code": "q13_06_realizo",
+      "label": "13.6 Adquisición de nuevos bienes de equipo o instalaciones - ¿ha realizado?",
+      "type": "radio",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "yes_no_1_0"
+    },
+    {
+      "code": "q13_06_importancia",
+      "label": "13.6 Adquisición de nuevos bienes de equipo o instalaciones - nivel de importancia",
+      "type": "likert",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "likert_1_5_measure",
+      "condition": {
+        "field": "q13_06_realizo",
+        "operator": "=",
+        "value": "1"
+      }
+    },
+    {
+      "code": "q13_07_realizo",
+      "label": "13.7 Nuevos cambios o mejoras en organización y/o gestión - ¿ha realizado?",
+      "type": "radio",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "yes_no_1_0"
+    },
+    {
+      "code": "q13_07_importancia",
+      "label": "13.7 Nuevos cambios o mejoras en organización y/o gestión - nivel de importancia",
+      "type": "likert",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "likert_1_5_measure",
+      "condition": {
+        "field": "q13_07_realizo",
+        "operator": "=",
+        "value": "1"
+      }
+    },
+    {
+      "code": "q13_08_realizo",
+      "label": "13.8 Nuevos cambios o mejoras en compras y/o aprovisionamientos - ¿ha realizado?",
+      "type": "radio",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "yes_no_1_0"
+    },
+    {
+      "code": "q13_08_importancia",
+      "label": "13.8 Nuevos cambios o mejoras en compras y/o aprovisionamientos - nivel de importancia",
+      "type": "likert",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "likert_1_5_measure",
+      "condition": {
+        "field": "q13_08_realizo",
+        "operator": "=",
+        "value": "1"
+      }
+    },
+    {
+      "code": "q13_09_realizo",
+      "label": "13.9 Nuevos cambios o mejoras en comercial y/o ventas - ¿ha realizado?",
+      "type": "radio",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "yes_no_1_0"
+    },
+    {
+      "code": "q13_09_importancia",
+      "label": "13.9 Nuevos cambios o mejoras en comercial y/o ventas - nivel de importancia",
+      "type": "likert",
+      "required": true,
+      "block": "innovaciones_realizadas",
+      "scale": "likert_1_5_measure",
+      "condition": {
+        "field": "q13_09_realizo",
+        "operator": "=",
+        "value": "1"
+      }
+    },
+    {
+      "code": "q14_ingresos",
+      "label": "14.1 Evolución de los ingresos",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_financiera",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q14_costes",
+      "label": "14.2 Estructura y nivel de los costes",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_financiera",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q14_liquidez",
+      "label": "14.3 Situación de la liquidez",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_financiera",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q14_rentabilidad",
+      "label": "14.4 Nivel de rentabilidad",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_financiera",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q14_endeudamiento",
+      "label": "14.5 Endeudamiento",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_financiera",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q15_regulacion_burocracia",
+      "label": "15.1 Excesiva regulación y burocracia",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_externa",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q15_presion_competitiva",
+      "label": "15.2 Alta presión competitiva",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_externa",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q15_cambios_demanda",
+      "label": "15.3 Frecuentes cambios en la demanda",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_externa",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q15_personal_cualificado",
+      "label": "15.4 Falta de personal cualificado",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_externa",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q15_inestabilidad_politica",
+      "label": "15.5 Inestabilidad política o institucional",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_externa",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q15_exigencias_tecnologicas",
+      "label": "15.6 Elevadas exigencias tecnológicas",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_externa",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q15_inseguridad",
+      "label": "15.7 Inseguridad (informalidad, desprotección, ciberdelincuencia...)",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_externa",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q15_sostenibilidad",
+      "label": "15.8 Exigencias relacionadas con la sostenibilidad",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_externa",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q16_carga_fiscal",
+      "label": "16.1 La carga fiscal",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_costes",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q16_energia_materias",
+      "label": "16.2 Los costes de energía y materias primas",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_costes",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q16_costes_laborales",
+      "label": "16.3 Los costes laborales",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_costes",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q16_financiacion",
+      "label": "16.4 El coste de la financiación",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_costes",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q16_morosidad",
+      "label": "16.5 La morosidad",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_costes",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q17_relevo_generacional",
+      "label": "17.1 Falta de relevo generacional",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_interna",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q17_conflictos_propiedad",
+      "label": "17.2 Conflictos en la propiedad",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_interna",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q17_cansancio_gerencia",
+      "label": "17.3 Cansancio personal de la propiedad/gerencia",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_interna",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q17_baja_respuesta_cambios",
+      "label": "17.4 Baja capacidad de respuesta ante los cambios",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_interna",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q17_conocimientos_profesionalizacion",
+      "label": "17.5 Insuficiente nivel de conocimientos y profesionalización",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_interna",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q17_baja_productividad",
+      "label": "17.6 Baja productividad",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_interna",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q17_oferta_compra",
+      "label": "17.7 Existencia de una oferta de compra de la empresa",
+      "type": "likert",
+      "required": true,
+      "block": "continuidad_interna",
+      "scale": "likert_1_5_measure"
+    },
+    {
+      "code": "q18_experiencia_cierre",
+      "label": "18. ¿Ha tenido experiencia previa en el cierre de alguna actividad empresarial?",
+      "type": "radio",
+      "required": true,
+      "block": "cierre",
+      "scale": "yes_no_1_0"
+    },
+    {
+      "code": "q19_opinion_abandono",
+      "label": "19. Opinión para comprender las razones que conllevan el abandono de la actividad empresarial en las Mipymes",
+      "type": "textarea",
+      "required": false,
+      "block": "cierre"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "identificacion",
+      "title": "Identificación",
+      "description": "Datos básicos del instrumento. La app mantiene trazabilidad de fecha, usuario y estado de sincronización."
+    },
+    {
+      "id": "general",
+      "title": "Bloque General Anual",
+      "description": "Sector, año de fundación y tamaño de la empresa."
+    },
+    {
+      "id": "gobierno",
+      "title": "Gobierno Corporativo",
+      "description": "Estructura familiar, dirección y planteamientos de gobierno corporativo para los próximos 2-3 años."
+    },
+    {
+      "id": "innovacion",
+      "title": "Innovación y rendimiento",
+      "description": "Evolución, expectativas y presencia internacional."
+    },
+    {
+      "id": "entorno",
+      "title": "Entorno empresarial",
+      "description": "Factores del entorno que pueden resultar favorables o desfavorables."
+    },
+    {
+      "id": "rendimiento",
+      "title": "Rendimiento frente a competidores",
+      "description": "Posición actual de la empresa respecto a competidores directos."
+    },
+    {
+      "id": "innovaciones_realizadas",
+      "title": "Innovaciones realizadas 2024-2025",
+      "description": "Innovaciones realizadas y nivel de importancia cuando corresponda."
+    },
+    {
+      "id": "continuidad_financiera",
+      "title": "Continuidad: factores económico-financieros",
+      "description": "Importancia de factores financieros en el abandono de actividad empresarial."
+    },
+    {
+      "id": "continuidad_externa",
+      "title": "Continuidad: factores externos",
+      "description": "Importancia de factores externos para la continuidad de las Mipymes."
+    },
+    {
+      "id": "continuidad_costes",
+      "title": "Continuidad: factores de coste",
+      "description": "Influencia de distintos factores de coste."
+    },
+    {
+      "id": "continuidad_interna",
+      "title": "Continuidad: factores internos",
+      "description": "Factores internos asociados a decisiones de abandono."
+    },
+    {
+      "id": "cierre",
+      "title": "Cierre y comentarios finales",
+      "description": "Experiencia previa de cierre y opinión abierta."
+    }
+  ]
+}

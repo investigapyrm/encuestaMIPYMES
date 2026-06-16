@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Instrumento PYMES CONACYT</title>
+
+<!-- Bootstrap 5 + Bootswatch (Lux) -->
+<link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/lux/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+  :root{
+    /* Paleta viva y moderna */
+    --accent: #ff2d55;           /* rosa intenso para selección */
+    --accent-2: #7c3aed;         /* violeta para detalles */
+    --primary-strong: #2563eb;   /* azul vivo */
+    --success-strong: #10b981;   /* verde vivo */
+  }
+
+  body { background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%); }
+
+  .appbar{
+    position: sticky; top: 0; z-index: 1030;
+    backdrop-filter: saturate(120%) blur(6px);
+    background: linear-gradient(90deg, rgba(255,255,255,.92) 0%, rgba(255,246,250,.92) 100%);
+    border-bottom: 2px solid rgba(255,45,85,.25);
+  }
+  .container-narrow { max-width: 980px; }
+
+  .card{
+    border-radius: 1.1rem;
+    border: 1px solid rgba(124, 58, 237, .12);
+    box-shadow: 0 10px 28px rgba(16, 24, 40, .07);
+  }
+  .question-card{ margin-bottom: 1rem; }
+  .question-card .card-body{ position: relative; }
+  .question-card .card-body::before{
+    content:""; position:absolute; top:-1px; left:0; right:0; height:4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    border-top-left-radius: 1.1rem; border-top-right-radius: 1.1rem;
+  }
+
+  .q-help{ color:#64748b; font-size:.9rem; }
+  .sticky-actions{
+    position: sticky; bottom: 0; z-index: 1030; padding: .75rem;
+    background: rgba(255,255,255,.97); border-top: 1px solid #e2e8f0;
+  }
+
+  /* Progreso con color acentuado */
+  .progress{ height: .6rem; }
+  .progress-bar{ background-color: var(--accent) !important; }
+
+  .required:after{ content:" *"; color:var(--accent); font-weight:600; }
+
+  /* Botones */
+  .btn { margin: 2px; }
+  .btn-accent{
+    color:#fff; background-color: var(--accent); border-color: var(--accent);
+  }
+  .btn-accent:hover{ filter: brightness(0.93); }
+  .btn-outline-primary{ border-color: var(--primary-strong); color: var(--primary-strong); }
+  .btn-outline-primary:hover{ background-color: var(--primary-strong); color:#fff; }
+
+  /* Likert 1..7 en rejilla uniforme */
+  .likert-group{
+    display: grid !important; grid-template-columns: repeat(7, minmax(44px, 1fr)); gap: 8px;
+  }
+  .likert-group .btn{ width:100%; text-align:center; }
+
+  /* Selección MUY visible */
+  .likert-group .btn-check:checked + label,
+  .btn-group .btn-check:checked + label{
+    background: linear-gradient(180deg, var(--accent), #ff4d78);
+    color: #fff !important; border-color: var(--accent) !important;
+    box-shadow: 0 0 0 .25rem rgba(255,45,85,.25) !important;
+    transform: translateY(-1px);
+  }
+  .btn-group .btn:focus, .likert-group .btn:focus{
+    outline: none; box-shadow: 0 0 0 .25rem rgba(37,99,235,.18);
+  }
+
+  .pill{ display:inline-flex; align-items:center; gap:.5rem; padding:.35rem .7rem;
+         border-radius:999px; background:#eef2ff; color:#3730a3; font-size:.9rem; }
+
+  .step-indicator{ font-weight:600; font-variant-numeric: tabular-nums; }
+
+
+  /* === Tipografía y tamaños fluidos (mejoras de legibilidad) === */
+html { 
+  font-size: clamp(17px, 2.2vw, 19px);   /* escala global: más grande en todo el sitio */
+}
+body { 
+  -webkit-text-size-adjust: 100%; 
+  text-size-adjust: 100%;
+}
+
+/* Títulos y encabezados de bloque */
+h5, .card h5, .step-indicator {
+  font-size: clamp(1.25rem, 2.8vw, 1.5rem);
+}
+
+/* Subtítulos de grupos dentro de cada bloque */
+.card .fw-semibold {
+  font-size: clamp(1.05rem, 2.6vw, 1.25rem);
+}
+
+/* Texto de pregunta y ayudas */
+.form-label {
+  font-size: clamp(1.05rem, 2.8vw, 1.25rem);
+  line-height: 1.35;
+}
+.q-help {
+  font-size: clamp(.95rem, 2.2vw, 1.05rem);
+}
+
+/* Campos de entrada */
+.form-control, .input-group-text, textarea.form-control {
+  font-size: 1.05rem;
+  padding: .7rem .85rem;
+}
+
+/* Botones (incluye Likert y Sí/No) */
+.btn {
+  font-size: clamp(1rem, 2.6vw, 1.15rem);
+  padding: .6rem .9rem;
+}
+.likert-group .btn {
+  padding: .55rem 0;
+}
+.likert-group label.btn {
+  font-weight: 600;
+}
+
+/* Contenedor móvil a ancho completo y márgenes adecuados */
+@media (max-width: 576px) {
+  .container-narrow { 
+    max-width: 100%; 
+    padding-left: 12px; 
+    padding-right: 12px; 
+  }
+  .card { border-radius: 1rem; }
+  .step-indicator { font-size: 1.05rem; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="appbar py-2">
+  <div class="container container-narrow d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-clipboard2-pulse-fill fs-4 text-primary"></i>
+      <div>
+        <div class="fw-bold">Instrumento PYMES CONACYT</div>
+        <div class="text-muted small">Capacidad de absorción, digitalización y desempeño</div>
+      </div>
+    </div>
+    <div class="pill"><i class="bi bi-phone"></i><span>Optimizado para móviles</span></div>
+  </div>
+</header>
+
+<main class="container container-narrow my-3">
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="step-indicator">
+          <span id="stepNo">1</span>/<span id="stepTotal">9</span> · <span id="stepTitle">Bloque I</span>
+        </div>
+        <div style="min-width:220px">
+          <div class="progress" role="progressbar" aria-label="Avance" aria-valuemin="0" aria-valuemax="100">
+            <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+      <form id="formRoot" class="needs-validation" novalidate></form>
+    </div>
+
+    <div class="sticky-actions d-flex gap-2 justify-content-between">
+      <button id="btnPrev" class="btn btn-outline-secondary" type="button">
+        <i class="bi bi-arrow-left-circle"></i> Anterior
+      </button>
+      <div class="d-flex gap-2">
+        <button id="btnSave" class="btn btn-success" type="button">
+          <i class="bi bi-check2-circle"></i> Enviar respuestas
+        </button>
+        <button id="btnNext" class="btn btn-primary" type="button">
+          Siguiente <i class="bi bi-arrow-right-circle"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Avisos -->
+  <div id="toast" class="alert mt-3 d-none" role="alert"></div>
+</main>
+
+<!-- Modal de Éxito -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header" style="background:linear-gradient(90deg,var(--success-strong),#34d399);">
+        <h5 class="modal-title text-white"><i class="bi bi-check-circle-fill me-2"></i>Datos guardados</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-1">Se registró el envío correctamente.</p>
+        <p class="mb-2"><strong id="successCode"></strong></p>
+        <p class="mb-0 text-muted">Puede cerrar esta ventana o comenzar <strong>otra respuesta</strong> con el botón de abajo.</p>
+      </div>
+      <div class="modal-footer">
+        <button id="btnNewResponse" type="button" class="btn btn-accent">
+          <i class="bi bi-plus-circle"></i> Nueva respuesta
+        </button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+/* ===========================================================
+   ESQUEMA (resumido aquí por brevedad del comentario)
+   Tipos: text, number, percent, textarea, yn, gender, likert7
+   =========================================================== */
+const SCHEMA = [
+  { id:'B1', title:'Bloque I. Datos generales de la empresa',
+    items:[
+      { code:'B1_Q1_actividad', text:'Actividad principal de la empresa (breve descripción)', type:'text', required:true },
+      { code:'B1_Q2_empProm_2023', text:'Empleados promedio durante 2023', type:'number', required:true },
+      { code:'B1_Q2_empProm_2024', text:'Empleados promedio durante 2024', type:'number', required:true },
+      { code:'B1_Q3_muj_2023', text:'Número de empleadas mujeres (2023)', type:'number', required:true },
+      { code:'B1_Q3_muj_2024', text:'Número de empleadas mujeres (2024)', type:'number', required:true },
+      { code:'B1_Q4_anios', text:'Años de funcionamiento de la empresa', type:'number', required:true },
+      { code:'B1_Q5_familiar', text:'¿El control mayoritario de la empresa es familiar?', type:'yn', required:true, help:'1 = Sí, 0 = No' },
+      { code:'B1_Q6_dirFamilia', text:'¿Los puestos de dirección están ocupados mayoritariamente por miembros de la familia?', type:'yn', required:true },
+      { code:'B1_Q7_edadDir', text:'Edad del director/gerente general (años)', type:'number', required:true },
+      { code:'B1_Q8_generoDir', text:'Género del director/gerente general', type:'gender', required:true, help:'1 = Hombre, 2 = Mujer' },
+      { code:'B1_Q9_propMujPct', text:'Proporción de propiedad en manos de Mujeres (%)', type:'percent', required:true },
+      { code:'B1_Q9_propHomPct', text:'Proporción de propiedad en manos de Hombres (%)', type:'percent', required:true, help:'Verificar que Mujeres% + Hombres% = 100' },
+      { code:'B1_Q10_exportPct', text:'% de ventas a mercados internacionales', type:'percent', required:true }
+    ]
+  },
+  { id:'B2', title:'Bloque II. Capacidad de Absorción (1= Muy desfavorable, 7= Muy favorable)',
+    groups:[
+      { gcode:'B2_11', gtitle:'Adquisición de conocimientos (últimos 2 años)', items:[
+        {code:'B2_11_Acq_1', text:'Adquisición de conocimientos vía comunicación con universidades, sector público, clientes, competidores y proveedores', type:'likert7', required:true},
+        {code:'B2_11_Acq_2', text:'Búsqueda sistemática de información externa relevante', type:'likert7', required:true},
+        {code:'B2_11_Acq_3', text:'Inversión en I+D (% del presupuesto anual)', type:'likert7', required:true},
+        {code:'B2_11_Acq_4', text:'Capacitación a empleados para proyectos de innovación', type:'likert7', required:true},
+        {code:'B2_11_Acq_5', text:'Gestión del conocimiento entre empleados (búsqueda de información externa)', type:'likert7', required:true},
+      ]},
+      { gcode:'B2_12', gtitle:'Asimilación de conocimientos (últimos 2 años)', items:[
+        {code:'B2_12_Assim_1', text:'Identifica innovaciones desarrolladas por otros', type:'likert7', required:true},
+        {code:'B2_12_Assim_2', text:'Entiende innovaciones desarrolladas por otros', type:'likert7', required:true},
+        {code:'B2_12_Assim_3', text:'Adopta innovaciones desarrolladas por otros', type:'likert7', required:true},
+        {code:'B2_12_Assim_4', text:'Asimila conocimientos externos a la organización', type:'likert7', required:true},
+        {code:'B2_12_Assim_5', text:'Flujo rápido de comunicación e intercambio de información', type:'likert7', required:true},
+      ]},
+      { gcode:'B2_13', gtitle:'Transformación de conocimientos (últimos 2 años)', items:[
+        {code:'B2_13_Trans_1', text:'Vincula conocimiento propio con innovaciones del mercado', type:'likert7', required:true},
+        {code:'B2_13_Trans_2', text:'Integra tecnología interna con innovaciones externas', type:'likert7', required:true},
+        {code:'B2_13_Trans_3', text:'Reconfigura la organización según conocimiento del entorno', type:'likert7', required:true},
+        {code:'B2_13_Trans_4', text:'Adapta decisiones estratégicas al conocimiento externo', type:'likert7', required:true},
+        {code:'B2_13_Trans_5', text:'Aplica nuevos conocimientos en la cartera de proyectos', type:'likert7', required:true},
+      ]},
+      { gcode:'B2_14', gtitle:'Explotación de conocimientos (últimos 2 años)', items:[
+        {code:'B2_14_Expl_1', text:'Usa conocimiento del entorno para nuevos productos/servicios', type:'likert7', required:true},
+        {code:'B2_14_Expl_2', text:'Ajusta tecnología/procesos aprovechando nuevos conocimientos', type:'likert7', required:true},
+        {code:'B2_14_Expl_3', text:'Desarrolla nuevos productos con innovaciones externas', type:'likert7', required:true},
+        {code:'B2_14_Expl_4', text:'Modifica productos/servicios usando innovaciones externas', type:'likert7', required:true},
+        {code:'B2_14_Expl_5', text:'Explota nuevos productos/servicios resultantes de innovaciones', type:'likert7', required:true},
+      ]}
+    ]
+  },
+  { id:'B3', title:'Bloque III. Desempeño empresarial (1= Muy desfavorable, 7= Muy favorable)',
+    groups:[
+      { gcode:'B3_15', gtitle:'Productos y servicios (comparado con el sector, últimos 2 años)', items:[
+        {code:'B3_15_Prod_1', text:'Nº de nuevos productos/servicios introducidos por año', type:'likert7', required:true},
+        {code:'B3_15_Prod_2', text:'Carácter pionero al introducir nuevos productos/servicios', type:'likert7', required:true},
+        {code:'B3_15_Prod_3', text:'Gasto en I+D para nuevos productos/servicios', type:'likert7', required:true},
+        {code:'B3_15_Prod_4', text:'Rapidez ante introducción de nuevos productos del sector', type:'likert7', required:true},
+      ]},
+      { gcode:'B3_16', gtitle:'Procesos (comparado con el sector, últimos 2 años)', items:[
+        {code:'B3_16_Proc_1', text:'Nº de procesos nuevos/mejorados al año', type:'likert7', required:true},
+        {code:'B3_16_Proc_2', text:'Carácter pionero en procesos', type:'likert7', required:true},
+        {code:'B3_16_Proc_3', text:'Gasto en I+D para procesos', type:'likert7', required:true},
+        {code:'B3_16_Proc_4', text:'Rapidez de respuesta en procesos frente al sector', type:'likert7', required:true},
+      ]},
+      { gcode:'B3_17', gtitle:'Rendimiento innovador (1= Nada exitoso; 7= Muy exitoso)', items:[
+        {code:'B3_17_Logro_1', text:'Introducir nuevos productos/servicios mejor que competidores', type:'likert7', required:true},
+        {code:'B3_17_Logro_2', text:'Calidad de nuevos productos/servicios', type:'likert7', required:true},
+        {code:'B3_17_Logro_3', text:'Incremento de ventas por nuevos productos', type:'likert7', required:true},
+        {code:'B3_17_Logro_4', text:'Incremento de ventas por productos modificados', type:'likert7', required:true},
+        {code:'B3_17_Logro_5', text:'Eficiencia en procesos de entrega', type:'likert7', required:true},
+        {code:'B3_17_Logro_6', text:'Procesos mejorados para ahorrar costes y tiempo', type:'likert7', required:true},
+        {code:'B3_17_Logro_7', text:'Simplificación mediante mejores prácticas organizativas', type:'likert7', required:true},
+        {code:'B3_17_Logro_8', text:'Motivación del empleado para ser más creativo', type:'likert7', required:true},
+        {code:'B3_17_Logro_9', text:'Mejora en la cualificación de los empleados', type:'likert7', required:true},
+        {code:'B3_17_Logro_10', text:'Mejora del trabajo en equipo', type:'likert7', required:true},
+        {code:'B3_17_Logro_11', text:'Más posibilidades de promoción por innovación', type:'likert7', required:true},
+      ]},
+      { gcode:'B3_18', gtitle:'Indicadores (últimos 2 años)', items:[
+        {code:'B3_18_Ind_1', text:'Cuota de mercado', type:'likert7', required:true},
+        {code:'B3_18_Ind_2', text:'Nivel de ventas', type:'likert7', required:true},
+        {code:'B3_18_Ind_3', text:'Rentabilidad', type:'likert7', required:true},
+        {code:'B3_18_Ind_4', text:'Productividad', type:'likert7', required:true},
+      ]}
+    ]
+  },
+  { id:'B4', title:'Bloque IV. Digitalización (1= Nunca, 7= Muy a menudo / Muy importante / Total acuerdo)',
+    groups:[
+      { gcode:'B4_19', gtitle:'Aplicación de nuevas tecnologías digitales', items:[
+        {code:'B4_19_Tech_1', text:'Inteligencia Artificial', type:'likert7', required:true},
+        {code:'B4_19_Tech_2', text:'Cloud Computing', type:'likert7', required:true},
+        {code:'B4_19_Tech_3', text:'Big Data / Data Intelligence', type:'likert7', required:true},
+        {code:'B4_19_Tech_4', text:'Ciberseguridad', type:'likert7', required:true},
+      ]},
+      { gcode:'B4_20', gtitle:'Tecnologías digitales de base', items:[
+        {code:'B4_20_Base_1', text:'Página web informativa', type:'likert7', required:true},
+        {code:'B4_20_Base_2', text:'Comercio electrónico (portal propio)', type:'likert7', required:true},
+        {code:'B4_20_Base_3', text:'Comercio electrónico en Marketplace', type:'likert7', required:true},
+        {code:'B4_20_Base_4', text:'Marketing digital / Publicidad pagada', type:'likert7', required:true},
+        {code:'B4_20_Base_5', text:'Compras electrónicas', type:'likert7', required:true},
+        {code:'B4_20_Base_6', text:'Teletrabajo', type:'likert7', required:true},
+        {code:'B4_20_Base_7', text:'Intranet corporativa', type:'likert7', required:true},
+        {code:'B4_20_Base_8', text:'ERP (SAP, De Fontana o eq.)', type:'likert7', required:true},
+        {code:'B4_20_Base_9', text:'CRM (Salesforce, HubSpot o eq.)', type:'likert7', required:true},
+      ]},
+      { gcode:'B4_21', gtitle:'Impulsores (1= Nada importante; 7= Muy importante)', items:[
+        {code:'B4_21_Drv_1', text:'Requerimientos del cliente', type:'likert7', required:true},
+        {code:'B4_21_Drv_2', text:'Competidores usan nuevas tecnologías', type:'likert7', required:true},
+        {code:'B4_21_Drv_3', text:'Reducir costos', type:'likert7', required:true},
+        {code:'B4_21_Drv_4', text:'Mejorar tiempo de comercialización', type:'likert7', required:true},
+        {code:'B4_21_Drv_5', text:'Requisitos legales', type:'likert7', required:true},
+        {code:'B4_21_Drv_6', text:'Estrategia consciente en torno a tecnologías digitales', type:'likert7', required:true},
+      ]},
+      { gcode:'B4_22', gtitle:'Barreras (1= Nada importante; 7= Muy importante)', items:[
+        {code:'B4_22_Bar_1', text:'Escasez de subvenciones/subsidios', type:'likert7', required:true},
+        {code:'B4_22_Bar_2', text:'Falta de recursos financieros', type:'likert7', required:true},
+        {code:'B4_22_Bar_3', text:'Altos costos de inversión', type:'likert7', required:true},
+        {code:'B4_22_Bar_4', text:'Mala recepción por los trabajadores', type:'likert7', required:true},
+        {code:'B4_22_Bar_5', text:'Exige personal difícil de encontrar/mantener', type:'likert7', required:true},
+        {code:'B4_22_Bar_6', text:'Requiere educación continua de empleados', type:'likert7', required:true},
+        {code:'B4_22_Bar_7', text:'Falta de soluciones técnicas de proveedores', type:'likert7', required:true},
+        {code:'B4_22_Bar_8', text:'Problemas de ciberseguridad', type:'likert7', required:true},
+        {code:'B4_22_Bar_9', text:'Dificultad para coordinar entre unidades', type:'likert7', required:true},
+        {code:'B4_22_Bar_10', text:'Falta de comprensión de la importancia estratégica', type:'likert7', required:true},
+        {code:'B4_22_Bar_11', text:'Desafíos de integración de datos/tecnologías', type:'likert7', required:true},
+      ]},
+      { gcode:'B4_23', gtitle:'Actividades (últimos 2 años) — Importancia', items:[
+        {code:'B4_23_Act_1', text:'Nuevo negocio desde conocimiento interno', type:'likert7', required:true},
+        {code:'B4_23_Act_2', text:'Licencias/royalties a otras empresas', type:'likert7', required:true},
+        {code:'B4_23_Act_3', text:'Aprovechar conocimientos de empleados fuera de I+D', type:'likert7', required:true},
+        {code:'B4_23_Act_4', text:'Participación directa de clientes en innovación', type:'likert7', required:true},
+        {code:'B4_23_Act_5', text:'Redes externas para apoyar procesos de innovación', type:'likert7', required:true},
+        {code:'B4_23_Act_6', text:'Participaciones en otras empresas por sinergias', type:'likert7', required:true},
+        {code:'B4_23_Act_7', text:'Compra de servicios de I+D (universidades, etc.)', type:'likert7', required:true},
+        {code:'B4_23_Act_8', text:'Compra/uso de PI (patentes, marcas, etc.)', type:'likert7', required:true},
+      ]},
+      { gcode:'B4_24', gtitle:'Madurez digital — Acuerdos (1= Total desacuerdo; 7= Total acuerdo)', items:[
+        {code:'B4_24_Mad_1', text:'Madurez digital es un factor competitivo importante', type:'likert7', required:true},
+        {code:'B4_24_Mad_2', text:'Recursos humanos actuales son condición para la madurez', type:'likert7', required:true},
+        {code:'B4_24_Mad_3', text:'Costo/inversión es determinante para la madurez', type:'likert7', required:true},
+        {code:'B4_24_Mad_4', text:'La madurez digital es prioridad para la empresa', type:'likert7', required:true},
+        {code:'B4_24_Mad_5', text:'Liderazgo/jerarquía determinan la madurez', type:'likert7', required:true},
+        {code:'B4_24_Mad_6', text:'Atraer/retener clientes con estrategia digital', type:'likert7', required:true},
+        {code:'B4_24_Mad_7', text:'Estrategia/metodologías para promover innovación digital', type:'likert7', required:true},
+        {code:'B4_24_Mad_8', text:'Coordinación y trabajo en equipo en entornos digitales', type:'likert7', required:true},
+        {code:'B4_24_Mad_9', text:'Equipos con experiencia para alcanzar madurez', type:'likert7', required:true},
+        {code:'B4_24_Mad_10', text:'Equipos comprometidos con la madurez digital', type:'likert7', required:true},
+        {code:'B4_24_Mad_11', text:'Formación en competencias digitales (nivel directivo)', type:'likert7', required:true},
+        {code:'B4_24_Mad_12', text:'Formación en competencias digitales (mandos medios/gerencia)', type:'likert7', required:true},
+        {code:'B4_24_Mad_13', text:'Formación en competencias digitales (supervisión/operaciones)', type:'likert7', required:true},
+      ]},
+      { gcode:'B4_25', gtitle:'Comparación con la empresa líder del sector (1= Menos desarrollado; 7= Más desarrollado)', items:[
+        {code:'B4_25_Comp_1', text:'Aspectos tecnológicos', type:'likert7', required:true},
+        {code:'B4_25_Comp_2', text:'Procesos', type:'likert7', required:true},
+        {code:'B4_25_Comp_3', text:'Productos', type:'likert7', required:true},
+        {code:'B4_25_Comp_4', text:'Recursos humanos', type:'likert7', required:true},
+        {code:'B4_25_Comp_5', text:'Gestión del sistema', type:'likert7', required:true},
+        {code:'B4_25_Comp_6', text:'Liderazgo', type:'likert7', required:true},
+      ]}
+    ]
+  },
+  { id:'B5', title:'Bloque V. Ecosistema de innovación (1= Nunca; 7= Muy a menudo)',
+    groups:[{ gcode:'B5_26', gtitle:'Relación con universidades, empresas y gobierno', items:[
+      {code:'B5_26_1', text:'Aplica resultados de investigación de universidades', type:'likert7', required:true},
+      {code:'B5_26_2', text:'Recibe formación/entrenamiento de universidades', type:'likert7', required:true},
+      {code:'B5_26_3', text:'Recibe asistencia técnica de universidades', type:'likert7', required:true},
+      {code:'B5_26_4', text:'Usa infraestructura de investigación de universidades', type:'likert7', required:true},
+      {code:'B5_26_5', text:'Mantiene comunicación con universidades', type:'likert7', required:true},
+      {code:'B5_26_6', text:'Coopera con universidades u organismos similares', type:'likert7', required:true},
+      {code:'B5_26_7', text:'Empresas abren mercado a productos de pymes', type:'likert7', required:true},
+      {code:'B5_26_8', text:'Grandes empresas actúan como “Mentor” de pymes', type:'likert7', required:true},
+      {code:'B5_26_9', text:'Grandes empresas transfieren conocimiento a pymes', type:'likert7', required:true},
+      {code:'B5_26_10', text:'Comunicación con otras empresas', type:'likert7', required:true},
+      {code:'B5_26_11', text:'Cooperación con otras empresas', type:'likert7', required:true},
+      {code:'B5_26_12', text:'Gobierno compra productos de pymes', type:'likert7', required:true},
+      {code:'B5_26_13', text:'Gobierno coopera con pymes', type:'likert7', required:true},
+      {code:'B5_26_14', text:'Gobierno otorga subsidios (intereses/impuestos)', type:'likert7', required:true},
+      {code:'B5_26_15', text:'Gobierno provee soporte financiero vía instituciones', type:'likert7', required:true},
+      {code:'B5_26_16', text:'Gobierno fomenta acceso a la información', type:'likert7', required:true},
+      {code:'B5_26_17', text:'Gobierno mantiene comunicación con pymes', type:'likert7', required:true},
+      {code:'B5_26_18', text:'Gobierno capacita a pymes', type:'likert7', required:true},
+    ]}]},
+  { id:'B6', title:'Bloque VI. Economía Circular (1= Nunca; 7= Muy a menudo)',
+    groups:[
+      { gcode:'B6_27', gtitle:'Diseño, procesos y cadena de valor', items:[
+        {code:'B6_27_1', text:'Usa cantidad mínima de recursos en diseño', type:'likert7', required:true},
+        {code:'B6_27_2', text:'Diseña para reutilización/reciclaje/recuperación', type:'likert7', required:true},
+        {code:'B6_27_3', text:'Evita/reduce uso de productos peligrosos en diseño', type:'likert7', required:true},
+        {code:'B6_27_4', text:'Diseño de procesos para minimizar residuos', type:'likert7', required:true},
+        {code:'B6_27_5', text:'Formación ambiental/economía circular a trabajadores', type:'likert7', required:true},
+        {code:'B6_27_6', text:'Selección de proveedores con criterios ambientales', type:'likert7', required:true},
+        {code:'B6_27_7', text:'Reutiliza energía/agua en la cadena de valor', type:'likert7', required:true},
+        {code:'B6_27_8', text:'Usa materiales reciclados en producción', type:'likert7', required:true},
+      ]},
+      { gcode:'B6_28', gtitle:'Producción, comunidad y gestión ambiental', items:[
+        {code:'B6_28_1', text:'Reduce/reutiliza/recicla materiales no ambientales', type:'likert7', required:true},
+        {code:'B6_28_2', text:'Embalajes respetuosos con el medio ambiente', type:'likert7', required:true},
+        {code:'B6_28_3', text:'Diseña productos/servicios ambientales', type:'likert7', required:true},
+        {code:'B6_28_4', text:'Involucra a la comunidad en mejora ambiental', type:'likert7', required:true},
+        {code:'B6_28_5', text:'Prioriza abastecimiento local', type:'likert7', required:true},
+        {code:'B6_28_6', text:'Recupera productos desgastados/desechados para reciclaje', type:'likert7', required:true},
+        {code:'B6_28_7', text:'Implementa Sistema de Gestión Ambiental (ISO 14001)', type:'likert7', required:true},
+        {code:'B6_28_8', text:'Fomenta actividades de RSE ambientales', type:'likert7', required:true},
+      ]}
+    ]},
+  { id:'B7', title:'Bloque VII. Cadena de suministro (1= Total desacuerdo; 7= Total acuerdo)',
+    groups:[{ gcode:'B7_29', gtitle:'Resiliencia y aprendizaje ante interrupciones', items:[
+      {code:'B7_29_1', text:'Responde y restablece el flujo rápidamente', type:'likert7', required:true},
+      {code:'B7_29_2', text:'Preparada financieramente con planes alternativos', type:'likert7', required:true},
+      {code:'B7_29_3', text:'Mantiene control deseado durante interrupciones', type:'likert7', required:true},
+      {code:'B7_29_4', text:'Vuelve rápidamente al estado original', type:'likert7', required:true},
+      {code:'B7_29_5', text:'Alcanza un estado nuevo y más deseable', type:'likert7', required:true},
+      {code:'B7_29_6', text:'Aprende y aprovecha conocimientos inesperados', type:'likert7', required:true},
+    ]}]},
+  { id:'B8', title:'Bloque VIII. Gestión de la Calidad (PQMS) (1= Nunca; 7= Muy a menudo)',
+    groups:[{ gcode:'B8_30', gtitle:'Prácticas de Gestión de la Calidad', items:[
+      {code:'B8_30_1', text:'Alta dirección comprometida con la calidad', type:'likert7', required:true},
+      {code:'B8_30_2', text:'Necesidades del cliente integradas en actividades', type:'likert7', required:true},
+      {code:'B8_30_3', text:'Mejora continua de procesos y productos', type:'likert7', required:true},
+      {code:'B8_30_4', text:'Todo el personal involucrado en la gestión de calidad', type:'likert7', required:true},
+      {code:'B8_30_5', text:'Colaboración con proveedores para asegurar calidad', type:'likert7', required:true},
+      {code:'B8_30_6', text:'Controles de calidad en cada etapa', type:'likert7', required:true},
+      {code:'B8_30_7', text:'Programas de formación en calidad', type:'likert7', required:true},
+      {code:'B8_30_8', text:'Uso de datos/análisis para decisiones de calidad', type:'likert7', required:true},
+      {code:'B8_30_9', text:'Evaluaciones regulares de satisfacción del cliente', type:'likert7', required:true},
+      {code:'B8_30_10', text:'Cumplimiento de estándares internacionales', type:'likert7', required:true},
+    ]}]},
+  { id:'B9', title:'Bloque IX. Comentarios y Sugerencias',
+    items:[ { code:'B9_COMENTARIOS', text:'¿Desea añadir algún comentario o sugerencia?', type:'textarea', required:false } ]
+  }
+];
+
+/* ====================== ESTADO Y META ======================= */
+let currentStep = 0;
+let autoAdvanceTimer = null;
+const steps = SCHEMA.map(b => b.id);
+const answers = {};
+const META = indexSchema();
+const ALL_CODES = Object.keys(META);
+
+/* ====================== INICIALIZACIÓN ====================== */
+document.addEventListener('DOMContentLoaded', () => {
+  renderStep(); updateStepHeader(); updateProgress();
+
+  document.getElementById('btnPrev').addEventListener('click', onPrev);
+  document.getElementById('btnNext').addEventListener('click', onNext);
+  document.getElementById('btnSave').addEventListener('click', onSave);
+  document.getElementById('btnNewResponse').addEventListener('click', resetForNewResponse);
+
+  // Delegación para persistir cambios y auto-avance
+  document.getElementById('formRoot').addEventListener('change', onAnyChange, true);
+});
+
+/* ============================ RENDER ======================= */
+function renderStep(){
+  const root = document.getElementById('formRoot'); root.innerHTML='';
+  const block = SCHEMA[currentStep]; const frag = document.createDocumentFragment();
+
+  const h = document.createElement('h5'); h.textContent = block.title; h.className='mb-3'; frag.appendChild(h);
+
+  if (block.items) for (const it of block.items) frag.appendChild(renderItemCard(it, block.id));
+  if (block.groups){
+    for (const g of block.groups){
+      const gc = document.createElement('div'); gc.className='question-card card mb-3';
+      gc.innerHTML = `<div class="card-body"><div class="fw-semibold mb-2">${g.gtitle}</div>
+                      <div class="d-flex flex-column gap-3" data-group="${g.gcode}"></div></div>`;
+      const holder = gc.querySelector('[data-group]');
+      for (const it of g.items) holder.appendChild(renderItemControl(it, block.id));
+      frag.appendChild(gc);
+    }
+  }
+  root.appendChild(frag);
+  restoreValuesInDOM();
+}
+
+function renderItemCard(item, bloqueId){
+  const wrap = document.createElement('div'); wrap.className='question-card card';
+  const req = item.required ? 'required' : '';
+  wrap.innerHTML = `<div class="card-body">
+      <label class="form-label ${req}">${item.text}</label>
+      ${item.help ? `<div class="q-help mb-2">${item.help}</div>` : ''}
+      <div data-code="${item.code}"></div>
+    </div>`;
+  const holder = wrap.querySelector('[data-code]');
+  holder.appendChild(renderControlByType(item));
+  return wrap;
+}
+
+function renderItemControl(item){
+  const wrap = document.createElement('div');
+  const req = item.required ? 'required' : '';
+  wrap.innerHTML = `<label class="form-label ${req}">${item.text}</label>
+                    ${item.help ? `<div class="q-help mb-1">${item.help}</div>` : ''}`;
+  wrap.appendChild(renderControlByType(item));
+  return wrap;
+}
+
+function renderControlByType(item){
+  const id = item.code; let node;
+  switch (item.type){
+    case 'text':     node = html(`<input type="text" class="form-control" id="${id}" ${item.required?'required':''} />`); break;
+    case 'number':   node = html(`<input type="number" class="form-control" id="${id}" ${item.required?'required':''} />`); break;
+    case 'percent':  node = html(`<div class="input-group">
+                      <input type="number" class="form-control" id="${id}" min="0" max="100" step="1" ${item.required?'required':''} />
+                      <span class="input-group-text">%</span></div>`); break;
+    case 'textarea': node = html(`<textarea class="form-control" id="${id}" rows="4" placeholder="Escriba aquí..."></textarea>`); break;
+    case 'yn':       node = renderButtonRadio(id, ['1','0'], ['Sí','No']); break;
+    case 'gender':   node = renderButtonRadio(id, ['1','2'], ['Hombre','Mujer']); break;
+    case 'likert7':  node = renderLikert7(id); break;
+    default:         node = html(`<input type="text" class="form-control" id="${id}" />`);
+  }
+  node.dataset.code = item.code; node.dataset.qtext = item.text; node.dataset.block = META[item.code]?.block || '';
+  return node;
+}
+
+/* === Radios como botones === */
+function createRadioPair({name, value, labelText}){
+  const inpid = `${name}_${value}`;
+  const input = document.createElement('input');
+  input.type='radio'; input.className='btn-check'; input.name=name; input.id=inpid; input.value=value;
+  const label = document.createElement('label');
+  label.className='btn btn-outline-secondary'; label.setAttribute('for', inpid); label.textContent=labelText;
+  const frag = document.createDocumentFragment(); frag.appendChild(input); frag.appendChild(label); return frag;
+}
+function renderButtonRadio(id, values, labels){
+  const grp = document.createElement('div'); grp.className='btn-group flex-wrap'; grp.setAttribute('role','group');
+  values.forEach((v,i)=> grp.appendChild(createRadioPair({name:id, value:v, labelText:labels[i]})));
+  return grp;
+}
+function renderLikert7(id){
+  const grp = document.createElement('div'); grp.className='likert-group btn-pill'; grp.setAttribute('role','group');
+  for (let v=1; v<=7; v++) grp.appendChild(createRadioPair({name:id, value:String(v), labelText:String(v)}));
+  return grp;
+}
+
+/* ====================== PERSISTENCIA / CAMBIOS =============== */
+function onAnyChange(e){
+  const target = e.target; if (!target) return;
+  const holder = target.closest('[data-code]') || target.parentElement?.closest('[data-code]'); if (!holder) return;
+  const code = holder.dataset.code; let value = '';
+
+  if (target.matches('input[type="radio"]')){
+    const sel = document.querySelector(`input[name="${target.name}"]:checked`);
+    if (sel) value = sel.value;
+    answers[code] = value; updateProgress(); scheduleAutoAdvance(code);
+  } else {
+    const inner = holder.matches('input, textarea') ? holder : holder.querySelector('input, textarea');
+    if (inner){ answers[code] = inner.value ?? ''; updateProgress(); }
+  }
+}
+
+function restoreValuesInDOM(){
+  document.querySelectorAll('[data-code]').forEach(node=>{
+    const code = node.dataset.code; const val = answers[code];
+    if (node.querySelector('input[type="radio"]')){
+      if (val !== undefined && val !== ''){
+        const match = node.querySelector(`input[type="radio"][name="${code}"][value="${val}"]`);
+        if (match) match.checked = true;
+      }
+    } else {
+      const inp = node.matches('input, textarea') ? node : node.querySelector('input, textarea');
+      if (inp && val !== undefined) inp.value = val;
+    }
+  });
+}
+
+/* ====================== NAVEGACIÓN / PROGRESO ================ */
+function onPrev(){ if (currentStep>0){ currentStep--; renderStep(); updateStepHeader(); updateProgress(); } }
+function onNext(){ if (currentStep<SCHEMA.length-1){ currentStep++; renderStep(); updateStepHeader(); updateProgress(); } }
+
+function updateStepHeader(){
+  document.getElementById('stepNo').textContent = (currentStep+1);
+  document.getElementById('stepTotal').textContent = SCHEMA.length;
+  document.getElementById('stepTitle').textContent = SCHEMA[currentStep].title.trim();
+}
+
+function allRequiredCodes(){
+  const out=[]; for (const b of SCHEMA){
+    if (b.items) b.items.forEach(it=>{ if(it.required) out.push(it.code); });
+    if (b.groups) b.groups.forEach(g=> g.items.forEach(it=>{ if(it.required) out.push(it.code); }));
+  } return out;
+}
+function updateProgress(){
+  const req = allRequiredCodes(); const ans = req.filter(k => (answers[k] ?? '') !== '');
+  const pct = req.length ? Math.round(ans.length*100/req.length) : 0;
+  const bar = document.getElementById('progressBar'); bar.style.width = pct+'%'; bar.textContent = pct+'%';
+}
+
+/* ====================== AUTO-AVANCE ========================== */
+function scheduleAutoAdvance(code){
+  if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+  autoAdvanceTimer = setTimeout(()=>{
+    const all = Array.from(document.querySelectorAll('[data-code]'));
+    const idx = all.findIndex(n => n.dataset.code === code);
+    const next = (idx>=0 && idx+1<all.length) ? all[idx+1] : null;
+    if (next){
+      next.scrollIntoView({behavior:'smooth', block:'center'});
+      const lbl = next.querySelector('label.btn'); if (lbl) lbl.focus();
+    } else { onNext(); }
+  }, 1000);
+}
+
+/* ====================== PAYLOAD / VALIDACIONES =============== */
+function indexSchema(){
+  const meta={};
+  for (const b of SCHEMA){
+    if (b.items) b.items.forEach(it=> meta[it.code]={block:b.id, text:it.text});
+    if (b.groups) b.groups.forEach(g=> g.items.forEach(it=> meta[it.code]={block:b.id, text:it.text}));
+  }
+  return meta;
+}
+
+function buildPayload(){
+  const header=[]; const wide={}; const long=[];
+  ALL_CODES.forEach(code=>{ header.push(code); wide[code]=answers[code] ?? ''; });
+  ALL_CODES.forEach(code=>{
+    const m=META[code]||{block:'',text:''}; long.push(['','',m.block,code,m.text,answers[code] ?? '']);
+  });
+  return { header, wide, long };
+}
+
+function validatePercents(wide){
+  const a = Number(wide['B1_Q9_propMujPct'] || 0);
+  const b = Number(wide['B1_Q9_propHomPct'] || 0);
+  if (!Number.isFinite(a) || !Number.isFinite(b)) return 'Propiedad de mujeres/hombres debe ser numérica.';
+  if (a<0 || a>100 || b<0 || b>100) return 'Los porcentajes deben estar entre 0 y 100.';
+  if ((a+b)!==100) return 'Mujeres% + Hombres% debe ser exactamente 100.';
+  return '';
+}
+
+function toast(kind,msg){
+  const el=document.getElementById('toast');
+  el.className='alert mt-3 alert-'+kind; el.textContent=msg;
+  el.classList.remove('d-none'); setTimeout(()=> el.classList.add('d-none'), 6000);
+}
+
+/* ============================== ENVÍO ======================= */
+function onSave(){
+  // Validación del bloque visible
+  const form = document.getElementById('formRoot');
+  const invalid = form.querySelector(':invalid');
+  if (invalid){ invalid.scrollIntoView({behavior:'smooth', block:'center'}); toast('warning','Complete los campos requeridos del bloque actual.'); return; }
+
+  const {header, wide, long} = buildPayload();
+  const msg = validatePercents(wide); if (msg){ toast('warning', msg); return; }
+
+  const submissionId = 'SUB-' + Date.now();
+  if (typeof google !== 'undefined' && google.script && google.script.run){
+    google.script.run
+      .withSuccessHandler(res=>{
+        if (res && res.ok){
+          // Modal de éxito con opción de nueva respuesta
+          const codeEl = document.getElementById('successCode');
+          codeEl.textContent = 'Código de registro: ' + (res.submissionId || submissionId);
+          const m = new bootstrap.Modal(document.getElementById('successModal')); m.show();
+        } else {
+          toast('danger','Error al guardar: ' + (res?.error ?? 'desconocido'));
+        }
+      })
+      .withFailureHandler(err=>{ toast('danger','Error de red/servidor: ' + (err?.message ?? err)); })
+      .saveResponse({ submissionId, header, wide, long });
+  } else {
+    toast('danger','Contexto de Apps Script no disponible.');
+  }
+}
+
+function resetForNewResponse(){
+  const modalEl = document.getElementById('successModal');
+  const m = bootstrap.Modal.getInstance(modalEl); if (m) m.hide();
+
+  // Limpiar estado y volver al inicio
+  for (const k of ALL_CODES) delete answers[k];
+  currentStep = 0; renderStep(); updateStepHeader(); updateProgress();
+}
+
+/* ========================== UTIL =========================== */
+function html(s){ const t=document.createElement('template'); t.innerHTML=s.trim(); return t.content.firstChild; }
+</script>
+
+</body>
+</html>

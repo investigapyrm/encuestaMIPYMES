@@ -1,0 +1,371 @@
+# BITACORA_ENCUESTA_MIPYMES_FAEDPYME_2026
+
+## 2026-06-16 08:20
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES - FAEDPYME 2026
+* Cliente o institución: investigapyrm / MID
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: pendiente de GitHub Pages
+* Responsable: Codex
+* Versión: 0.1.0
+
+### Objetivo de la intervención
+
+* Preparar app web publicable para reproducir fielmente la encuesta del PDF `encuestaMIPYMES.pdf`.
+* Mantener formato institucional y estructura compatible con Google Apps Script + Google Sheets + GitHub Pages.
+
+### Diagnóstico inicial
+
+* El repositorio GitHub estaba vacío.
+* El primer intento tomó una hoja alternativa `encuestadigitalizacionMIPYMES` como referencia, pero el usuario corrigió que la fuente maestra es el PDF local.
+* `encuestaMIPYMES.gsheet` apunta al spreadsheet `1lfasg9YkGM_4jAuP6LDoZd-0aFxePBUksZB_1lJDKtQ`.
+* El PDF local tiene 2 páginas y 19 preguntas.
+* `clasp` está autenticado como `monitorimpactosocial@gmail.com`; no hay credenciales guardadas para `investigapyrm`.
+* El usuario informó posible `scriptId` asociado: `1LlCl53ftjUPkWHV13GBInR9S-WTSFu83qf8ukXFihzlGIwMgqSrqwCBW`.
+
+### Acciones realizadas
+
+* Se extrajo texto y vista visual del PDF con Python (`pypdf`, `pdfplumber`, `fitz`).
+* Se creó esquema `data/survey-schema.json` desde el PDF maestro.
+* Se creó frontend estático con login, formulario, registros, indicadores, administración y sincronización offline.
+* Se creó backend Apps Script modular en `gas/`.
+* Se agregó documentación técnica, manual de usuario y diccionario de datos.
+* Se configuró PWA con `manifest.json` y `service-worker.js`.
+
+### Archivos modificados
+
+* `index.html`
+* `styles.css`
+* `app.js`
+* `config.js`
+* `manifest.json`
+* `service-worker.js`
+* `data/survey-schema.json`
+* `gas/*.gs`
+* `gas/appsscript.json`
+* `docs/*.md`
+* `README.md`
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `file encuestaMIPYMES.pdf encuestaMIPYMES.gsheet`
+* `python3` para extracción PDF con `pypdf`, `pdfplumber` y `fitz`
+* `clasp show-authorized-user`
+* `clasp --user investigapyrm show-authorized-user`
+
+### Resultados verificados
+
+* PDF maestro leído correctamente.
+* Se confirmó que el instrumento fuente contiene 19 preguntas.
+* Se confirmó bloqueo de extracción GAS por autenticación de `clasp`.
+* Se creó commit local `e8cb486` con la app inicial.
+* Push a GitHub falló por permisos: GitHub respondió `Permission to investigapyrm/encuestaMIPYMES.git denied to diegomezapy`.
+* Reintento con `scriptId` `1LlCl53ftjUPkWHV13GBInR9S-WTSFu83qf8ukXFihzlGIwMgqSrqwCBW`: `clasp clone`, `clasp deployments` y `clasp versions` devolvieron `The caller does not have permission`.
+
+### Pruebas realizadas
+
+* Servidor local HTTP en puerto 4173 respondió `index.html`, `manifest.json`, `service-worker.js` y `data/survey-schema.json`.
+* Validación JSON correcta de `data/survey-schema.json`.
+* Validación de sintaxis con `node --check` para `app.js`, `config.js` y `service-worker.js`.
+* `clasp show-authorized-user` confirmó sesión activa como `monitorimpactosocial@gmail.com`.
+* Pendiente de prueba con Apps Script real.
+* Pendiente de verificación pública GitHub Pages.
+
+### Errores o incidentes
+
+* Se generó inicialmente un esquema desde una fuente no final; fue reemplazado por esquema derivado del PDF maestro.
+* Se detectó un `.clasp.json` accidental en la carpeta raíz apuntando a un proyecto temporal PARACEL, no al proyecto MIPYMES.
+
+### Soluciones aplicadas
+
+* Se corrigió la fuente de verdad al PDF local.
+* Se documentó el bloqueo de acceso a GAS.
+* Se dejó backend equivalente listo para vincular con `investigapyrm`.
+
+### Pendientes
+
+* Autenticar `clasp` como `investigapyrm@gmail.com`.
+* Compartir explícitamente el proyecto Apps Script `1LlCl53ftjUPkWHV13GBInR9S-WTSFu83qf8ukXFihzlGIwMgqSrqwCBW` con `monitorimpactosocial@gmail.com`, o extraerlo desde la cuenta propietaria.
+* Extraer o comparar el GAS asociado real al libro cuando el permiso de Apps Script API esté disponible.
+* Configurar `gasExecUrl` en `config.js`.
+* Subir commit local `e8cb486` a GitHub usando una cuenta o token con permiso sobre `investigapyrm/encuestaMIPYMES.git`.
+* Publicar GitHub Pages.
+* Probar login real y guardado en Google Sheets.
+
+### Riesgos
+
+* No se debe considerar operativo hasta validar la URL pública, el endpoint GAS y guardado real.
+* El modo demo local no es autenticación productiva.
+* La contraseña inicial del backend debe cambiarse antes de producción.
+
+### Recomendaciones
+
+* Usar deployment Apps Script `@HEAD` con acceso "Cualquier persona" para evitar 403 recurrentes.
+* No versionar `_fuentes/` porque puede contener datos de trabajo o respuestas.
+* Mantener `survey-schema.json` como diccionario técnico del instrumento.
+
+## 2026-06-16 10:29
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES - FAEDPYME 2026
+* Cliente o institución: investigapyrm / MID
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: pendiente de GitHub Pages
+* Responsable: Codex
+* Versión: 0.1.0
+
+### Objetivo de la intervención
+
+* Reintentar acceso al Apps Script real después de que `monitorimpactosocial@gmail.com` fue agregado como editor.
+* Ajustar el backend para apuntar a la hoja correcta y conservar compatibilidad con el formato del proyecto base.
+
+### Diagnóstico inicial
+
+* `clasp clone` ya permite acceder al `scriptId` `1LlCl53ftjUPkWHV13GBInR9S-WTSFu83qf8ukXFihzlGIwMgqSrqwCBW`.
+* El GAS original clonado contenía `Código.js`, `Index.html`, `Index_v6sep2025.html` y `appsscript.json`.
+* El GAS original apuntaba a `SPREADSHEET_ID = 14yHdE3nZUBTXgY2I6UKFMmJ4KIj9gDinGVmt6e764ew`, distinto de la hoja indicada por el usuario: `1lfasg9YkGM_4jAuP6LDoZd-0aFxePBUksZB_1lJDKtQ`.
+* El formulario original tenía otra encuesta de 9 bloques; no reproducía fielmente el PDF `encuestaMIPYMES.pdf`.
+
+### Acciones realizadas
+
+* Se preservó copia del GAS original en `gas_original/`.
+* Se agregó `.clasp.json` con el `scriptId` real y `rootDir: gas`.
+* Se añadió compatibilidad de guardado en `Respuestas_Ancho` y `Respuestas_Largo`.
+* Se mantuvo la hoja operativa `RESPUESTAS` para auditoría y lectura normalizada.
+* Se agregó acción `saveResponse` para compatibilidad con el contrato histórico `header`/`wide`/`long`.
+* Se subió el backend adaptado con `clasp push -f`.
+* Se crearon versiones y deployments GAS.
+
+### Archivos modificados
+
+* `.clasp.json`
+* `app.js`
+* `gas/Code.gs`
+* `gas/Config.gs`
+* `gas/Datos.gs`
+* `gas/Utils.gs`
+* `gas/appsscript.json`
+* `gas_original/*`
+* `README.md`
+* `docs/manual_tecnico.md`
+* `docs/diccionario_datos.md`
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `clasp deployments 1LlCl53ftjUPkWHV13GBInR9S-WTSFu83qf8ukXFihzlGIwMgqSrqwCBW`
+* `clasp push -f`
+* `clasp version "Encuesta MIPYMES FAEDPYME 2026 backend"`
+* `clasp deploy -V 2 -d "Encuesta MIPYMES FAEDPYME 2026 - web app publico"`
+* `curl -L -X POST ... /exec` para probar `initWorkbook`
+* `node --check app.js config.js service-worker.js`
+* `python3 -m json.tool data/survey-schema.json`
+* `python3 -m json.tool gas/appsscript.json`
+* `python3 -m json.tool .clasp.json`
+
+### Resultados verificados
+
+* `clasp push -f` subió 7 archivos al Apps Script real.
+* Se creó deployment `AKfycbzR2BL7Z0JfqAxbkLCO-AK9FucNl7ab-dLtoZgie2qk8VhsqBlFVvQc6_KHtJ0xiLKxFA @1`.
+* Se creó deployment `AKfycbxYh3Z-6FI0xl1eaOxluFUXqyPPkBtAxqDHTFkf6yANKch26DwQIGrbckZXuJ8qan_nzg @2`.
+* La prueba anónima contra `/exec` devolvió página de acceso denegado de Google.
+* `clasp run initWorkbook` no pudo ejecutarse porque el proyecto no está habilitado como API executable.
+* Commit local consolidado en `HEAD` de la rama `main`.
+* Reintento de `git push -u origin main` falló con 403: la cuenta local `diegomezapy` no tiene permiso sobre `investigapyrm/encuestaMIPYMES.git`.
+* Conector GitHub consultado para `investigapyrm/encuestaMIPYMES`: repositorio público, rama default `main`, permisos `pull: true`, `push: false`.
+
+### Pruebas realizadas
+
+* Validación de sintaxis JavaScript correcta.
+* Validación JSON correcta para esquema, manifest y `.clasp.json`.
+* Verificación de deployments mediante `clasp deployments`.
+* Prueba HTTP real al endpoint Apps Script, con resultado no operativo por acceso denegado.
+
+### Errores o incidentes
+
+* El deployment GAS creado por `clasp` no quedó accesible anónimamente, aunque el manifest declara `webapp.access = ANYONE_ANONYMOUS`.
+* El push a GitHub sigue bloqueado tanto por credenciales locales como por el conector GitHub disponible, que no tiene permiso de escritura.
+
+### Soluciones aplicadas
+
+* Se dejó `config.js` con `gasExecUrl` vacío para evitar que la app publicada intente usar un endpoint que todavía responde acceso denegado.
+* Se documentó el deployment creado y el ajuste pendiente de publicación web app.
+* Se conservó respaldo del GAS original antes de reemplazar el backend.
+
+### Pendientes
+
+* En Apps Script, revisar deployment y configurar acceso del web app como público o "cualquier persona".
+* Ejecutar `initWorkbook` una vez cuando el endpoint esté accesible o desde el editor Apps Script.
+* Cambiar contraseña inicial `admin / Cambiar.2026` antes de producción.
+* Configurar `MIPYMES_PASSWORD_SALT` en Script Properties.
+* Activar `gasExecUrl` en `config.js` cuando `/exec` responda JSON.
+* Publicar el repo en GitHub con una credencial o GitHub App que tenga permiso `push` sobre `investigapyrm/encuestaMIPYMES`.
+* Activar y verificar GitHub Pages.
+
+### Riesgos
+
+* Código GAS subido no equivale a endpoint operativo hasta resolver acceso del deployment.
+* Si se configura `gasExecUrl` antes de resolver el acceso, el login real fallará.
+* No registrar datos reales hasta validar escritura en `RESPUESTAS`, `Respuestas_Ancho` y `Respuestas_Largo`.
+
+### Recomendaciones
+
+* Ajustar el deployment desde la interfaz de Apps Script si `clasp` no logra aplicar acceso público.
+* Confirmar con una prueba de escritura controlada antes de iniciar trabajo de campo.
+* Mantener `gas_original/` como evidencia de migración y no modificarlo.
+
+## 2026-06-16 13:45
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES - FAEDPYME 2026
+* Cliente o institución: investigapyrm / MID
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: pendiente de GitHub Pages
+* Responsable: Codex
+* Versión: 0.1.0
+
+### Objetivo de la intervención
+
+* Reintentar publicación en GitHub después de aviso del usuario indicando que el permiso ya estaba listo.
+
+### Diagnóstico inicial
+
+* El repositorio remoto seguía sin ramas (`origin/main [gone]`).
+* El commit local listo seguía en `main`: `53ec9e0 Initial FAEDPYME MIPYMES web app`.
+* Git local usa `credential.helper = osxkeychain`.
+* La identidad de autor Git es `monitorimpactosocial@gmail.com`, pero la credencial HTTPS efectiva ante GitHub sigue resolviendo como `diegomezapy`.
+
+### Acciones realizadas
+
+* Se reintentó `git push -u origin main`.
+* Se consultaron permisos del conector GitHub para `investigapyrm/encuestaMIPYMES`.
+
+### Archivos modificados
+
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `git status --short --branch`
+* `git log --oneline --decorate --max-count=3`
+* `git push -u origin main`
+* Consulta del repositorio mediante conector GitHub.
+* `git config --get credential.helper`
+* `git config --get user.name`
+* `git config --get user.email`
+
+### Resultados verificados
+
+* `git push` volvió a fallar con 403: `Permission to investigapyrm/encuestaMIPYMES.git denied to diegomezapy`.
+* El conector GitHub sigue con permisos `pull: true`, `push: false`.
+
+### Pruebas realizadas
+
+* Prueba de publicación directa al remoto GitHub.
+* Verificación de permisos por conector GitHub.
+
+### Errores o incidentes
+
+* La autorización de escritura aún no está disponible para la credencial GitHub local ni para el conector.
+
+### Soluciones aplicadas
+
+* Se documentó el bloqueo exacto y la credencial efectiva que GitHub está rechazando.
+
+### Pendientes
+
+* Agregar permiso `Write` en GitHub al usuario `diegomezapy`, o reemplazar la credencial guardada en `osxkeychain` por una cuenta/token con permiso sobre `investigapyrm/encuestaMIPYMES`.
+* Alternativamente, autorizar el GitHub App/conector con permiso de escritura sobre el repositorio.
+* Reintentar `git push -u origin main`.
+
+### Riesgos
+
+* Mientras no exista permiso `push`, el repo público seguirá vacío aunque el código local esté listo.
+
+### Recomendaciones
+
+* Verificar en GitHub: Settings > Collaborators and teams, o en la organización/cuenta `investigapyrm`, que el usuario autenticado tenga rol `Write`.
+
+## 2026-06-16 15:30
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES - FAEDPYME 2026
+* Cliente o institución: investigapyrm / MID
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: pendiente de GitHub Pages
+* Responsable: Codex
+* Versión: 0.1.0
+
+### Objetivo de la intervención
+
+* Reintentar publicación luego de que el usuario informó que `diegomezapy` aceptó la invitación.
+
+### Diagnóstico inicial
+
+* Rama local `main` con commit listo.
+* Repositorio remoto aún sin rama publicada.
+* Credencial HTTPS local no disponible después de limpiar o cambiar credenciales en Keychain.
+
+### Acciones realizadas
+
+* Se reintentó `git push -u origin main`.
+* Se verificó permiso del conector GitHub.
+* Se intentó crear archivo por GitHub Contents API.
+* Se intentó crear blob por GitHub Git Database API.
+* Se revisó disponibilidad de SSH hacia GitHub.
+
+### Archivos modificados
+
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `git push -u origin main`
+* `ssh -T -o BatchMode=yes -o StrictHostKeyChecking=accept-new git@github.com`
+* Consulta de permisos del repo por conector GitHub.
+* Intento de escritura por GitHub Contents API.
+* Intento de escritura por GitHub Git Database API.
+
+### Resultados verificados
+
+* `git push` ya no devuelve denegación explícita a `diegomezapy`; ahora falla por falta de credencial interactiva: `could not read Username for 'https://github.com': Device not configured`.
+* El conector GitHub muestra `push: true`, pero la escritura por API devuelve `Resource not accessible by integration`.
+* No hay llave SSH configurada para GitHub; `ssh -T git@github.com` devuelve `Permission denied (publickey)`.
+
+### Pruebas realizadas
+
+* Prueba de push HTTPS.
+* Prueba de escritura GitHub API por contents y blobs.
+* Prueba de autenticación SSH.
+
+### Errores o incidentes
+
+* La invitación aceptada no basta mientras esta máquina no tenga credencial HTTPS válida cargada para GitHub.
+* El conector tiene permiso visible de push, pero no scope efectivo para escribir contenidos.
+
+### Soluciones aplicadas
+
+* Se determinó que el bloqueo actual es autenticación local, no estado del código.
+
+### Pendientes
+
+* Reautenticar GitHub localmente con una cuenta/token que tenga permiso sobre `investigapyrm/encuestaMIPYMES`.
+* Reintentar `git push -u origin main`.
+
+### Riesgos
+
+* El repositorio remoto seguirá vacío hasta que se complete la autenticación local o se habilite una vía de API con scope real de contents write.
+
+### Recomendaciones
+
+* Usar `gh auth login` con una cuenta autorizada, o configurar un PAT con scope `repo`/contents write para HTTPS.
