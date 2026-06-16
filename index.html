@@ -7,9 +7,9 @@
   <title>FAEDPYME 2026 - Mipymes</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=20260616-2">
-  <script src="config.js?v=20260616-2" defer></script>
-  <script src="app.js?v=20260616-2" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260616-3">
+  <script src="config.js?v=20260616-3" defer></script>
+  <script src="app.js?v=20260616-3" defer></script>
 </head>
 <body>
   <div id="login-view" class="login-shell">
@@ -150,6 +150,59 @@
           <dt>Versión app</dt><dd id="admin-version"></dd>
           <dt>Última sincronización</dt><dd id="admin-last-sync">Sin sincronización</dd>
         </dl>
+        <div class="admin-grid">
+          <section class="admin-panel">
+            <h3>Registrar usuario</h3>
+            <form id="user-create-form" class="admin-form">
+              <label>
+                Usuario
+                <input id="new-user" autocomplete="off" placeholder="nombre.apellido" pattern="^[A-Za-z0-9]+([._-][A-Za-z0-9]+)+$" required>
+              </label>
+              <label>
+                Nombre
+                <input id="new-user-name" autocomplete="name" required>
+              </label>
+              <label>
+                Rol
+                <select id="new-user-role">
+                  <option value="cargador">Cargador</option>
+                  <option value="supervisor">Supervisor</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </label>
+              <label>
+                Contraseña temporal
+                <input id="new-user-password" type="password" autocomplete="new-password" minlength="6" required>
+              </label>
+              <button class="secondary-btn" type="submit">Registrar usuario</button>
+            </form>
+          </section>
+          <section class="admin-panel">
+            <h3>Cambiar mi contraseña</h3>
+            <form id="password-change-form" class="admin-form">
+              <label>
+                Contraseña actual
+                <input id="current-password" type="password" autocomplete="current-password" required>
+              </label>
+              <label>
+                Nueva contraseña
+                <input id="new-password" type="password" autocomplete="new-password" minlength="6" required>
+              </label>
+              <label>
+                Repetir nueva contraseña
+                <input id="new-password-repeat" type="password" autocomplete="new-password" minlength="6" required>
+              </label>
+              <button class="secondary-btn" type="submit">Cambiar contraseña</button>
+            </form>
+          </section>
+        </div>
+        <p id="admin-user-status" class="status-text" role="status"></p>
+        <div class="table-wrap admin-users-wrap">
+          <table>
+            <thead><tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Estado</th></tr></thead>
+            <tbody id="users-body"></tbody>
+          </table>
+        </div>
       </section>
     </main>
   </div>

@@ -17,6 +17,8 @@ Funciones públicas:
 - `doGet`: healthcheck.
 - `doPost`: enrutador JSON.
 - `login`: validación de usuarios.
+- `createUser`: creación o actualización controlada de usuarios por rol `admin`.
+- `changePassword`: cambio de contraseña del usuario conectado.
 - `getBootstrap`: contexto operativo.
 - `saveSurvey`: validación y guardado.
 - `saveResponse`: compatibilidad con el contrato histórico `header`/`wide`/`long`.
@@ -56,3 +58,7 @@ Deployments creados:
 - `AKfycbxYh3Z-6FI0xl1eaOxluFUXqyPPkBtAxqDHTFkf6yANKch26DwQIGrbckZXuJ8qan_nzg` versión 2.
 
 La prueba anónima de `/exec` devolvió acceso denegado. Falta habilitar el web app con acceso público desde Apps Script o desde una cuenta con control completo de despliegue. Hasta entonces `config.js` conserva `gasExecUrl` vacío para no romper la app publicada.
+
+## Manejo de login colgado
+
+`app.js` aplica timeout de 12 segundos a llamadas `fetch` contra Apps Script. Si GAS devuelve HTML de Google, acceso denegado o no responde, el usuario recibe un mensaje claro y el botón de ingreso se rehabilita.

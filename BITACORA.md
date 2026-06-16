@@ -551,3 +551,112 @@
 ### Recomendaciones
 
 * Mantener `admin / 123456` y `diego.meza / 123456` como estándar inicial solo para arranque; si se usa en producción abierta, definir política de cambio posterior controlado.
+
+## 2026-06-16 15:55
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES - FAEDPYME 2026
+* Cliente o institución: investigapyrm / MID
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: pendiente de GitHub Pages
+* Responsable: Codex
+* Versión: 0.1.2
+
+### Objetivo de la intervención
+
+* Corregir login que quedaba detenido en `Validando acceso...`.
+* Agregar controles de administración de usuarios conforme al manual maestro.
+
+### Diagnóstico inicial
+
+* `handleLogin` no tenía timeout para llamadas a Apps Script.
+* La app no tenía botones para registrar usuario ni cambiar contraseña.
+* El manual maestro exige login, roles, administración de usuarios, recuperación/cambio de contraseña, auditoría y mensajes claros si GAS devuelve HTML o errores de permisos.
+
+### Acciones realizadas
+
+* Se agregó timeout de 12 segundos a llamadas `fetch` contra GAS.
+* Se agregó rehabilitación del botón de ingreso en todos los casos (`finally`).
+* Se agregó fallback local cuando GAS falla y las credenciales locales son válidas.
+* Se reemplazaron credenciales visibles por hashes SHA-256 en `config.js`.
+* Se agregó panel `Registrar usuario` en Administración.
+* Se agregó panel `Cambiar mi contraseña`.
+* Se agregó tabla local de usuarios.
+* Se agregaron endpoints GAS `createUser` y `changePassword`.
+* Se ajustó `initWorkbook` para no resetear contraseñas modificadas por usuarios.
+* Se actualizó caché PWA a `encuesta-mipymes-v20260616-3`.
+
+### Archivos modificados
+
+* `app.js`
+* `config.js`
+* `index.html`
+* `styles.css`
+* `service-worker.js`
+* `gas/Code.gs`
+* `gas/Usuarios.gs`
+* `gas/Utils.gs`
+* `README.md`
+* `docs/manual_usuario.md`
+* `docs/manual_tecnico.md`
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* `python3 -m json.tool manifest.json`
+* `python3 -m json.tool gas/appsscript.json`
+* `python3 -m http.server 4173`
+* `curl` para verificar HTML, JS y config locales.
+* Script Node para verificar hashes de `admin / 123456` y `diego.meza / 123456`.
+* `clasp push -f`
+* `clasp version "Gestion de usuarios y login robusto"`
+* `clasp deploy -V 5 -d "Encuesta MIPYMES gestion usuarios"`
+
+### Resultados verificados
+
+* `index.html` contiene `user-create-form` y `password-change-form`.
+* `app.js` contiene timeout, `createUser`, `changePassword` y `findLocalUser`.
+* `config.js` contiene hashes SHA-256 para usuarios por defecto, no contraseñas visibles.
+* Credenciales locales verificadas por hash: `admin / 123456` y `diego.meza / 123456`.
+* GAS subido correctamente.
+* Deployment GAS creado: `AKfycbzEwPE0IGN4zxmzAp4zne0FwqqNTvMoEt7DJgjxLkYUm-rhGdR6wg8OLAMi9CbXI2YDCw @5`.
+
+### Pruebas realizadas
+
+* Validación de sintaxis JavaScript.
+* Validación JSON.
+* Verificación HTTP local.
+* Verificación lógica de credenciales locales por Node.
+* Push y deployment GAS.
+
+### Errores o incidentes
+
+* Playwright no está instalado en este entorno, por lo que no se ejecutó prueba visual automatizada de navegador real.
+
+### Soluciones aplicadas
+
+* El login ya no debe quedar colgado indefinidamente.
+* La Administración ahora incluye alta de usuarios y cambio de contraseña.
+* El backend valida permisos de admin para crear usuarios.
+
+### Pendientes
+
+* Publicar cambios en GitHub.
+* Activar/verificar GitHub Pages.
+* Resolver acceso público definitivo del endpoint GAS `/exec`.
+* Probar login real contra GAS cuando `/exec` responda JSON público.
+
+### Riesgos
+
+* En modo local, los usuarios se almacenan en el navegador; si se borra almacenamiento local, se reinicializan usuarios por defecto.
+* El backend GAS sigue pendiente de prueba pública porque el acceso `/exec` estaba bloqueado por permisos de despliegue.
+
+### Recomendaciones
+
+* Usar el modo local solo como continuidad operativa de captura y sincronizar cuando GAS quede público.
+* Mantener roles y altas definitivas en la hoja `USUARIOS` cuando el backend esté operativo.

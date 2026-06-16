@@ -537,6 +537,34 @@ th {
   color: var(--green-dark);
 }
 
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.admin-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: var(--white);
+}
+
+.admin-panel h3 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+.admin-form {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-users-wrap {
+  margin-top: 16px;
+}
+
 @media (max-width: 820px) {
   .topbar,
   .intro-band,
@@ -555,7 +583,8 @@ th {
   }
 
   .kpi-grid,
-  .dashboard-grid {
+  .dashboard-grid,
+  .admin-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -572,7 +601,8 @@ th {
 @media (max-width: 520px) {
   .kpi-grid,
   .dashboard-grid,
-  .likert-grid {
+  .likert-grid,
+  .admin-grid {
     grid-template-columns: 1fr;
   }
 

@@ -88,6 +88,17 @@ El respaldo del Apps Script original clonado está en `gas_original/` para audit
 
 Estas credenciales también funcionan en modo local cuando el backend GAS todavía no está configurado. No registrar credenciales nuevas, tokens ni contraseñas personales en la bitácora.
 
+## Administración de usuarios
+
+La vista `Administración` permite:
+
+- Registrar nuevos usuarios con formato `nombre.apellido`.
+- Asignar rol `cargador`, `supervisor` o `admin`.
+- Cambiar la contraseña del usuario conectado.
+- Operar en modo local si el backend GAS aún no está público.
+
+El frontend corta cualquier intento de login contra GAS después de 12 segundos y muestra un mensaje claro. Si el backend no está configurado, el acceso se valida contra usuarios locales.
+
 ## Validación mínima
 
 - Abrir localmente por servidor HTTP, no con `file://`.

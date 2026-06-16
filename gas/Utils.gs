@@ -20,29 +20,14 @@ function ensureDefaultUsers() {
 }
 
 function upsertDefaultUser(sh, username, name) {
-  var passwordHash = hashPassword('123456');
-  var values = sh.getDataRange().getValues();
-  var headers = values[0];
-  var userCol = headers.indexOf('usuario');
-  var now = nowIso();
-  var row = [
+  upsertUserRow(sh, {
     username,
-    passwordHash,
-    name,
-    '',
-    'admin',
-    'SI',
-    now,
-    '',
-    'Usuario administrador inicial por defecto.'
-  ];
-  for (var i = 1; i < values.length; i++) {
-    if (String(values[i][userCol] || '').toLowerCase() === username.toLowerCase()) {
-      sh.getRange(i + 1, 1, 1, row.length).setValues([row]);
-      return;
-    }
-  }
-  sh.appendRow(row);
+    passwordHash: hashPassword('123456'),
+    name: name,
+    role: 'admin',
+    active: 'SI',
+    observacion: 'Usuario administrador inicial por defecto.'
+  }, true);
 }
 
 function getSpreadsheet() {

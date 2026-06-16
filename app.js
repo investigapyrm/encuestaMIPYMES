@@ -4,11 +4,13 @@
   const cfg = window.APP_CONFIG || {};
   const storageKey = 'encuesta_mipymes_records_v1';
   const sessionKey = 'encuesta_mipymes_session_v1';
+  const localUsersKey = 'encuesta_mipymes_users_v1';
 
   const state = {
     schema: null,
     session: null,
     records: [],
+    users: [],
     currentView: 'inicio'
   };
 
@@ -20,6 +22,7 @@
   async function init() {
     bindGlobalEvents();
     await loadSchema();
+    loadLocalUsers();
     loadSession();
     loadRecords();
     updateConnection();
@@ -43,6 +46,8 @@
     $('#export-csv-btn').addEventListener('click', exportCsv);
     $('#search-records').addEventListener('input', renderRecords);
     $('#status-filter').addEventListener('change', renderRecords);
+    $('#user-create-form').addEventListener('submit', createUser);
+    $('#password-change-form').addEventListener('submit', changePassword);
   }
 
   async function loadSchema() {
@@ -85,13 +90,21 @@
     const status = $('#login-status');
     status.textContent = 'Validando acceso...';
     status.classList.remove('error');
+    const submit = $('#login-form button[type="submit"]');
+    submit.disabled = true;
 
     try {
       let result;
       if (cfg.gasExecUrl) {
-        result = await apiCall('login', { user, password });
+        try {
+          result = await apiCall('login', { user, password });
+        } catch (err) {
+          const localUser = await findLocalUser(user, password);
+          if (!localUser) throw err;
+          result = { success: true, token: `local-${Date.now()}`, user: localUser, localFallback: true };
+        }
       } else if (cfg.allowLocalDemoLogin) {
-        const localUser = findLocalUser(user, password);
+        const localUser = await findLocalUser(user, password);
         if (!localUser) throw new Error('Backend no configurado o credenciales locales incorrectas.');
         result = { success: true, token: `local-${Date.now()}`, user: localUser };
       } else {
@@ -105,21 +118,76 @@
       };
       saveSession();
       showApp();
+      if (result.localFallback) {
+        $('#sync-status').textContent = 'Backend no disponible. Se inició sesión local y los registros quedarán pendientes de sincronización.';
+      }
     } catch (err) {
       status.textContent = err.message;
       status.classList.add('error');
+    } finally {
+      submit.disabled = false;
     }
   }
 
-  function findLocalUser(user, password) {
-    const users = Array.isArray(cfg.localDemoUsers) ? cfg.localDemoUsers : [];
-    const found = users.find((item) => item.username.toLowerCase() === user.toLowerCase() && item.password === password);
+  function loadLocalUsers() {
+    try {
+      state.users = JSON.parse(localStorage.getItem(localUsersKey) || '[]');
+    } catch (err) {
+      state.users = [];
+    }
+    const defaults = Array.isArray(cfg.localDefaultUsers) ? cfg.localDefaultUsers : [];
+    defaults.forEach((user) => {
+      const exists = state.users.some((item) => item.username.toLowerCase() === user.username.toLowerCase());
+      if (!exists) {
+        state.users.push({
+          username: user.username,
+          passwordHash: user.passwordHash,
+          name: user.name || user.username,
+          role: user.role || 'cargador',
+          active: user.active !== false,
+          createdAt: new Date().toISOString(),
+          source: 'default'
+        });
+      }
+    });
+    persistLocalUsers();
+  }
+
+  function persistLocalUsers() {
+    localStorage.setItem(localUsersKey, JSON.stringify(state.users));
+  }
+
+  async function findLocalUser(user, password) {
+    const passwordHash = await hashText(password);
+    const found = state.users.find((item) => item.username.toLowerCase() === user.toLowerCase() && item.passwordHash === passwordHash && item.active !== false);
     if (!found) return null;
     return {
       username: found.username,
       name: found.name || found.username,
       role: found.role || 'cargador'
     };
+  }
+
+  function isLocalSession() {
+    return !!(state.session && String(state.session.token || '').startsWith('local-'));
+  }
+
+  async function hashText(value) {
+    if (window.crypto && crypto.subtle) {
+      const data = new TextEncoder().encode(value);
+      const digest = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, '0')).join('');
+    }
+    return fallbackHash(value);
+  }
+
+  function fallbackHash(value) {
+    let hash = 0;
+    for (let i = 0; i < value.length; i += 1) {
+      hash = ((hash << 5) - hash) + value.charCodeAt(i);
+      hash |= 0;
+    }
+    return `fallback-${Math.abs(hash)}`;
   }
 
   function showApp() {
@@ -144,6 +212,7 @@
     if (view === 'dashboard') renderDashboard();
     if (view === 'registros') renderRecords();
     if (view === 'sync') renderQueue();
+    if (view === 'admin') renderAdmin();
   }
 
   function renderSurveyForm() {
@@ -366,20 +435,122 @@
 
   async function apiCall(action, payload) {
     const body = JSON.stringify({ action, payload });
-    const res = await fetch(cfg.gasExecUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), Number(cfg.requestTimeoutMs || 12000));
+    let res;
+    try {
+      res = await fetch(cfg.gasExecUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body,
+        signal: controller.signal
+      });
+    } catch (err) {
+      if (err.name === 'AbortError') throw new Error('El backend tardó demasiado en responder. Se puede trabajar en modo local y sincronizar luego.');
+      throw new Error('No se pudo conectar con el backend. Revise la conexión o el despliegue Apps Script.');
+    } finally {
+      clearTimeout(timeout);
+    }
     const text = await res.text();
     try {
-      return JSON.parse(text);
+      const parsed = JSON.parse(text);
+      if (!parsed.success && !parsed.ok && parsed.message) return parsed;
+      return parsed;
     } catch (err) {
-      if (/Sign in|accounts.google|Forbidden|403/i.test(text)) {
-        throw new Error('El backend de Google Apps Script no está público o requiere autorización.');
+      if (/Sign in|accounts.google|Forbidden|403|Necesitas acceso|Acceso denegado/i.test(text)) {
+        throw new Error('El acceso al backend está bloqueado por permisos de Google. Revise el despliegue Apps Script.');
       }
       throw new Error('El backend no devolvió JSON válido.');
     }
+  }
+
+  async function createUser(event) {
+    event.preventDefault();
+    const status = $('#admin-user-status');
+    status.textContent = '';
+    status.classList.remove('error');
+    try {
+      requireAdmin();
+      const username = $('#new-user').value.trim();
+      const name = $('#new-user-name').value.trim();
+      const role = $('#new-user-role').value;
+      const password = $('#new-user-password').value;
+      validateUsername(username);
+      if (!name) throw new Error('El nombre es obligatorio.');
+      if (password.length < 6) throw new Error('La contraseña debe tener al menos 6 caracteres.');
+
+      if (cfg.gasExecUrl && !isLocalSession()) {
+        const result = await apiCall('createUser', { token: state.session.token, username, name, role, password });
+        if (!result.success) throw new Error(result.message || 'No se pudo registrar el usuario.');
+      } else {
+        upsertLocalUser({ username, name, role, passwordHash: await hashText(password), active: true, source: 'local' });
+      }
+
+      $('#user-create-form').reset();
+      status.textContent = `Usuario ${username} registrado.`;
+      renderAdmin();
+    } catch (err) {
+      status.textContent = err.message;
+      status.classList.add('error');
+    }
+  }
+
+  async function changePassword(event) {
+    event.preventDefault();
+    const status = $('#admin-user-status');
+    status.textContent = '';
+    status.classList.remove('error');
+    try {
+      const currentPassword = $('#current-password').value;
+      const newPassword = $('#new-password').value;
+      const repeat = $('#new-password-repeat').value;
+      if (newPassword.length < 6) throw new Error('La nueva contraseña debe tener al menos 6 caracteres.');
+      if (newPassword !== repeat) throw new Error('La nueva contraseña no coincide.');
+
+      if (cfg.gasExecUrl && !isLocalSession()) {
+        const result = await apiCall('changePassword', { token: state.session.token, currentPassword, newPassword });
+        if (!result.success) throw new Error(result.message || 'No se pudo cambiar la contraseña.');
+      } else {
+        const username = state.session.user.username;
+        const currentUser = await findLocalUser(username, currentPassword);
+        if (!currentUser) throw new Error('La contraseña actual no es correcta.');
+        upsertLocalUser({ ...state.users.find((item) => item.username.toLowerCase() === username.toLowerCase()), passwordHash: await hashText(newPassword), updatedAt: new Date().toISOString() });
+      }
+
+      $('#password-change-form').reset();
+      status.textContent = 'Contraseña actualizada.';
+      renderAdmin();
+    } catch (err) {
+      status.textContent = err.message;
+      status.classList.add('error');
+    }
+  }
+
+  function requireAdmin() {
+    if (!state.session || state.session.user.role !== 'admin') throw new Error('Solo un usuario admin puede registrar usuarios.');
+  }
+
+  function validateUsername(username) {
+    if (!/^[A-Za-z0-9]+([._-][A-Za-z0-9]+)+$/.test(username)) {
+      throw new Error('El usuario debe tener formato nombre.apellido.');
+    }
+  }
+
+  function upsertLocalUser(user) {
+    const idx = state.users.findIndex((item) => item.username.toLowerCase() === user.username.toLowerCase());
+    const record = {
+      username: user.username,
+      passwordHash: user.passwordHash,
+      name: user.name || user.username,
+      role: user.role || 'cargador',
+      active: user.active !== false,
+      createdAt: user.createdAt || new Date().toISOString(),
+      updatedAt: user.updatedAt || new Date().toISOString(),
+      source: user.source || 'local'
+    };
+    if (idx >= 0) state.users[idx] = { ...state.users[idx], ...record };
+    else state.users.push(record);
+    persistLocalUsers();
   }
 
   function refreshAll() {
@@ -483,6 +654,22 @@
     if ($('#admin-sheet')) $('#admin-sheet').textContent = cfg.spreadsheetId || 'No informado';
     if ($('#admin-version')) $('#admin-version').textContent = `${cfg.appVersion || 'sin versión'} · ${cfg.buildDate || ''}`;
     if ($('#admin-last-sync')) $('#admin-last-sync').textContent = lastSync ? formatDate(lastSync) : 'Sin sincronización';
+    renderUsers();
+  }
+
+  function renderUsers() {
+    const tbody = $('#users-body');
+    if (!tbody) return;
+    const canAdmin = state.session?.user?.role === 'admin';
+    $('#user-create-form').hidden = !canAdmin;
+    tbody.innerHTML = state.users.map((user) => `
+      <tr>
+        <td>${escapeHtml(user.username)}</td>
+        <td>${escapeHtml(user.name || '')}</td>
+        <td>${escapeHtml(user.role || '')}</td>
+        <td>${user.active === false ? 'Inactivo' : 'Activo'}</td>
+      </tr>
+    `).join('');
   }
 
   function updateConnection() {

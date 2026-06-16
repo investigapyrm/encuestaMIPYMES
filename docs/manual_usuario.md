@@ -27,3 +27,9 @@ La pestaña `Registros` muestra lo guardado en el dispositivo. Los estados princ
 ## Sincronización
 
 Usar `Enviar pendientes` cuando haya conexión. La app no elimina registros locales hasta recibir confirmación del backend.
+
+## Administración de usuarios
+
+Desde `Administración`, un usuario `admin` puede registrar nuevos usuarios. El nombre de usuario debe tener formato `nombre.apellido` y la contraseña debe tener al menos 6 caracteres.
+
+La misma pantalla permite cambiar la contraseña del usuario conectado. Si el backend GAS todavía no está configurado, estos cambios quedan en el almacenamiento local del navegador.

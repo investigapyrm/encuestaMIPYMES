@@ -14,6 +14,8 @@ function doPost(e) {
     var payload = request.payload || {};
     var handlers = {
       login: login,
+      createUser: createUser,
+      changePassword: changePassword,
       getBootstrap: getBootstrap,
       saveSurvey: saveSurvey,
       saveResponse: saveResponse,
