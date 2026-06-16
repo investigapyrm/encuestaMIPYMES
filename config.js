@@ -1,8 +1,8 @@
 window.APP_CONFIG = {
   appName: 'FAEDPYME 2026 - Mipymes',
-  appVersion: '0.1.2',
+  appVersion: '0.1.3',
   buildDate: '2026-06-16',
-  dataSchemaUrl: 'data/survey-schema.json?v=20260616-3',
+  dataSchemaUrl: 'data/survey-schema.json?v=20260616-4',
   gasExecUrl: '',
   spreadsheetId: '1lfasg9YkGM_4jAuP6LDoZd-0aFxePBUksZB_1lJDKtQ',
   allowLocalDemoLogin: true,

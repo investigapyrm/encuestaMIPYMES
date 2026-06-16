@@ -660,3 +660,94 @@
 
 * Usar el modo local solo como continuidad operativa de captura y sincronizar cuando GAS quede público.
 * Mantener roles y altas definitivas en la hoja `USUARIOS` cuando el backend esté operativo.
+
+## 2026-06-16 16:11
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES - FAEDPYME 2026
+* Cliente o institución: investigapyrm / MID
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: pendiente de GitHub Pages
+* Responsable: Codex
+* Versión: 0.1.3
+
+### Objetivo de la intervención
+
+* Corregir bloqueo de acceso reportado por el usuario.
+* Asegurar cumplimiento de buenas prácticas del Manual Maestro para login, usuarios, roles y mensajes claros.
+
+### Diagnóstico inicial
+
+* El manual maestro exige validar usuario activo, contraseña, sesión local, roles, mensajes claros y manejo de respuestas no JSON.
+* Si el navegador tenía usuarios locales viejos o corruptos, `admin / 123456` podía no recuperarse.
+* Si el navegador no exponía `crypto.subtle`, el hash local podía no coincidir.
+* Los botones de registro/restablecimiento debían estar visibles también antes del login.
+
+### Acciones realizadas
+
+* Se agregó migración/saneamiento de usuarios locales por defecto.
+* Se agregó recuperación controlada para `admin / 123456` y `diego.meza / 123456` aun con almacenamiento local previo dañado.
+* Se agregó formulario visible de registro local en la pantalla de login.
+* Se agregó formulario visible para solicitud de restablecimiento de contraseña.
+* Se actualizó cache busting a `20260616-4`.
+* Se incrementó versión a `0.1.3`.
+
+### Archivos modificados
+
+* `app.js`
+* `config.js`
+* `index.html`
+* `styles.css`
+* `service-worker.js`
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* Consulta de secciones relevantes del Manual Maestro.
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* `python3 -m json.tool manifest.json`
+* `python3 -m http.server 4173`
+* `curl` para verificar HTML y JS locales.
+* Script Node para verificar configuración de recuperación de login.
+
+### Resultados verificados
+
+* `index.html` contiene `public-register-form` y `password-help-form`.
+* `app.js` contiene recuperación de usuarios por defecto, registro público local y solicitud de restablecimiento.
+* `config.js` conserva hashes SHA-256 de usuarios por defecto.
+* Verificación HTTP local correcta.
+* Validaciones de sintaxis correctas.
+
+### Pruebas realizadas
+
+* Validación estática JavaScript.
+* Validación JSON.
+* Verificación HTTP local.
+* Verificación lógica de recuperación de login por Node.
+
+### Errores o incidentes
+
+* No se ejecutó Playwright porque no está instalado en el entorno.
+
+### Soluciones aplicadas
+
+* La app debe permitir acceso local con credenciales institucionales por defecto aunque exista cache/almacenamiento viejo.
+* Se agregaron acciones visibles de usuario en pantalla de login y Administración.
+
+### Pendientes
+
+* Publicar cambios en GitHub.
+* Verificar URL pública de GitHub Pages.
+* Resolver endpoint GAS público y ejecutar prueba real de login contra GAS.
+
+### Riesgos
+
+* Si el navegador conserva un service worker antiguo, puede requerir recarga fuerte o limpieza de datos del sitio.
+
+### Recomendaciones
+
+* Para usuarios que ya abrieron una versión anterior, indicar recarga fuerte o limpieza de datos del sitio.

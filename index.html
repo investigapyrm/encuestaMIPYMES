@@ -7,9 +7,9 @@
   <title>FAEDPYME 2026 - Mipymes</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=20260616-3">
-  <script src="config.js?v=20260616-3" defer></script>
-  <script src="app.js?v=20260616-3" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260616-4">
+  <script src="config.js?v=20260616-4" defer></script>
+  <script src="app.js?v=20260616-4" defer></script>
 </head>
 <body>
   <div id="login-view" class="login-shell">
@@ -28,6 +28,32 @@
           <input id="login-password" type="password" autocomplete="current-password" required>
         </label>
         <button class="primary-btn" type="submit">Ingresar</button>
+      </form>
+      <div class="login-actions">
+        <button id="show-register-btn" class="ghost-btn" type="button">Registrar usuario</button>
+        <button id="show-password-help-btn" class="ghost-btn" type="button">Contraseña</button>
+      </div>
+      <form id="public-register-form" class="login-form auxiliary-form" hidden>
+        <label>
+          Usuario
+          <input id="public-new-user" autocomplete="off" placeholder="nombre.apellido" pattern="^[A-Za-z0-9]+([._-][A-Za-z0-9]+)+$">
+        </label>
+        <label>
+          Nombre
+          <input id="public-new-user-name" autocomplete="name">
+        </label>
+        <label>
+          Contraseña
+          <input id="public-new-user-password" type="password" autocomplete="new-password" minlength="6">
+        </label>
+        <button class="secondary-btn" type="submit">Crear usuario local</button>
+      </form>
+      <form id="password-help-form" class="login-form auxiliary-form" hidden>
+        <label>
+          Usuario
+          <input id="password-help-user" autocomplete="username" placeholder="nombre.apellido">
+        </label>
+        <button class="secondary-btn" type="submit">Solicitar restablecimiento</button>
       </form>
       <p id="login-status" class="status-text" role="status"></p>
     </main>

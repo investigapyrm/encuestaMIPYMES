@@ -105,6 +105,19 @@ h3 {
   gap: 14px;
 }
 
+.login-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.auxiliary-form {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
 label {
   display: grid;
   gap: 7px;
@@ -612,5 +625,9 @@ th {
 
   .login-panel {
     padding: 20px;
+  }
+
+  .login-actions {
+    grid-template-columns: 1fr;
   }
 }
