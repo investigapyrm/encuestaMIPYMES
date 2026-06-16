@@ -1207,6 +1207,9 @@
 * `python3 -m http.server 4173`
 * `curl` para verificar `index.html`, `app.js`, `styles.css` y `service-worker.js`.
 * `rg` para verificar versión `20260616-9`, ayudas `(i)`, `Crear acceso` y texto de correo.
+* `git commit -m "Clarify emailed survey access flow"`
+* `git push origin main`
+* `curl` sobre `https://investigapyrm.github.io/encuestaMIPYMES/` para verificar publicación pública.
 
 ### Resultados verificados
 
@@ -1220,6 +1223,8 @@
 * GAS fue subido con `clasp push -f`.
 * Deployment GAS creado: `AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q @8`.
 * Verificación HTTP local correcta.
+* Commit `de5b0f8` publicado en `origin/main`.
+* GitHub Pages sirve `index.html`, `app.js` y `service-worker.js` con versión/cache `20260616-9`.
 
 ### Pruebas realizadas
 
@@ -1228,6 +1233,7 @@
 * Validación JSON.
 * Verificación HTTP local.
 * Prueba pública del deployment GAS.
+* Verificación HTTP pública en GitHub Pages.
 
 ### Errores o incidentes
 
@@ -1241,8 +1247,6 @@
 
 ### Pendientes
 
-* Publicar en GitHub.
-* Verificar URL pública.
 * Antes de envío masivo, probar guardado y sincronización real contra Google Sheets.
 
 ### Riesgos
