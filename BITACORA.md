@@ -751,3 +751,79 @@
 ### Recomendaciones
 
 * Para usuarios que ya abrieron una versión anterior, indicar recarga fuerte o limpieza de datos del sitio.
+
+## 2026-06-16 16:15
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES - FAEDPYME 2026
+* Cliente o institución: investigapyrm / MID
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: pendiente de GitHub Pages
+* Responsable: Codex
+* Versión: 0.1.3
+
+### Objetivo de la intervención
+
+* Corregir comportamiento donde el panel de login quedaba visible después del acceso.
+
+### Diagnóstico inicial
+
+* `showApp()` marcaba `#login-view.hidden = true`.
+* `.login-shell` definía `display: grid`.
+* La regla de clase podía pisar el comportamiento esperado del atributo HTML `hidden`, manteniendo visible el login.
+
+### Acciones realizadas
+
+* Se agregó regla CSS global `[hidden] { display: none !important; }`.
+* Se actualizó cache busting de `styles.css` a `20260616-5`.
+* Se actualizó cache PWA a `encuesta-mipymes-v20260616-5`.
+
+### Archivos modificados
+
+* `index.html`
+* `styles.css`
+* `service-worker.js`
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* `python3 -m http.server 4173`
+* `curl` para verificar `index.html` y `styles.css`.
+
+### Resultados verificados
+
+* `index.html` carga `styles.css?v=20260616-5`.
+* `styles.css` contiene `[hidden] { display: none !important; }`.
+* `service-worker.js` usa cache `encuesta-mipymes-v20260616-5`.
+* Verificación HTTP local correcta.
+
+### Pruebas realizadas
+
+* Validación sintáctica JavaScript.
+* Verificación HTTP local de HTML y CSS.
+
+### Errores o incidentes
+
+* Un primer `curl` sin comillas falló por interpretación del carácter `?` en zsh; se repitió con URL entre comillas correctamente.
+
+### Soluciones aplicadas
+
+* Se corrigió la colisión entre atributo `hidden` y reglas CSS de display.
+
+### Pendientes
+
+* Publicar cambios en GitHub.
+* Verificar remoto.
+
+### Riesgos
+
+* Navegadores con service worker anterior pueden requerir recarga fuerte para cargar `styles.css?v=20260616-5`.
+
+### Recomendaciones
+
+* Mantener siempre una regla global `[hidden] { display: none !important; }` en apps que alternan vistas con el atributo `hidden`.
