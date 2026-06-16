@@ -938,3 +938,97 @@
 ### Recomendaciones
 
 * Mantener esta regla como estándar para todas las apps PWA/offline: instalar, actualizar, sincronizar y acceso admin a base online siempre visibles.
+
+## 2026-06-16 16:36
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES - FAEDPYME 2026
+* Cliente o institución: investigapyrm / MID
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: pendiente de GitHub Pages
+* Responsable: Codex
+* Versión: 0.1.5
+
+### Objetivo de la intervención
+
+* Rediseñar la experiencia móvil del formulario por desorden visual y carga tediosa de opciones.
+
+### Diagnóstico inicial
+
+* La media query móvil convertía `likert-grid` en una sola columna.
+* Las opciones se veían como tarjetas grandes apiladas, aumentando desplazamiento y fatiga.
+* Las escalas repetidas de 1 a 5 eran especialmente lentas de completar.
+
+### Acciones realizadas
+
+* Se mantuvo Likert 1-5 como escala horizontal en móvil.
+* Se agregó leyenda mínima/máxima para Likert.
+* Se compactaron opciones Sí/No y radios cortos.
+* Se dejaron opciones largas en una columna legible.
+* Se ocultó radio nativo y se agregó selección visual de alto contraste.
+* Se agregó clase `.selected` por JavaScript además de CSS `:has()`.
+* Se agregó autoavance suave al siguiente campo visible tras seleccionar radio/Likert.
+* Se dejó barra inferior fija de acciones de guardado en móvil.
+* Se actualizó cache PWA a `encuesta-mipymes-v20260616-7`.
+* Se agregó nota operativa al Manual Maestro sobre formularios móviles con opciones compactas.
+
+### Archivos modificados
+
+* `app.js`
+* `styles.css`
+* `config.js`
+* `index.html`
+* `service-worker.js`
+* `README.md`
+* `docs/manual_usuario.md`
+* `docs/manual_tecnico.md`
+* `BITACORA.md`
+* Manual Maestro: `Manual maestro para creación de appweb.txt`
+
+### Comandos o scripts ejecutados
+
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* `python3 -m json.tool manifest.json`
+* `python3 -m http.server 4173`
+* `curl` para verificar `index.html`, `styles.css` y `app.js`.
+* `rg` para verificar referencias de versión y clases.
+
+### Resultados verificados
+
+* `index.html` carga `styles.css`, `config.js` y `app.js` con versión `20260616-7`.
+* `service-worker.js` usa cache `encuesta-mipymes-v20260616-7`.
+* `app.js` contiene `scheduleNextField`, `updateOptionStates`, `likert-wrap` y radios compactos.
+* `styles.css` contiene `scale-legend`, `.selected`, `likert-grid` móvil horizontal y barra fija de acciones.
+* Verificación HTTP local correcta.
+
+### Pruebas realizadas
+
+* Validación sintáctica JavaScript.
+* Validación JSON.
+* Verificación HTTP local.
+
+### Errores o incidentes
+
+* No se ejecutó prueba Playwright porque no está instalado en el entorno.
+
+### Soluciones aplicadas
+
+* Se redujo el desplazamiento vertical y se hizo más rápida la selección táctil de respuestas repetidas.
+
+### Pendientes
+
+* Publicar cambios en GitHub.
+* Validar visualmente en teléfono real.
+* Si el usuario confirma aún fricción, evaluar formularios por pasos o una pregunta por pantalla para bloques Likert extensos.
+
+### Riesgos
+
+* Autoavance puede sentirse rápido para algunos usuarios; se dejó con retardo corto y solo después de seleccionar radio/Likert.
+
+### Recomendaciones
+
+* Para encuestas largas, evitar apilar escalas de opción corta en móvil. Mantener controles compactos, selección evidente y acciones fijas.

@@ -16,6 +16,8 @@ La app requiere usuario y contraseña. Si el backend todavía no está configura
 5. En la pregunta 13, indicar primero si realizó la innovación. La importancia se habilita cuando corresponde.
 6. Guardar encuesta.
 
+En móvil, las escalas de 1 a 5 se muestran como botones horizontales compactos. Al tocar una opción, la app avanza suavemente hacia el siguiente campo visible para acelerar la carga.
+
 ## Registros
 
 La pestaña `Registros` muestra lo guardado en el dispositivo. Los estados principales son:

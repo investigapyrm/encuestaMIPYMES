@@ -353,11 +353,16 @@
     form.addEventListener('change', () => {
       applyConditions();
       updateProgress();
+      updateOptionStates();
+    });
+    form.addEventListener('change', (event) => {
+      if (event.target.matches('input[type="radio"]')) scheduleNextField(event.target);
     });
     form.addEventListener('submit', saveSurvey);
     $('#save-draft-btn').addEventListener('click', () => saveSurvey(null, true));
     applyConditions();
     updateProgress();
+    updateOptionStates();
   }
 
   function renderField(field) {
@@ -400,7 +405,8 @@
 
   function renderRadio(field, options) {
     const wrap = document.createElement('div');
-    wrap.className = 'radio-grid';
+    const compact = options.length <= 4 && options.every((opt) => String(opt.label).length <= 28);
+    wrap.className = `radio-grid ${options.length === 2 ? 'binary' : compact ? 'compact' : 'long-options'}`;
     options.forEach((opt) => {
       const label = document.createElement('label');
       label.className = 'option-tile';
@@ -412,6 +418,11 @@
 
   function renderLikert(field) {
     const scale = state.schema.scales[field.scale] || { min: 1, max: 5, labels: {} };
+    const outer = document.createElement('div');
+    outer.className = 'likert-wrap';
+    const legend = document.createElement('div');
+    legend.className = 'scale-legend';
+    legend.innerHTML = `<span>${escapeHtml(scale.labels[String(scale.min)] || 'Bajo')}</span><span>${escapeHtml(scale.labels[String(scale.max)] || 'Alto')}</span>`;
     const wrap = document.createElement('div');
     wrap.className = 'likert-grid';
     for (let value = scale.min; value <= scale.max; value += 1) {
@@ -421,7 +432,30 @@
       label.innerHTML = `<input type="radio" name="${field.code}" value="${value}" ${field.required ? 'required' : ''}> <span>${value}</span>`;
       wrap.appendChild(label);
     }
-    return wrap;
+    outer.appendChild(legend);
+    outer.appendChild(wrap);
+    return outer;
+  }
+
+  function scheduleNextField(input) {
+    const current = input.closest('.field-row');
+    if (!current) return;
+    window.setTimeout(() => {
+      const visibleRows = $$('.field-row').filter((row) => !row.classList.contains('hidden'));
+      const idx = visibleRows.indexOf(current);
+      const next = visibleRows[idx + 1];
+      if (!next) return;
+      next.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const target = $('input:not([type="radio"]), textarea, select', next);
+      if (target && window.matchMedia('(min-width: 821px)').matches) target.focus({ preventScroll: true });
+    }, 160);
+  }
+
+  function updateOptionStates() {
+    $$('.option-tile, .likert-option').forEach((label) => {
+      const input = $('input[type="radio"]', label);
+      label.classList.toggle('selected', !!input && input.checked);
+    });
   }
 
   function applyConditions() {

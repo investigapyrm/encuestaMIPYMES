@@ -73,3 +73,14 @@ La barra superior incluye controles operativos persistentes:
 - `Hoja online`: visible solo para usuarios `admin`, abre `spreadsheetUrl`.
 
 El autorregistro público queda limitado a roles `encuestador` y `censista`. Roles `supervisor` y `admin` solo deben asignarse desde sesión administradora.
+
+## Formulario móvil
+
+El formulario usa controles compactos para reducir fatiga de carga:
+
+- Likert 1-5 horizontal, sin apilar en una columna.
+- Sí/No como control binario compacto.
+- Opciones cortas en segmentos compactos.
+- Opciones largas en una columna legible.
+- Autoavance suave al siguiente campo visible tras seleccionar radio/Likert.
+- Barra inferior fija con acciones de guardado en móvil.

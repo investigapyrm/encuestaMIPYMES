@@ -109,6 +109,10 @@ La app incluye botones persistentes para:
 - Sincronizar pendientes.
 - Abrir la hoja online del registro, visible solo para `admin`.
 
+## Experiencia móvil
+
+El formulario está optimizado para carga en campo: escalas Likert 1-5 horizontales, opciones cortas compactas, selección con contraste fuerte, autoavance al siguiente campo y acciones de guardado fijas en la parte inferior.
+
 ## Validación mínima
 
 - Abrir localmente por servidor HTTP, no con `file://`.
