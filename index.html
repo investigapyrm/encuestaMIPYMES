@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0B5D3B">
+  <meta name="theme-color" content="#00A896">
   <title>FAEDPYME 2026 - Mipymes</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=20260616-7">
-  <script src="config.js?v=20260616-7" defer></script>
-  <script src="app.js?v=20260616-7" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260616-8">
+  <script src="config.js?v=20260616-8" defer></script>
+  <script src="app.js?v=20260616-8" defer></script>
 </head>
 <body>
   <div id="login-view" class="login-shell">
@@ -91,6 +91,7 @@
       <button class="tab" data-view="formulario" type="button">Formulario</button>
       <button class="tab" data-view="registros" type="button">Registros</button>
       <button class="tab" data-view="dashboard" type="button">Indicadores</button>
+      <button class="tab" data-view="seguimiento" type="button">Seguimiento</button>
       <button class="tab" data-view="sync" type="button">Sincronización</button>
       <button class="tab" data-view="admin" type="button">Administración</button>
     </nav>
@@ -124,6 +125,7 @@
             <div class="progress-track"><span id="progress-bar"></span></div>
           </div>
         </div>
+        <div id="form-save-status" class="notice compact-notice" role="status" hidden></div>
         <form id="survey-form" class="survey-form"></form>
       </section>
 
@@ -172,6 +174,38 @@
         </div>
         <div id="sync-status" class="notice"></div>
         <div id="queue-list" class="queue-list"></div>
+      </section>
+
+      <section id="view-seguimiento" class="view admin-only-view">
+        <div class="work-header">
+          <div>
+            <p class="eyebrow">Seguimiento admin</p>
+            <h2>Monitoreo de respuestas</h2>
+            <p>Lectura rápida de avance, pendientes, errores y carga por usuario en este dispositivo.</p>
+          </div>
+          <button class="secondary-btn" data-go="registros" type="button">Ver registros</button>
+        </div>
+        <div id="tracking-grid" class="kpi-grid tracking-grid"></div>
+        <div class="tracking-layout">
+          <section class="admin-panel">
+            <h3>Carga por usuario</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Usuario</th><th>Total</th><th>Pendientes</th><th>Errores</th><th>Última carga</th></tr></thead>
+                <tbody id="tracking-users-body"></tbody>
+              </table>
+            </div>
+          </section>
+          <section class="admin-panel">
+            <h3>Últimas respuestas</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Fecha</th><th>Empresa</th><th>Usuario</th><th>Estado</th></tr></thead>
+                <tbody id="tracking-recent-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
       </section>
 
       <section id="view-admin" class="view">

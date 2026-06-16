@@ -100,6 +100,19 @@ La vista `Administración` permite:
 
 El frontend corta cualquier intento de login contra GAS después de 12 segundos y muestra un mensaje claro. Si el backend no está configurado, el acceso se valida contra usuarios locales.
 
+## Control por rol
+
+- Usuarios `encuestador` y `censista`: al ingresar ven únicamente el `Formulario` para carga de encuesta. Mantienen acciones operativas globales de instalar, actualizar, sincronizar y salir.
+- Usuarios `admin`: acceden a todos los módulos, incluidos registros, indicadores, sincronización, administración, hoja online y seguimiento de respuestas.
+
+## Seguimiento admin
+
+La pestaña `Seguimiento` es exclusiva para `admin` y muestra:
+
+- Total local, pendientes, errores y sincronizadas.
+- Carga por usuario.
+- Últimas respuestas guardadas en el dispositivo.
+
 ## Acciones operativas globales
 
 La app incluye botones persistentes para:
@@ -111,7 +124,7 @@ La app incluye botones persistentes para:
 
 ## Experiencia móvil
 
-El formulario está optimizado para carga en campo: escalas Likert 1-5 horizontales, opciones cortas compactas, selección con contraste fuerte, autoavance al siguiente campo y acciones de guardado fijas en la parte inferior.
+El formulario está optimizado para carga en campo: escalas Likert 1-5 horizontales, opciones cortas compactas, selección con contraste fuerte, autoavance al siguiente campo, bloques con acentos de color y acciones de guardado fijas en la parte inferior.
 
 ## Validación mínima
 

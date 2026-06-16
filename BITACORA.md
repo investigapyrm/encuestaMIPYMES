@@ -1032,3 +1032,102 @@
 ### Recomendaciones
 
 * Para encuestas largas, evitar apilar escalas de opción corta en móvil. Mantener controles compactos, selección evidente y acciones fijas.
+
+## 2026-06-16 17:06
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES FAEDPYME 2026
+* Cliente o institución: investigapyrm
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: GitHub Pages pendiente de verificación final
+* Responsable: Codex
+* Versión: `0.1.6` / cache `20260616-8`
+
+### Objetivo de la intervención
+
+* Restringir usuarios no admin para que solo vean el cuestionario al ingresar.
+* Dar más color y diferenciación visual a la app.
+* Agregar panel de seguimiento de respuestas exclusivo para admin.
+
+### Diagnóstico inicial
+
+* Todas las pestañas quedaban visibles para cualquier rol autenticado.
+* Después de guardar una encuesta, el usuario era enviado a `Registros`, incluso si era usuario de campo.
+* La interfaz mantenía una paleta institucional correcta, pero demasiado plana para una encuesta larga.
+* No existía un módulo admin específico para seguimiento operativo de respuestas.
+
+### Acciones realizadas
+
+* Se agregó control central de permisos con `isAdmin`, `canAccessView`, `defaultViewForRole` y `applyRoleAccess`.
+* Se configuró ingreso de `encuestador` y `censista` directamente a `Formulario`.
+* Se bloqueó cualquier vista distinta a `Formulario` para usuarios no admin.
+* Se mantuvieron acciones globales operativas de instalar, actualizar, sincronizar y salir.
+* Se agregó pestaña `Seguimiento` solo para admin.
+* Se agregó tablero admin con total local, pendientes, errores, sincronizadas, carga por usuario y últimas respuestas.
+* Se incorporaron acentos visuales multicolor en KPIs, tabs, progreso, bloques de formulario y selección de opciones.
+* Se actualizó cache PWA a `encuesta-mipymes-v20260616-8`.
+* Se agregó nota reutilizable al Manual Maestro sobre vistas por rol y seguimiento admin.
+
+### Archivos modificados
+
+* `index.html`
+* `app.js`
+* `styles.css`
+* `config.js`
+* `service-worker.js`
+* `README.md`
+* `docs/manual_usuario.md`
+* `docs/manual_tecnico.md`
+* `BITACORA.md`
+* Manual Maestro: `Manual maestro para creación de appweb.txt`
+
+### Comandos o scripts ejecutados
+
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* `python3 -m json.tool manifest.json`
+* `python3 -m json.tool data/survey-schema.json`
+* `python3 -m http.server 4173`
+* `curl` para verificar `index.html`, `app.js`, `styles.css`, `config.js` y `service-worker.js`.
+* `rg` para verificar versión `20260616-8`, permisos por rol, panel de seguimiento y clases visuales.
+
+### Resultados verificados
+
+* `index.html` carga `styles.css`, `config.js` y `app.js` con versión `20260616-8`.
+* `service-worker.js` usa cache `encuesta-mipymes-v20260616-8`.
+* `config.js` informa versión `0.1.6`.
+* `app.js` contiene control central de permisos y render de seguimiento admin.
+* `styles.css` contiene acentos multicolor, modo de usuario de campo y layout de seguimiento.
+* Verificación HTTP local correcta.
+
+### Pruebas realizadas
+
+* Validación sintáctica JavaScript.
+* Validación JSON.
+* Verificación HTTP local.
+
+### Errores o incidentes
+
+* Sin incidentes al momento de registrar los cambios.
+
+### Soluciones aplicadas
+
+* Permisos por rol centralizados para evitar filtraciones de módulos.
+* Panel admin de seguimiento basado en registros locales para lectura operativa inmediata.
+* Paleta visual ampliada sin cambiar la arquitectura base del proyecto.
+
+### Pendientes
+
+* Publicar commit en GitHub.
+* Validar visualmente en URL pública y teléfono real.
+
+### Riesgos
+
+* El panel de seguimiento se alimenta de registros locales del dispositivo; para seguimiento consolidado multiusuario se requerirá endpoint GAS de lectura centralizada.
+
+### Recomendaciones
+
+* Mantener para futuros proyectos la regla: usuario de campo ve solo formulario; admin ve operación completa y seguimiento.

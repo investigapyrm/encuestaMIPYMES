@@ -4,7 +4,7 @@
 
 - `index.html`: estructura principal de la app.
 - `styles.css`: estilos institucionales.
-- `app.js`: renderizado del formulario, login, cola local, registros e indicadores.
+- `app.js`: renderizado del formulario, login, cola local, registros, indicadores, permisos por rol y seguimiento admin.
 - `config.js`: versión, ID de planilla y URL del backend.
 - `data/survey-schema.json`: esquema del instrumento derivado del PDF.
 - `gas/`: backend Apps Script.
@@ -74,6 +74,16 @@ La barra superior incluye controles operativos persistentes:
 
 El autorregistro público queda limitado a roles `encuestador` y `censista`. Roles `supervisor` y `admin` solo deben asignarse desde sesión administradora.
 
+## Permisos por rol en frontend
+
+`app.js` centraliza permisos con `isAdmin`, `canAccessView`, `defaultViewForRole` y `applyRoleAccess`.
+
+- `encuestador` y `censista`: solo pueden abrir `Formulario`.
+- `admin`: puede abrir todos los módulos y la hoja online.
+- Cualquier intento de cambiar a una vista no permitida se redirige a `Formulario`.
+
+La pestaña `Seguimiento` es exclusiva para `admin` y se alimenta de `state.records` local. Presenta totales, pendientes, errores, sincronizadas, carga por usuario y últimas respuestas del dispositivo.
+
 ## Formulario móvil
 
 El formulario usa controles compactos para reducir fatiga de carga:
@@ -84,3 +94,4 @@ El formulario usa controles compactos para reducir fatiga de carga:
 - Opciones largas en una columna legible.
 - Autoavance suave al siguiente campo visible tras seleccionar radio/Likert.
 - Barra inferior fija con acciones de guardado en móvil.
+- Acentos de color por bloque para mejorar orientación visual en encuestas largas.

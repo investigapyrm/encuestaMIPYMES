@@ -300,8 +300,9 @@
     $('#login-view').hidden = true;
     $('#app-view').hidden = false;
     $('#session-user').textContent = `${state.session.user.name || state.session.user.username} · ${state.session.user.role || 'usuario'}`;
-    updateAdminActions();
+    applyRoleAccess();
     refreshAll();
+    switchView(canAccessView(state.currentView) ? state.currentView : defaultViewForRole());
   }
 
   function logout() {
@@ -310,16 +311,43 @@
     $('#app-view').hidden = true;
     $('#login-view').hidden = false;
     $('#login-password').value = '';
+    document.body.classList.remove('field-user-mode');
   }
 
   function switchView(view) {
+    if (!canAccessView(view)) view = 'formulario';
     state.currentView = view;
     $$('.tab').forEach((btn) => btn.classList.toggle('active', btn.dataset.view === view));
     $$('.view').forEach((node) => node.classList.toggle('active-view', node.id === `view-${view}`));
     if (view === 'dashboard') renderDashboard();
     if (view === 'registros') renderRecords();
+    if (view === 'seguimiento') renderTracking();
     if (view === 'sync') renderQueue();
     if (view === 'admin') renderAdmin();
+  }
+
+  function isAdmin() {
+    return state.session?.user?.role === 'admin';
+  }
+
+  function canAccessView(view) {
+    return isAdmin() || view === 'formulario';
+  }
+
+  function defaultViewForRole() {
+    return isAdmin() ? 'inicio' : 'formulario';
+  }
+
+  function applyRoleAccess() {
+    const admin = isAdmin();
+    document.body.classList.toggle('field-user-mode', !!state.session && !admin);
+    $$('.tab').forEach((btn) => {
+      btn.hidden = !admin && btn.dataset.view !== 'formulario';
+    });
+    $$('.admin-only, .admin-only-view').forEach((node) => {
+      node.hidden = !admin;
+    });
+    updateAdminActions();
   }
 
   function renderSurveyForm() {
@@ -521,21 +549,22 @@
     form.reset();
     applyConditions();
     updateProgress();
-    switchView('registros');
+    setOperationalStatus(draftOnly ? 'Borrador guardado localmente.' : 'Encuesta guardada localmente. Use Sincronizar cuando tenga conexión.');
+    switchView(isAdmin() ? 'registros' : 'formulario');
   }
 
   async function syncPending() {
     const pending = state.records.filter((record) => record.status !== 'sincronizado');
     if (!pending.length) {
-      $('#sync-status').textContent = 'No hay registros pendientes.';
+      setOperationalStatus('No hay registros pendientes.');
       return;
     }
     if (!cfg.gasExecUrl) {
-      $('#sync-status').textContent = 'Backend GAS no configurado. Los registros quedan guardados localmente como pendientes.';
+      setOperationalStatus('Backend GAS no configurado. Los registros quedan guardados localmente como pendientes.');
       renderQueue();
       return;
     }
-    $('#sync-status').textContent = 'Sincronizando pendientes...';
+    setOperationalStatus('Sincronizando pendientes...');
     for (const record of pending) {
       try {
         const result = await apiCall('saveSurvey', { token: state.session.token, record, legacy: buildLegacyPayload(record) });
@@ -553,7 +582,7 @@
     }
     localStorage.setItem('encuesta_mipymes_last_sync_v1', new Date().toISOString());
     persistRecords();
-    $('#sync-status').textContent = 'Proceso de sincronización finalizado.';
+    setOperationalStatus('Proceso de sincronización finalizado.');
   }
 
   async function installApp() {
@@ -564,8 +593,8 @@
       updateInstallButton();
       return;
     }
-    $('#sync-status').textContent = 'Si el navegador no muestra instalación automática, use el menú del navegador y elija Agregar a pantalla de inicio o Instalar app.';
-    switchView('sync');
+    setOperationalStatus('Si el navegador no muestra instalación automática, use el menú del navegador y elija Agregar a pantalla de inicio o Instalar app.');
+    switchView(isAdmin() ? 'sync' : 'formulario');
   }
 
   async function updateApp() {
@@ -587,8 +616,8 @@
 
   function openSpreadsheet() {
     if (state.session?.user?.role !== 'admin') {
-      $('#sync-status').textContent = 'Solo un usuario admin puede abrir la hoja online desde la app.';
-      switchView('sync');
+      setOperationalStatus('Solo un usuario admin puede abrir la hoja online desde la app.');
+      switchView('formulario');
       return;
     }
     window.open(cfg.spreadsheetUrl || `https://docs.google.com/spreadsheets/d/${cfg.spreadsheetId}/edit`, '_blank', 'noopener');
@@ -603,9 +632,22 @@
   }
 
   function updateAdminActions() {
-    const isAdmin = state.session?.user?.role === 'admin';
     const sheetBtn = $('#open-sheet-btn');
-    if (sheetBtn) sheetBtn.hidden = !isAdmin;
+    if (sheetBtn) sheetBtn.hidden = !isAdmin();
+  }
+
+  function setOperationalStatus(message, error = false) {
+    const syncStatus = $('#sync-status');
+    if (syncStatus) {
+      syncStatus.textContent = message;
+      syncStatus.classList.toggle('error', error);
+    }
+    const formStatus = $('#form-save-status');
+    if (formStatus) {
+      formStatus.hidden = !message;
+      formStatus.textContent = message;
+      formStatus.classList.toggle('error', error);
+    }
   }
 
   function buildLegacyPayload(record) {
@@ -747,9 +789,11 @@
   }
 
   function refreshAll() {
+    applyRoleAccess();
     updateKpis();
     renderRecords();
     renderDashboard();
+    renderTracking();
     renderQueue();
     renderAdmin();
   }
@@ -839,6 +883,69 @@
         ${record.lastError ? `<p class="status-text error">${escapeHtml(record.lastError)}</p>` : ''}
       </article>
     `).join('') || '<p class="notice">No hay pendientes en la cola local.</p>';
+  }
+
+  function renderTracking() {
+    const grid = $('#tracking-grid');
+    if (!grid) return;
+    if (!isAdmin()) {
+      grid.innerHTML = '';
+      return;
+    }
+    const total = state.records.length;
+    const pending = state.records.filter((record) => record.status === 'pendiente').length;
+    const errors = state.records.filter((record) => record.status === 'error').length;
+    const synced = state.records.filter((record) => record.status === 'sincronizado').length;
+    const lastRecord = state.records[0]?.createdAt;
+    grid.innerHTML = `
+      <article class="kpi-card accent-teal"><span>Total local</span><strong>${total}</strong></article>
+      <article class="kpi-card accent-amber"><span>Pendientes</span><strong>${pending}</strong></article>
+      <article class="kpi-card accent-rose"><span>Errores</span><strong>${errors}</strong></article>
+      <article class="kpi-card accent-blue"><span>Sincronizadas</span><strong>${synced}</strong></article>
+    `;
+
+    const userBody = $('#tracking-users-body');
+    if (userBody) {
+      const grouped = Object.values(state.records.reduce((acc, record) => {
+        const user = record.user || 'local';
+        if (!acc[user]) acc[user] = { user, total: 0, pending: 0, errors: 0, last: '' };
+        acc[user].total += 1;
+        if (record.status === 'pendiente') acc[user].pending += 1;
+        if (record.status === 'error') acc[user].errors += 1;
+        if (!acc[user].last || new Date(record.createdAt) > new Date(acc[user].last)) acc[user].last = record.createdAt;
+        return acc;
+      }, {})).sort((a, b) => b.total - a.total);
+      userBody.innerHTML = grouped.map((row) => `
+        <tr>
+          <td>${escapeHtml(row.user)}</td>
+          <td>${row.total}</td>
+          <td>${row.pending}</td>
+          <td>${row.errors}</td>
+          <td>${formatDate(row.last)}</td>
+        </tr>
+      `).join('') || '<tr><td colspan="5">Sin respuestas locales.</td></tr>';
+    }
+
+    const recentBody = $('#tracking-recent-body');
+    if (recentBody) {
+      recentBody.innerHTML = state.records.slice(0, 8).map((record) => `
+        <tr>
+          <td>${formatDate(record.createdAt)}</td>
+          <td>${escapeHtml(record.data.empresa || 'Sin empresa')}</td>
+          <td>${escapeHtml(record.user || 'local')}</td>
+          <td><span class="badge ${record.status === 'pendiente' ? 'pending' : record.status === 'error' ? 'error' : ''}">${escapeHtml(record.status)}</span></td>
+        </tr>
+      `).join('') || '<tr><td colspan="4">Sin respuestas locales.</td></tr>';
+    }
+    setTrackingHeader(lastRecord);
+  }
+
+  function setTrackingHeader(lastRecord) {
+    const header = $('#view-seguimiento .work-header p:last-child');
+    if (!header) return;
+    header.textContent = lastRecord
+      ? `Ultima respuesta local: ${formatDate(lastRecord)}. Revise pendientes y errores antes del cierre de campo.`
+      : 'Lectura rapida de avance, pendientes, errores y carga por usuario en este dispositivo.';
   }
 
   function renderAdmin() {

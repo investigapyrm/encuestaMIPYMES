@@ -9,6 +9,8 @@ La app requiere usuario y contraseña. Si el backend todavía no está configura
 
 ## Cargar encuesta
 
+Los usuarios `encuestador` y `censista` ingresan directamente al cuestionario. No ven módulos administrativos, registros ni tableros.
+
 1. Entrar a `Formulario`.
 2. Completar los datos de identificación.
 3. Avanzar por los bloques del instrumento.
@@ -17,6 +19,8 @@ La app requiere usuario y contraseña. Si el backend todavía no está configura
 6. Guardar encuesta.
 
 En móvil, las escalas de 1 a 5 se muestran como botones horizontales compactos. Al tocar una opción, la app avanza suavemente hacia el siguiente campo visible para acelerar la carga.
+
+Los bloques del cuestionario tienen acentos de color para separar visualmente secciones largas y reducir fatiga de lectura.
 
 ## Registros
 
@@ -36,6 +40,10 @@ También existen botones globales en la barra superior:
 - `Actualizar`: limpia caché local y recarga la app.
 - `Sincronizar`: envía registros pendientes.
 - `Hoja online`: visible solo para `admin`, abre el Google Sheet operativo.
+
+## Seguimiento de respuestas
+
+La pestaña `Seguimiento` solo está disponible para `admin`. Muestra avance local, pendientes, errores, sincronizadas, carga por usuario y últimas respuestas registradas en el dispositivo.
 
 ## Administración de usuarios
 
