@@ -369,3 +369,77 @@
 ### Recomendaciones
 
 * Usar `gh auth login` con una cuenta autorizada, o configurar un PAT con scope `repo`/contents write para HTTPS.
+
+## 2026-06-16 15:32
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES - FAEDPYME 2026
+* Cliente o institución: investigapyrm / MID
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: pendiente de GitHub Pages
+* Responsable: Codex
+* Versión: 0.1.0
+
+### Objetivo de la intervención
+
+* Publicar el commit local en GitHub usando token autorizado disponible en el portapapeles del usuario.
+
+### Diagnóstico inicial
+
+* La rama `main` local estaba lista y sin publicar.
+* La autenticación HTTPS previa no tenía credencial usable.
+* El usuario indicó que el token estaba generado y disponible en el portapapeles.
+
+### Acciones realizadas
+
+* Se tomó el token desde el portapapeles sin imprimirlo.
+* Se guardó credencial HTTPS para `github.com` en `git credential-osxkeychain`.
+* Se ejecutó `git push -u origin main`.
+* Se verificó que `origin/main` existe y apunta al commit publicado.
+
+### Archivos modificados
+
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `git credential-osxkeychain store` con token tomado desde `pbpaste`.
+* `git push -u origin main`.
+* `git ls-remote --heads origin`.
+* `git status --short --branch`.
+
+### Resultados verificados
+
+* Push exitoso a `https://github.com/investigapyrm/encuestaMIPYMES.git`.
+* Rama remota creada: `main`.
+* Commit publicado: `60c33352f34e62a40a56625843d75b599d57ad79`.
+* Tracking configurado: `main -> origin/main`.
+
+### Pruebas realizadas
+
+* Verificación de referencia remota con `git ls-remote --heads origin`.
+* Verificación de estado local con `git status --short --branch`.
+
+### Errores o incidentes
+
+* No se imprimió ni registró el token en bitácora ni documentación.
+
+### Soluciones aplicadas
+
+* Se resolvió el bloqueo de publicación mediante credencial HTTPS válida almacenada en Keychain.
+
+### Pendientes
+
+* Activar GitHub Pages desde la rama `main`.
+* Verificar URL pública.
+* Resolver acceso público del endpoint Apps Script `/exec`.
+
+### Riesgos
+
+* El repositorio ya está publicado, pero la app no debe considerarse completamente operativa hasta validar GitHub Pages y el backend GAS público.
+
+### Recomendaciones
+
+* Mantener el token fuera de archivos y rotarlo si fue expuesto accidentalmente en otro medio.
