@@ -1093,6 +1093,9 @@
 * `python3 -m http.server 4173`
 * `curl` para verificar `index.html`, `app.js`, `styles.css`, `config.js` y `service-worker.js`.
 * `rg` para verificar versión `20260616-8`, permisos por rol, panel de seguimiento y clases visuales.
+* `git commit -m "Restrict field users and add admin tracking"`
+* `git push origin main`
+* `curl` sobre `https://investigapyrm.github.io/encuestaMIPYMES/` para verificar publicación pública.
 
 ### Resultados verificados
 
@@ -1102,12 +1105,15 @@
 * `app.js` contiene control central de permisos y render de seguimiento admin.
 * `styles.css` contiene acentos multicolor, modo de usuario de campo y layout de seguimiento.
 * Verificación HTTP local correcta.
+* Commit `3ede211` publicado en `origin/main`.
+* GitHub Pages sirve `index.html`, `app.js` y `service-worker.js` con versión/cache `20260616-8`.
 
 ### Pruebas realizadas
 
 * Validación sintáctica JavaScript.
 * Validación JSON.
 * Verificación HTTP local.
+* Verificación HTTP pública en GitHub Pages.
 
 ### Errores o incidentes
 
@@ -1121,7 +1127,6 @@
 
 ### Pendientes
 
-* Publicar commit en GitHub.
 * Validar visualmente en URL pública y teléfono real.
 
 ### Riesgos
