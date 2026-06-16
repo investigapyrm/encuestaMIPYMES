@@ -90,8 +90,10 @@
       let result;
       if (cfg.gasExecUrl) {
         result = await apiCall('login', { user, password });
-      } else if (cfg.allowLocalDemoLogin && user === cfg.localDemoUser && password === cfg.localDemoPassword) {
-        result = { success: true, token: `local-${Date.now()}`, user: { username: user, name: 'Usuario demo', role: 'admin' } };
+      } else if (cfg.allowLocalDemoLogin) {
+        const localUser = findLocalUser(user, password);
+        if (!localUser) throw new Error('Backend no configurado o credenciales locales incorrectas.');
+        result = { success: true, token: `local-${Date.now()}`, user: localUser };
       } else {
         throw new Error('Backend no configurado o credenciales locales incorrectas.');
       }
@@ -107,6 +109,17 @@
       status.textContent = err.message;
       status.classList.add('error');
     }
+  }
+
+  function findLocalUser(user, password) {
+    const users = Array.isArray(cfg.localDemoUsers) ? cfg.localDemoUsers : [];
+    const found = users.find((item) => item.username.toLowerCase() === user.toLowerCase() && item.password === password);
+    if (!found) return null;
+    return {
+      username: found.username,
+      name: found.name || found.username,
+      role: found.role || 'cargador'
+    };
   }
 
   function showApp() {

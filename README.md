@@ -83,9 +83,10 @@ El respaldo del Apps Script original clonado está en `gas_original/` para audit
 `initWorkbook` crea un usuario inicial:
 
 - usuario: `admin`
-- contraseña temporal: `Cambiar.2026`
+- usuario: `diego.meza`
+- contraseña por defecto para ambos: `123456`
 
-Debe cambiarse antes de producción. No registrar contraseñas reales en la bitácora.
+Estas credenciales también funcionan en modo local cuando el backend GAS todavía no está configurado. No registrar credenciales nuevas, tokens ni contraseñas personales en la bitácora.
 
 ## Validación mínima
 

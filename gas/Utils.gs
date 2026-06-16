@@ -9,24 +9,40 @@ function initWorkbook() {
   if (versions.getLastRow() < 2) {
     versions.appendRow([nowIso(), APP_CONFIG.APP_VERSION, '2026-06-16.2', 'Inicialización de estructura operativa']);
   }
-  seedAdminIfEmpty();
+  ensureDefaultUsers();
   return { success: true };
 }
 
-function seedAdminIfEmpty() {
+function ensureDefaultUsers() {
   var sh = getSheet(SHEETS.USUARIOS, USER_HEADERS);
-  if (sh.getLastRow() > 1) return;
-  sh.appendRow([
-    'admin',
-    hashPassword('Cambiar.2026'),
-    'Administrador',
+  upsertDefaultUser(sh, 'admin', 'Administrador');
+  upsertDefaultUser(sh, 'diego.meza', 'Diego Meza');
+}
+
+function upsertDefaultUser(sh, username, name) {
+  var passwordHash = hashPassword('123456');
+  var values = sh.getDataRange().getValues();
+  var headers = values[0];
+  var userCol = headers.indexOf('usuario');
+  var now = nowIso();
+  var row = [
+    username,
+    passwordHash,
+    name,
     '',
     'admin',
     'SI',
-    nowIso(),
+    now,
     '',
-    'Usuario inicial. Cambiar contraseña antes de producción.'
-  ]);
+    'Usuario administrador inicial por defecto.'
+  ];
+  for (var i = 1; i < values.length; i++) {
+    if (String(values[i][userCol] || '').toLowerCase() === username.toLowerCase()) {
+      sh.getRange(i + 1, 1, 1, row.length).setValues([row]);
+      return;
+    }
+  }
+  sh.appendRow(row);
 }
 
 function getSpreadsheet() {

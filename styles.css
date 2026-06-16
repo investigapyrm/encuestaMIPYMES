@@ -41,9 +41,7 @@ button {
   display: grid;
   place-items: center;
   padding: 24px;
-  background:
-    linear-gradient(rgba(245, 247, 246, 0.92), rgba(245, 247, 246, 0.92)),
-    url("assets/logoMID.jpg") center / 460px no-repeat;
+  background: linear-gradient(135deg, #F5F7F6 0%, #E8F3EE 100%);
 }
 
 .login-panel {
@@ -55,12 +53,24 @@ button {
   box-shadow: var(--shadow);
 }
 
-.brand-logo {
-  width: 86px;
-  height: 86px;
-  object-fit: contain;
-  display: block;
+.survey-mark {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
   margin-bottom: 16px;
+  border-radius: 8px;
+  background: var(--green);
+  color: var(--white);
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.survey-mark.compact {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 0;
+  font-size: 0.86rem;
 }
 
 .eyebrow {
@@ -188,12 +198,6 @@ textarea:focus {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.top-logo {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
 }
 
 .topbar h1 {

@@ -202,7 +202,7 @@
 
 * En Apps Script, revisar deployment y configurar acceso del web app como público o "cualquier persona".
 * Ejecutar `initWorkbook` una vez cuando el endpoint esté accesible o desde el editor Apps Script.
-* Cambiar contraseña inicial `admin / Cambiar.2026` antes de producción.
+* Verificar usuarios iniciales `admin / 123456` y `diego.meza / 123456` antes de producción.
 * Configurar `MIPYMES_PASSWORD_SALT` en Script Properties.
 * Activar `gasExecUrl` en `config.js` cuando `/exec` responda JSON.
 * Publicar el repo en GitHub con una credencial o GitHub App que tenga permiso `push` sobre `investigapyrm/encuestaMIPYMES`.
@@ -443,3 +443,111 @@
 ### Recomendaciones
 
 * Mantener el token fuera de archivos y rotarlo si fue expuesto accidentalmente en otro medio.
+
+## 2026-06-16 15:42
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES - FAEDPYME 2026
+* Cliente o institución: investigapyrm / MID
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: pendiente de GitHub Pages
+* Responsable: Codex
+* Versión: 0.1.1
+
+### Objetivo de la intervención
+
+* Eliminar logo ajeno al cuestionario.
+* Corregir credenciales iniciales para acceso local y backend.
+
+### Diagnóstico inicial
+
+* `index.html`, `styles.css` y `service-worker.js` referenciaban `assets/logoMID.jpg`.
+* El modo local aceptaba únicamente `demo / demo2026`, causando el error `Backend no configurado o credenciales locales incorrectas`.
+* El backend GAS creaba solo `admin` con contraseña temporal anterior.
+
+### Acciones realizadas
+
+* Se eliminó el logo visual del login y de la barra superior.
+* Se reemplazó por marca textual neutra `F26`.
+* Se eliminó `assets/logoMID.jpg` del repositorio.
+* Se regeneraron `assets/icon-192.png` y `assets/icon-512.png` como PNG neutros del cuestionario.
+* Se configuró login local para `admin / 123456` y `diego.meza / 123456`.
+* Se actualizó `initWorkbook` para crear o actualizar ambos usuarios por defecto en `USUARIOS`.
+* Se actualizó caché PWA a `encuesta-mipymes-v20260616-2`.
+* Se subió GAS con `clasp push -f`.
+* Se creó deployment GAS versión 4.
+
+### Archivos modificados
+
+* `index.html`
+* `styles.css`
+* `config.js`
+* `app.js`
+* `service-worker.js`
+* `assets/icon-192.png`
+* `assets/icon-512.png`
+* `assets/logoMID.jpg`
+* `gas/Config.gs`
+* `gas/Utils.gs`
+* `README.md`
+* `docs/manual_usuario.md`
+* `docs/manual_tecnico.md`
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `rm assets/logoMID.jpg`
+* Script Python local para regenerar íconos PNG.
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* `python3 -m json.tool manifest.json`
+* `python3 -m json.tool gas/appsscript.json`
+* `clasp push -f`
+* `clasp version "Credenciales iniciales y retiro de logo ajeno"`
+* `clasp deploy -V 4 -d "Encuesta MIPYMES credenciales iniciales"`
+* `python3 -m http.server 4173`
+* `curl` para verificar `index.html` e íconos.
+
+### Resultados verificados
+
+* No quedan referencias activas a `logoMID`, `brand-logo` ni `top-logo`.
+* Credenciales locales verificadas: `admin / 123456` y `diego.meza / 123456`.
+* `index.html` responde por HTTP local con `200 OK`.
+* `index.html` referencia `config.js?v=20260616-2` y `app.js?v=20260616-2`.
+* `assets/icon-192.png` responde por HTTP local con `200 OK` y tipo `image/png`.
+* GAS subido correctamente.
+* Deployment GAS creado: `AKfycbzxIuNXItP7J3UYuiTSY0l2z0qiNV5S-uDmHpxI3A4Cpm-pB6Clmgo_rmcFNSAPpEZQBQ @4`.
+
+### Pruebas realizadas
+
+* Validación de sintaxis JavaScript.
+* Validación JSON.
+* Verificación HTTP local.
+* Verificación de credenciales locales por lectura de `config.js`.
+* Push GAS con `clasp`.
+
+### Errores o incidentes
+
+* `apply_patch` no pudo eliminar el JPG binario por secuencia no UTF-8; se eliminó con `rm` porque era el archivo solicitado para retiro.
+
+### Soluciones aplicadas
+
+* Se retiró el logo ajeno de la interfaz y caché.
+* Se estandarizaron credenciales iniciales conforme a instrucción del usuario.
+
+### Pendientes
+
+* Publicar estos cambios en GitHub.
+* Activar GitHub Pages si aún no está activo.
+* Resolver acceso público del endpoint GAS `/exec`.
+
+### Riesgos
+
+* Si un navegador ya instaló la PWA anterior, puede requerir recarga fuerte o reinstalación para limpiar caché antigua.
+
+### Recomendaciones
+
+* Mantener `admin / 123456` y `diego.meza / 123456` como estándar inicial solo para arranque; si se usa en producción abierta, definir política de cambio posterior controlado.

@@ -2,7 +2,10 @@
 
 ## Ingreso
 
-La app requiere usuario y contraseña. Si el backend todavía no está configurado, existe un modo demo local para pruebas técnicas.
+La app requiere usuario y contraseña. Si el backend todavía no está configurado, el modo local permite ingresar con:
+
+- `admin` / `123456`
+- `diego.meza` / `123456`
 
 ## Cargar encuesta
 

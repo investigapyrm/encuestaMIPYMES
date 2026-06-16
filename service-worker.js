@@ -1,13 +1,12 @@
-const CACHE_NAME = 'encuesta-mipymes-v20260616';
+const CACHE_NAME = 'encuesta-mipymes-v20260616-2';
 const APP_SHELL = [
   './',
   './index.html',
-  './styles.css?v=20260616',
-  './config.js?v=20260616',
-  './app.js?v=20260616',
-  './data/survey-schema.json?v=20260616',
+  './styles.css?v=20260616-2',
+  './config.js?v=20260616-2',
+  './app.js?v=20260616-2',
+  './data/survey-schema.json?v=20260616-2',
   './manifest.json',
-  './assets/logoMID.jpg',
   './assets/icon-192.png',
   './assets/icon-512.png'
 ];

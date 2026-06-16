@@ -42,7 +42,7 @@ El modo demo local no reemplaza el login real. Para producción:
 
 - Definir `gasExecUrl`.
 - Ejecutar `initWorkbook`.
-- Cambiar contraseña temporal.
+- Verificar usuarios iniciales `admin` y `diego.meza`, ambos con contraseña institucional por defecto `123456`.
 - Configurar `MIPYMES_PASSWORD_SALT` en Script Properties.
 - Verificar permisos del deployment.
 
