@@ -48,7 +48,7 @@ function createUser(payload) {
     username: username,
     passwordHash: hashPassword(password),
     name: name,
-    correo: '',
+    correo: isEmailUsername(username) ? username : '',
     role: role,
     active: 'SI',
     observacion: 'Usuario creado desde panel de administración.'
@@ -86,9 +86,17 @@ function requireAdminRole(session) {
 }
 
 function validateUsername(username) {
-  if (!/^[A-Za-z0-9]+([._-][A-Za-z0-9]+)+$/.test(username)) {
-    throw new Error('El usuario debe tener formato nombre.apellido.');
+  if (!isValidUsername(username)) {
+    throw new Error('Use un correo válido o un usuario con formato nombre.apellido.');
   }
+}
+
+function isValidUsername(username) {
+  return /^[A-Za-z0-9]+([._-][A-Za-z0-9]+)+$/.test(username) || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username);
+}
+
+function isEmailUsername(username) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username);
 }
 
 function upsertUserRow(sh, user, allowDefaultMigration) {

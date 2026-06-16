@@ -124,10 +124,10 @@
         }
       } else if (cfg.allowLocalDemoLogin) {
         const localUser = await findLocalUser(user, password);
-        if (!localUser) throw new Error('Backend no configurado o credenciales locales incorrectas.');
+        if (!localUser) throw new Error('No se encontró ese acceso. Si recibió la encuesta por correo y es su primera vez, pulse Crear acceso.');
         result = { success: true, token: `local-${Date.now()}`, user: localUser };
       } else {
-        throw new Error('Backend no configurado o credenciales locales incorrectas.');
+        throw new Error('No se pudo validar el acceso. Revise usuario, correo o contraseña.');
       }
       if (!result.success) throw new Error(result.message || 'No se pudo iniciar sesión.');
       state.session = {
@@ -269,7 +269,8 @@
       upsertLocalUser({ username, name, role, passwordHash: await hashText(password), active: true, source: 'self_registered' });
       $('#public-register-form').reset();
       $('#public-register-form').hidden = true;
-      status.textContent = `Usuario ${username} creado localmente. Ya puede ingresar.`;
+      $('#login-user').value = username;
+      status.textContent = `Acceso creado para ${username}. Ahora ingrese con ese usuario o correo y la contraseña que acaba de definir.`;
     } catch (err) {
       status.textContent = err.message;
       status.classList.add('error');
@@ -362,7 +363,8 @@
     byBlock.forEach((block) => {
       const section = document.createElement('section');
       section.className = 'form-block';
-      section.innerHTML = `<h3>${escapeHtml(block.title)}</h3>${block.description ? `<p class="form-block-description">${escapeHtml(block.description)}</p>` : ''}`;
+      const blockHelp = block.description || 'Complete este bloque con la información disponible de la empresa.';
+      section.innerHTML = `<h3>${escapeHtml(block.title)} ${infoTip(blockHelp)}</h3>${block.description ? `<p class="form-block-description">${escapeHtml(block.description)}</p>` : ''}`;
       block.fields.forEach((field) => section.appendChild(renderField(field)));
       form.appendChild(section);
     });
@@ -370,8 +372,8 @@
     const actions = document.createElement('div');
     actions.className = 'form-actions';
     actions.innerHTML = `
-      <button class="secondary-btn" type="button" id="save-draft-btn">Guardar borrador local</button>
-      <button class="primary-btn" type="submit">Guardar encuesta</button>
+      <button class="secondary-btn" type="button" id="save-draft-btn">Guardar borrador local ${infoTip('Guarda el avance en este dispositivo para terminar más tarde. Luego debe volver desde este mismo navegador.', false)}</button>
+      <button class="primary-btn" type="submit">Guardar encuesta ${infoTip('Guarda la respuesta completa. Si la app muestra pendiente, pulse Sincronizar cuando tenga conexión.', false)}</button>
     `;
     form.appendChild(actions);
     form.addEventListener('input', () => {
@@ -399,7 +401,8 @@
     const label = $('label', tpl);
     const control = $('.field-control', tpl);
     const hint = $('.field-hint', tpl);
-    label.textContent = field.required ? `${field.label} *` : field.label;
+    const help = fieldHelpText(field);
+    label.innerHTML = `<span class="field-label-text">${escapeHtml(field.required ? `${field.label} *` : field.label)}</span>${help ? infoTip(help) : ''}`;
     hint.textContent = field.hint || '';
 
     if (field.type === 'radio') {
@@ -463,6 +466,20 @@
     outer.appendChild(legend);
     outer.appendChild(wrap);
     return outer;
+  }
+
+  function fieldHelpText(field) {
+    if (field.hint) return field.hint;
+    if (field.type === 'email') return 'Escriba un correo de contacto válido. Este campo puede quedar vacío si no corresponde.';
+    if (field.type === 'number') {
+      if (field.suffix) return `Ingrese solo números. Unidad esperada: ${field.suffix}.`;
+      return 'Ingrese solo números. Revise que el valor corresponda a la empresa encuestada.';
+    }
+    if (field.type === 'radio') return 'Seleccione una sola opción. Si se equivoca, puede tocar otra opción antes de guardar.';
+    if (field.type === 'likert') return 'Seleccione un valor de 1 a 5. 1 significa menor importancia o menor medida; 5 significa mayor importancia o mayor medida.';
+    if (field.type === 'textarea') return 'Escriba un comentario breve y claro. No incluya contraseñas, datos bancarios ni información sensible innecesaria.';
+    if (field.required) return 'Campo obligatorio. Debe completarlo antes de guardar la encuesta.';
+    return 'Campo opcional. Complételo si cuenta con la información.';
   }
 
   function scheduleNextField(input) {
@@ -766,9 +783,13 @@
   }
 
   function validateUsername(username) {
-    if (!/^[A-Za-z0-9]+([._-][A-Za-z0-9]+)+$/.test(username)) {
-      throw new Error('El usuario debe tener formato nombre.apellido.');
+    if (!isValidUsername(username)) {
+      throw new Error('Use un correo válido o un usuario con formato nombre.apellido.');
     }
+  }
+
+  function isValidUsername(username) {
+    return /^[A-Za-z0-9]+([._-][A-Za-z0-9]+)+$/.test(username) || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username);
   }
 
   function upsertLocalUser(user) {
@@ -1032,6 +1053,11 @@
 
   function escapeAttr(value) {
     return escapeHtml(value);
+  }
+
+  function infoTip(text, focusable = true) {
+    const attrs = focusable ? 'tabindex="0" role="note"' : 'aria-hidden="true"';
+    return `<span class="info-tip" ${attrs} data-tip="${escapeAttr(text)}">(i)</span>`;
   }
 
   function cssEscape(value) {

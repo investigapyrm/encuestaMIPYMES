@@ -79,10 +79,18 @@ El autorregistro público queda limitado a roles `encuestador` y `censista`. Rol
 `app.js` centraliza permisos con `isAdmin`, `canAccessView`, `defaultViewForRole` y `applyRoleAccess`.
 
 - `encuestador` y `censista`: solo pueden abrir `Formulario`.
+- Usuarios auto registrados desde correo quedan como `encuestador` por defecto.
+- `validateUsername` acepta correo electrónico o formato `nombre.apellido`.
 - `admin`: puede abrir todos los módulos y la hoja online.
 - Cualquier intento de cambiar a una vista no permitida se redirige a `Formulario`.
 
 La pestaña `Seguimiento` es exclusiva para `admin` y se alimenta de `state.records` local. Presenta totales, pendientes, errores, sincronizadas, carga por usuario y últimas respuestas del dispositivo.
+
+## Ayuda contextual
+
+La interfaz usa ayudas `(i)` en login, autorregistro, bloques de formulario, preguntas y botones de guardado. En escritorio se muestran con hover; en móvil con foco/toque cuando el elemento es enfocable.
+
+Para preguntas del esquema, `fieldHelpText` genera la ayuda según `hint`, tipo de campo, obligatoriedad y unidad. No debe reemplazar validaciones: solo reduce errores de interpretación.
 
 ## Formulario móvil
 

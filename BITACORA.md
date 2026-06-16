@@ -1136,3 +1136,119 @@
 ### Recomendaciones
 
 * Mantener para futuros proyectos la regla: usuario de campo ve solo formulario; admin ve operación completa y seguimiento.
+
+## 2026-06-16 17:22
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES FAEDPYME 2026
+* Cliente o institución: investigapyrm
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: `https://investigapyrm.github.io/encuestaMIPYMES/`
+* Responsable: Codex
+* Versión: `0.1.7` / cache `20260616-9`
+
+### Objetivo de la intervención
+
+* Preparar la app para envío por correo y autollenado por usuarios externos.
+* Dejar instrucciones claras para crear acceso, logearse y usar la app sin asistencia.
+* Agregar ayudas contextuales `(i)` en login, autorregistro, formulario y acciones de guardado.
+
+### Diagnóstico inicial
+
+* El login estaba pensado para usuarios internos y no explicaba el flujo de primera vez.
+* El autorregistro hablaba de “usuario local” y exponía rol, lo cual podía confundir al respondiente.
+* Solo se aceptaba `nombre.apellido`, poco natural para un enlace enviado por correo.
+* Las preguntas no mostraban ayuda contextual emergente.
+
+### Acciones realizadas
+
+* Se agregó guía inicial “Cómo responder” en la pantalla de ingreso.
+* Se renombró autorregistro a `Crear acceso`.
+* El autorregistro queda con rol de campo por defecto y no expone selector de rol al respondiente.
+* Se permite correo electrónico como usuario, además de `nombre.apellido`.
+* Se agregaron tooltips `(i)` en usuario, contraseña, autorregistro, ayuda de contraseña, bloques, preguntas y botones de guardado.
+* Se agregó guía breve dentro del formulario sobre guardar, sincronizar y privacidad.
+* Se creó `docs/texto_correo_invitacion.md` con texto base para envío por correo.
+* Se actualizó GAS para aceptar correo electrónico como usuario cuando el backend esté activo.
+* Se actualizó cache PWA a `encuesta-mipymes-v20260616-9`.
+* Se agregó nota reutilizable al Manual Maestro sobre encuestas enviadas por correo y ayuda contextual.
+
+### Archivos modificados
+
+* `index.html`
+* `app.js`
+* `styles.css`
+* `config.js`
+* `service-worker.js`
+* `gas/Config.gs`
+* `gas/Usuarios.gs`
+* `README.md`
+* `docs/manual_usuario.md`
+* `docs/manual_tecnico.md`
+* `docs/texto_correo_invitacion.md`
+* `BITACORA.md`
+* Manual Maestro: `Manual maestro para creación de appweb.txt`
+
+### Comandos o scripts ejecutados
+
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* Validación sintáctica GAS copiando temporalmente `gas/*.gs` como `.js`.
+* `python3 -m json.tool manifest.json`
+* `python3 -m json.tool data/survey-schema.json`
+* `clasp push -f`
+* `clasp version "Encuesta MIPYMES 0.1.7 instrucciones correo"`
+* `clasp deploy -d "Encuesta MIPYMES 0.1.7 - instrucciones correo"`
+* `clasp deployments`
+* `curl` sobre deployment GAS nuevo.
+* `python3 -m http.server 4173`
+* `curl` para verificar `index.html`, `app.js`, `styles.css` y `service-worker.js`.
+* `rg` para verificar versión `20260616-9`, ayudas `(i)`, `Crear acceso` y texto de correo.
+
+### Resultados verificados
+
+* `index.html` carga assets con versión `20260616-9`.
+* `service-worker.js` usa cache `encuesta-mipymes-v20260616-9`.
+* `config.js` informa versión `0.1.7`.
+* La pantalla de ingreso contiene guía “Cómo responder”.
+* El autorregistro usa `Crear acceso` y acepta correo o `nombre.apellido`.
+* `app.js` contiene `fieldHelpText`, `infoTip` e `isValidUsername`.
+* `docs/texto_correo_invitacion.md` contiene texto base para campaña por correo.
+* GAS fue subido con `clasp push -f`.
+* Deployment GAS creado: `AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q @8`.
+* Verificación HTTP local correcta.
+
+### Pruebas realizadas
+
+* Validación sintáctica JavaScript.
+* Validación sintáctica GAS por copia temporal `.js`.
+* Validación JSON.
+* Verificación HTTP local.
+* Prueba pública del deployment GAS.
+
+### Errores o incidentes
+
+* `node --check gas/*.gs` no acepta extensión `.gs`; se repitió la validación copiando temporalmente como `.js`.
+* El deployment GAS nuevo sigue devolviendo página Google “Necesitas acceso”; por eso no se activó `gasExecUrl` en `config.js`.
+
+### Soluciones aplicadas
+
+* Se transformó el ingreso en un flujo apto para encuestados invitados por correo.
+* Se redujo la probabilidad de error con ayuda contextual y texto base de invitación.
+
+### Pendientes
+
+* Publicar en GitHub.
+* Verificar URL pública.
+* Antes de envío masivo, probar guardado y sincronización real contra Google Sheets.
+
+### Riesgos
+
+* La app pública todavía requiere backend Apps Script correctamente publicado para que respuestas de usuarios externos lleguen a Google Sheets. Si `gasExecUrl` permanece vacío, las respuestas quedan locales en el dispositivo hasta que se configure sincronización.
+
+### Recomendaciones
+
+* No enviar campaña masiva por correo sin una prueba real de punta a punta: crear acceso, ingresar, guardar encuesta, sincronizar y verificar fila en Google Sheets.

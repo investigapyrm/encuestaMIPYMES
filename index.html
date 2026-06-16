@@ -7,9 +7,9 @@
   <title>FAEDPYME 2026 - Mipymes</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=20260616-8">
-  <script src="config.js?v=20260616-8" defer></script>
-  <script src="app.js?v=20260616-8" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260616-9">
+  <script src="config.js?v=20260616-9" defer></script>
+  <script src="app.js?v=20260616-9" defer></script>
 </head>
 <body>
   <div id="login-view" class="login-shell">
@@ -17,48 +17,52 @@
       <div class="survey-mark" aria-hidden="true">F26</div>
       <p class="eyebrow">Instrumento institucional</p>
       <h1 id="login-title">FAEDPYME 2026: Factores de continuidad de la Mipyme</h1>
-      <p class="login-copy">Acceso para carga, sincronización y revisión de encuestas.</p>
+      <p class="login-copy">Si recibió este enlace por correo, cree su acceso la primera vez y luego ingrese para completar el cuestionario.</p>
+      <section class="email-guide" aria-label="Instrucciones rápidas">
+        <h2>Cómo responder</h2>
+        <ol>
+          <li>Pulse <strong>Crear acceso</strong> si es su primera vez.</li>
+          <li>Use su correo o un usuario simple como <strong>nombre.apellido</strong>.</li>
+          <li>Entre con su contraseña, complete la encuesta y pulse <strong>Guardar encuesta</strong>.</li>
+        </ol>
+      </section>
       <form id="login-form" class="login-form">
         <label>
-          Usuario
-          <input id="login-user" autocomplete="username" required>
+          <span class="label-row">Usuario o correo <span class="info-tip" tabindex="0" role="note" data-tip="Use el mismo correo o usuario que registró. Si es la primera vez, pulse Crear acceso antes de ingresar.">(i)</span></span>
+          <input id="login-user" autocomplete="username" placeholder="correo@empresa.com o nombre.apellido" required>
         </label>
         <label>
-          Contraseña
+          <span class="label-row">Contraseña <span class="info-tip" tabindex="0" role="note" data-tip="Ingrese la contraseña que creó. Debe tener al menos 6 caracteres. No use contraseñas bancarias ni personales sensibles.">(i)</span></span>
           <input id="login-password" type="password" autocomplete="current-password" required>
         </label>
         <button class="primary-btn" type="submit">Ingresar</button>
       </form>
       <div class="login-actions">
-        <button id="show-register-btn" class="ghost-btn" type="button">Registrar usuario</button>
-        <button id="show-password-help-btn" class="ghost-btn" type="button">Contraseña</button>
+        <button id="show-register-btn" class="ghost-btn" type="button">Crear acceso</button>
+        <button id="show-password-help-btn" class="ghost-btn" type="button">Olvidé contraseña</button>
       </div>
       <form id="public-register-form" class="login-form auxiliary-form" hidden>
+        <p class="form-note">Cree un acceso solo para responder esta encuesta. Después vuelva a pulsar <strong>Ingresar</strong>.</p>
         <label>
-          Usuario
-          <input id="public-new-user" autocomplete="off" placeholder="nombre.apellido" pattern="^[A-Za-z0-9]+([._-][A-Za-z0-9]+)+$">
+          <span class="label-row">Usuario o correo <span class="info-tip" tabindex="0" role="note" data-tip="Recomendado: use su correo electrónico. También puede usar nombre.apellido si prefiere no registrar correo.">(i)</span></span>
+          <input id="public-new-user" autocomplete="username" placeholder="correo@empresa.com o nombre.apellido">
         </label>
         <label>
-          Nombre
+          <span class="label-row">Nombre <span class="info-tip" tabindex="0" role="note" data-tip="Escriba su nombre y apellido, o el nombre de la persona que responde por la empresa.">(i)</span></span>
           <input id="public-new-user-name" autocomplete="name">
         </label>
+        <input id="public-new-user-role" type="hidden" value="encuestador">
         <label>
-          Tipo de usuario
-          <select id="public-new-user-role">
-            <option value="encuestador">Encuestador</option>
-            <option value="censista">Censista</option>
-          </select>
-        </label>
-        <label>
-          Contraseña
+          <span class="label-row">Contraseña <span class="info-tip" tabindex="0" role="note" data-tip="Cree una contraseña fácil de recordar para volver a entrar si necesita terminar más tarde. Mínimo 6 caracteres.">(i)</span></span>
           <input id="public-new-user-password" type="password" autocomplete="new-password" minlength="6">
         </label>
-        <button class="secondary-btn" type="submit">Crear usuario local</button>
+        <button class="secondary-btn" type="submit">Crear acceso para responder</button>
       </form>
       <form id="password-help-form" class="login-form auxiliary-form" hidden>
+        <p class="form-note">Si olvidó la contraseña, registre esta solicitud y contacte al equipo que le envió la encuesta.</p>
         <label>
-          Usuario
-          <input id="password-help-user" autocomplete="username" placeholder="nombre.apellido">
+          <span class="label-row">Usuario o correo <span class="info-tip" tabindex="0" role="note" data-tip="Escriba el mismo usuario o correo con el que creó su acceso.">(i)</span></span>
+          <input id="password-help-user" autocomplete="username" placeholder="correo@empresa.com o nombre.apellido">
         </label>
         <button class="secondary-btn" type="submit">Solicitar restablecimiento</button>
       </form>
@@ -119,11 +123,26 @@
           <div>
             <p class="eyebrow">Formulario</p>
             <h2>Registro de encuesta</h2>
+            <p>Complete una respuesta por empresa. Los campos marcados con * son obligatorios. Use los íconos (i) si necesita ayuda.</p>
           </div>
           <div class="progress-box">
             <span id="progress-label">0%</span>
             <div class="progress-track"><span id="progress-bar"></span></div>
           </div>
+        </div>
+        <div class="respondent-guide">
+          <article>
+            <strong>Guardar</strong>
+            <p>Al finalizar, pulse <strong>Guardar encuesta</strong>. Si no terminó, use <strong>Guardar borrador local</strong>.</p>
+          </article>
+          <article>
+            <strong>Sincronizar</strong>
+            <p>Si la app indica pendiente, pulse <strong>Sincronizar</strong> cuando tenga conexión.</p>
+          </article>
+          <article>
+            <strong>Privacidad</strong>
+            <p>Responda solo datos de la empresa solicitados por el cuestionario. No agregue contraseñas ni datos bancarios.</p>
+          </article>
         </div>
         <div id="form-save-status" class="notice compact-notice" role="status" hidden></div>
         <form id="survey-form" class="survey-form"></form>
@@ -226,8 +245,8 @@
             <h3>Registrar usuario</h3>
             <form id="user-create-form" class="admin-form">
               <label>
-                Usuario
-                <input id="new-user" autocomplete="off" placeholder="nombre.apellido" pattern="^[A-Za-z0-9]+([._-][A-Za-z0-9]+)+$" required>
+                Usuario o correo
+                <input id="new-user" autocomplete="off" placeholder="correo@empresa.com o nombre.apellido" required>
               </label>
               <label>
                 Nombre

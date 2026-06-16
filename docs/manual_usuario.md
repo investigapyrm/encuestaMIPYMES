@@ -7,6 +7,17 @@ La app requiere usuario y contraseña. Si el backend todavía no está configura
 - `admin` / `123456`
 - `diego.meza` / `123456`
 
+Si recibió la encuesta por correo y es la primera vez que entra:
+
+1. Pulse `Crear acceso`.
+2. Use su correo electrónico o un usuario con formato `nombre.apellido`.
+3. Escriba su nombre.
+4. Cree una contraseña de al menos 6 caracteres.
+5. Pulse `Crear acceso para responder`.
+6. Vuelva a `Ingresar` con el mismo usuario o correo y su contraseña.
+
+Los íconos `(i)` muestran notas de ayuda. En computadora aparecen al pasar el cursor; en celular o tablet puede tocarlos o enfocarlos.
+
 ## Cargar encuesta
 
 Los usuarios `encuestador` y `censista` ingresan directamente al cuestionario. No ven módulos administrativos, registros ni tableros.
@@ -21,6 +32,8 @@ Los usuarios `encuestador` y `censista` ingresan directamente al cuestionario. N
 En móvil, las escalas de 1 a 5 se muestran como botones horizontales compactos. Al tocar una opción, la app avanza suavemente hacia el siguiente campo visible para acelerar la carga.
 
 Los bloques del cuestionario tienen acentos de color para separar visualmente secciones largas y reducir fatiga de lectura.
+
+No escriba contraseñas, datos bancarios ni información sensible que no sea solicitada por la encuesta.
 
 ## Registros
 
@@ -47,7 +60,9 @@ La pestaña `Seguimiento` solo está disponible para `admin`. Muestra avance loc
 
 ## Administración de usuarios
 
-Desde `Administración`, un usuario `admin` puede registrar nuevos usuarios. El nombre de usuario debe tener formato `nombre.apellido` y la contraseña debe tener al menos 6 caracteres.
+Desde `Administración`, un usuario `admin` puede registrar nuevos usuarios con correo electrónico o formato `nombre.apellido`. La contraseña debe tener al menos 6 caracteres.
+
+También se admite correo electrónico como usuario, especialmente cuando la encuesta se distribuye por correo.
 
 Los usuarios que se registran solos desde la pantalla de ingreso solo pueden ser `encuestador` o `censista`.
 
