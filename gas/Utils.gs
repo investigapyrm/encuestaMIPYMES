@@ -7,27 +7,9 @@ function initWorkbook() {
   getSheet(SHEETS.ERRORES, ERROR_HEADERS);
   var versions = getSheet(SHEETS.VERSIONES, VERSION_HEADERS);
   if (versions.getLastRow() < 2) {
-    versions.appendRow([nowIso(), APP_CONFIG.APP_VERSION, '2026-06-16.2', 'Inicialización de estructura operativa']);
+    versions.appendRow([nowIso(), APP_CONFIG.APP_VERSION, '2026-06-27.1', 'Inicialización de estructura operativa sin login para respondientes']);
   }
-  ensureDefaultUsers();
   return { success: true };
-}
-
-function ensureDefaultUsers() {
-  var sh = getSheet(SHEETS.USUARIOS, USER_HEADERS);
-  upsertDefaultUser(sh, 'admin', 'Administrador');
-  upsertDefaultUser(sh, 'diego.meza', 'Diego Meza');
-}
-
-function upsertDefaultUser(sh, username, name) {
-  upsertUserRow(sh, {
-    username,
-    passwordHash: hashPassword('123456'),
-    name: name,
-    role: 'admin',
-    active: 'SI',
-    observacion: 'Usuario administrador inicial por defecto.'
-  }, true);
 }
 
 function getSpreadsheet() {

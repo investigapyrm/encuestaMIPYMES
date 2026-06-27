@@ -1256,3 +1256,239 @@
 ### Recomendaciones
 
 * No enviar campaña masiva por correo sin una prueba real de punta a punta: crear acceso, ingresar, guardar encuesta, sincronizar y verificar fila en Google Sheets.
+
+## 2026-06-27 16:37
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES FAEDPYME 2026
+* Cliente o institución: investigapyrm
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: `https://investigapyrm.github.io/encuestaMIPYMES/`
+* Responsable: Codex
+* Versión revisada: `0.1.7` / cache `20260616-9`
+
+### Objetivo de la intervención
+
+* Reportar el estado real del proyecto diferenciando código local, publicación pública, backend Apps Script y operación efectiva.
+
+### Diagnóstico inicial
+
+* El repositorio local está en `main` sincronizado con `origin/main`, sin cambios pendientes al inicio de la revisión.
+* La app pública responde por GitHub Pages.
+* `config.js` conserva `gasExecUrl` vacío, por lo que la app publicada no envía respuestas al backend GAS desde GitHub Pages.
+* La bitácora central existe en `MANUAL_MAESTRO_FORMATOS_FUNCIONES_APPWEB/BITACORAS_PROYECTOS`, pero la bitácora local contiene el hito más reciente de publicación y bloqueo GAS.
+
+### Acciones realizadas
+
+* Se revisó la memoria técnica previa del proyecto.
+* Se consultó la carpeta maestra institucional montada en Google Drive.
+* Se verificó estado Git, últimos commits, documentación, configuración, service worker, manual técnico y texto de correo.
+* Se verificó la URL pública de GitHub Pages.
+* Se verificó la configuración pública servida por Pages.
+* Se consultaron deployments y versiones Apps Script con `clasp`.
+* Se probó el deployment GAS más reciente documentado y el deployment `@HEAD`.
+
+### Archivos modificados
+
+* `BITACORA.md`.
+* Copia central de bitácora en `MANUAL_MAESTRO_FORMATOS_FUNCIONES_APPWEB/BITACORAS_PROYECTOS/BITACORA_ENCUESTA_MIPYMES_FAEDPYME_2026.md`.
+
+### Comandos o scripts ejecutados
+
+* `git status --short --branch`
+* `git log --oneline --decorate -n 8`
+* `curl -sSIL https://investigapyrm.github.io/encuestaMIPYMES/`
+* `curl -sSL https://investigapyrm.github.io/encuestaMIPYMES/config.js?v=20260616-9`
+* `curl -sSL https://investigapyrm.github.io/encuestaMIPYMES/service-worker.js?v=20260616-9`
+* `curl -sSL https://script.google.com/macros/s/.../exec`
+* `clasp deployments`
+* `clasp versions`
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* `python3 -m json.tool manifest.json`
+* `python3 -m json.tool data/survey-schema.json`
+* `python3 -m json.tool gas/appsscript.json`
+
+### Resultados verificados
+
+* GitHub Pages responde HTTP `200` en `https://investigapyrm.github.io/encuestaMIPYMES/`.
+* La publicación pública sirve `config.js` con versión `0.1.7`, build `2026-06-16`, schema `20260616-9` y `gasExecUrl: ''`.
+* La publicación pública sirve `service-worker.js` con cache `encuesta-mipymes-v20260616-9`.
+* El frontend público conserva ayudas `(i)`, flujo `Crear acceso`, validación de usuario por correo o `nombre.apellido` y referencias a sincronización.
+* `clasp deployments` muestra 7 deployments y el deployment de instrucciones por correo en versión `@8`.
+* `clasp versions` muestra 8 versiones.
+* El deployment GAS más reciente probado sigue devolviendo página Google de acceso restringido o flujo de inicio de sesión, no JSON operativo.
+* Las validaciones sintácticas locales de JavaScript y JSON pasaron.
+
+### Pruebas realizadas
+
+* Verificación HTTP pública de GitHub Pages.
+* Verificación HTTP pública de assets versionados.
+* Verificación HTTP de Apps Script `/exec`.
+* Validación sintáctica de frontend y manifiestos.
+* Consulta de deployments y versiones Apps Script.
+
+### Errores o incidentes
+
+* El endpoint Apps Script todavía no está accesible de forma pública/anónima para operación desde GitHub Pages.
+* El backend existe y tiene deployments, pero no debe considerarse operativo hasta que `/exec` responda JSON y se confirme escritura real en Google Sheets.
+* El README y la configuración todavía documentan/contienen usuarios demo iniciales; antes de producción conviene retirarlos de la superficie pública o rotarlos con un flujo seguro.
+
+### Soluciones aplicadas
+
+* No se modificó código funcional.
+* Se registró el estado verificado en bitácora local y bitácora central.
+
+### Pendientes
+
+* Habilitar correctamente el Web App de Apps Script con acceso compatible con GitHub Pages.
+* Ejecutar una prueba real de punta a punta: crear acceso, ingresar, guardar encuesta, sincronizar y verificar fila en Google Sheets.
+* Activar `gasExecUrl` solo cuando `/exec` responda JSON operativo.
+* Revisar y sanear usuarios/credenciales demo antes de campaña masiva.
+
+### Riesgos
+
+* Si se envía la campaña hoy, las respuestas pueden quedar solo locales en el dispositivo y no llegar a Google Sheets.
+* El usuario puede creer que guardó definitivamente cuando en realidad queda pendiente de sincronización.
+* Un cambio prematuro de `gasExecUrl` puede romper login/sincronización si el endpoint sigue devolviendo HTML de Google.
+
+### Recomendaciones
+
+* No lanzar envío masivo hasta cerrar el bloqueo GAS y verificar escritura real en la hoja.
+* Mantener la distinción operativa: GitHub Pages publicado no equivale a backend operativo.
+* Después de resolver GAS, actualizar `config.js`, subir commit, verificar Pages con cache-busting y repetir prueba completa en móvil.
+
+## 2026-06-27 17:04
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES Investigación 2026
+* Cliente o institución: investigapyrm
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL pública: `https://investigapyrm.github.io/encuestaMIPYMES/`
+* Responsable: Codex
+* Versión: `0.2.0` / cache `20260627-1`
+
+### Objetivo de la intervención
+
+* Ajustar la app web al cuestionario final recibido en DOCX.
+* Cambiar el flujo para envío por correo sin login ni creación de acceso.
+* Mantener trazabilidad, cola local y preparación para envío a Google Sheets cuando GAS quede habilitado.
+
+### Diagnóstico inicial
+
+* El archivo final de cuestionario está en `FACEN _Cuestionario 2026 Factores de continuidad de las mipymes.docx`.
+* El esquema anterior venía del PDF y tenía `nif`, categorías antiguas de tamaño de empresa y no incluía causa principal en la pregunta 18.
+* La app mostraba flujo de login/autorregistro, incompatible con el nuevo criterio operativo indicado por el usuario.
+* El backend GAS seguía pendiente de permisos públicos; `gasExecUrl` continúa vacío para no prometer envío real todavía.
+
+### Acciones realizadas
+
+* Se extrajo el DOCX final con `python-docx`, incluyendo párrafos y tablas.
+* Se actualizó `data/survey-schema.json` a `2026-06-27.1`.
+* Se cambió `nif` por `ruc`.
+* Se actualizaron categorías de tamaño: `Hasta 10`, `11 a 30`, `31 o más`.
+* Se agregaron campos condicionales `q18_causa_principal` y `q18_causa_otra`.
+* Se separaron escalas Likert por bloque según el DOCX: gobierno, entorno, rendimiento, importancia de innovaciones y factores de abandono.
+* Se activó acceso público sin login con `requireLogin: false`.
+* Se retiró el formulario de login/autorregistro de la superficie HTML pública.
+* Se actualizó la app a `0.2.0` y cache PWA `encuesta-mipymes-v20260627-1`.
+* Se preparó GAS para aceptar `saveSurvey` sin token cuando `APP_CONFIG.REQUIRE_LOGIN === false`.
+* Se retiró la creación de usuarios administradores por defecto en `initWorkbook`.
+* Se actualizaron README, manual de usuario, manual técnico, diccionario de datos y texto de correo.
+
+### Archivos modificados
+
+* `FACEN _Cuestionario 2026 Factores de continuidad de las mipymes.docx`
+* `index.html`
+* `app.js`
+* `styles.css`
+* `config.js`
+* `service-worker.js`
+* `manifest.json`
+* `data/survey-schema.json`
+* `gas/Config.gs`
+* `gas/Datos.gs`
+* `gas/Utils.gs`
+* `README.md`
+* `docs/manual_usuario.md`
+* `docs/manual_tecnico.md`
+* `docs/diccionario_datos.md`
+* `docs/texto_correo_invitacion.md`
+* `BITACORA.md`
+* Copia central de bitácora en `MANUAL_MAESTRO_FORMATOS_FUNCIONES_APPWEB/BITACORAS_PROYECTOS/BITACORA_ENCUESTA_MIPYMES_FAEDPYME_2026.md`.
+
+### Comandos o scripts ejecutados
+
+* `python3` con `python-docx` para extracción del DOCX final.
+* `python3` para actualización estructurada de `data/survey-schema.json`.
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* `python3 -m json.tool data/survey-schema.json`
+* `python3 -m json.tool manifest.json`
+* `python3 -m json.tool gas/appsscript.json`
+* Validación sintáctica GAS copiando temporalmente `gas/*.gs` como `.js`.
+* `python3 -m http.server 4173`
+* `curl` contra `http://127.0.0.1:4173/` y `config.js?v=20260627-1`.
+* Chrome headless para DOM y capturas desktop/móvil.
+
+### Resultados verificados
+
+* La app local abre directamente en `Formulario`, sin pantalla de login.
+* `config.js` publica `requireLogin: false`, versión `0.2.0` y schema `20260627-1`.
+* El formulario renderiza `RUC`.
+* El formulario renderiza `q18_causa_principal` y `q18_causa_otra` como campos condicionales.
+* El texto visible ya indica `Guardar y enviar encuesta` y `Enviar pendientes`.
+* La captura desktop no muestra barra horizontal y presenta el formulario limpio.
+* La captura móvil apila botones inferiores para evitar recortes.
+* Validaciones JavaScript, JSON y GAS pasaron.
+
+### Pruebas realizadas
+
+* Validación sintáctica JavaScript.
+* Validación JSON.
+* Validación GAS por copia temporal `.js`.
+* Smoke test HTTP local.
+* Smoke test DOM con Chrome headless.
+* Captura desktop y móvil.
+
+### Errores o incidentes
+
+* `npx -p playwright node` no expuso el módulo `playwright` para `require`; se usó Chrome headless directo.
+* En la primera captura móvil se recortaba el botón de envío; se corrigió apilando acciones en pantallas angostas.
+* El backend GAS sigue pendiente de habilitación pública; no se pudo validar escritura real en Google Sheets.
+
+### Soluciones aplicadas
+
+* Acceso directo sin login para respondientes por correo.
+* Esquema actualizado desde el DOCX final.
+* Backend preparado para guardado público sin token cuando el despliegue GAS esté habilitado.
+* Cache busting actualizado para forzar nueva versión en GitHub Pages/PWA.
+
+### Commit o versión generada
+
+* Versión local generada: `0.2.0` / cache `20260627-1`.
+* Commit de cierre: ver hash final de `Adapt survey for final questionnaire without login`.
+
+### Pendientes
+
+* Subir cambios a GitHub y verificar propagación en GitHub Pages.
+* Ejecutar `clasp push -f` y crear deployment GAS nuevo cuando se vaya a activar backend.
+* Habilitar el Web App Apps Script para que `/exec` responda JSON público.
+* Configurar `gasExecUrl` solo después de que `/exec` responda JSON y probar guardado real en Google Sheets.
+
+### Riesgos
+
+* Si se envía la encuesta antes de habilitar GAS, las respuestas quedarán guardadas localmente en el navegador del respondiente y no llegarán a Google Sheets.
+* Al no existir login, la identidad operativa depende de los campos informados en el formulario, especialmente empresa, correo y RUC.
+
+### Recomendaciones
+
+* No enviar campaña masiva hasta que la URL pública actualizada y el backend GAS estén verificados de punta a punta.
+* En el correo, indicar que no se necesita usuario ni contraseña.
+* Si se requiere administración, publicarla en un flujo separado del enlace enviado a respondientes.

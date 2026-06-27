@@ -4,11 +4,11 @@
 
 - `index.html`: estructura principal de la app.
 - `styles.css`: estilos institucionales.
-- `app.js`: renderizado del formulario, login, cola local, registros, indicadores, permisos por rol y seguimiento admin.
-- `config.js`: versión, ID de planilla y URL del backend.
-- `data/survey-schema.json`: esquema del instrumento derivado del PDF.
+- `app.js`: renderizado del formulario público, cola local, registros, indicadores, permisos por rol y seguimiento técnico.
+- `config.js`: versión, ID de planilla, URL del backend y modo de acceso público.
+- `data/survey-schema.json`: esquema del instrumento derivado del DOCX final.
 - `gas/`: backend Apps Script.
-- `gas_original/`: respaldo del Apps Script existente antes de la adaptación FAEDPYME 2026.
+- `gas_original/`: respaldo del Apps Script existente antes de la adaptación del instrumento 2026.
 
 ## Backend GAS
 
@@ -16,7 +16,7 @@ Funciones públicas:
 
 - `doGet`: healthcheck.
 - `doPost`: enrutador JSON.
-- `login`: validación de usuarios.
+- `login`: validación de usuarios, conservada para administración futura, no usada por el enlace público.
 - `createUser`: creación o actualización controlada de usuarios por rol `admin`.
 - `changePassword`: cambio de contraseña del usuario conectado.
 - `getBootstrap`: contexto operativo.
@@ -38,30 +38,29 @@ Hojas esperadas:
 
 `RESPUESTAS` contiene la fila operativa con metadatos y `raw_json`. `Respuestas_Ancho` y `Respuestas_Largo` conservan el patrón del proyecto base para análisis tabular y trazabilidad por pregunta.
 
-## Seguridad
+## Seguridad y acceso público
 
-El modo demo local no reemplaza el login real. Para producción:
+La versión `0.2.0` está orientada a envío por correo a contactos externos. El respondiente no debe crear usuario ni contraseña; el enlace abre directamente el formulario. Para producción:
 
 - Definir `gasExecUrl`.
 - Ejecutar `initWorkbook`.
-- Verificar usuarios iniciales `admin` y `diego.meza`, ambos con contraseña institucional por defecto `123456`.
-- Configurar `MIPYMES_PASSWORD_SALT` en Script Properties.
 - Verificar permisos del deployment.
+- Verificar que `saveSurvey` acepte respuestas públicas sin token de login.
 
 ## Limitación actual
 
-El proyecto GAS asociado fue clonado y respaldado. El backend adaptado fue subido con `clasp push -f` al `scriptId` `1LlCl53ftjUPkWHV13GBInR9S-WTSFu83qf8ukXFihzlGIwMgqSrqwCBW`.
+El proyecto GAS asociado fue clonado y respaldado. El backend adaptado fue subido previamente con `clasp push -f` al `scriptId` `1LlCl53ftjUPkWHV13GBInR9S-WTSFu83qf8ukXFihzlGIwMgqSrqwCBW`.
 
 Deployments creados:
 
 - `AKfycbzR2BL7Z0JfqAxbkLCO-AK9FucNl7ab-dLtoZgie2qk8VhsqBlFVvQc6_KHtJ0xiLKxFA` versión 1.
 - `AKfycbxYh3Z-6FI0xl1eaOxluFUXqyPPkBtAxqDHTFkf6yANKch26DwQIGrbckZXuJ8qan_nzg` versión 2.
 
-La prueba anónima de `/exec` devolvió acceso denegado. Falta habilitar el web app con acceso público desde Apps Script o desde una cuenta con control completo de despliegue. Hasta entonces `config.js` conserva `gasExecUrl` vacío para no romper la app publicada.
+La prueba anónima de `/exec` devolvió acceso denegado. Falta habilitar el web app con acceso público desde Apps Script o desde una cuenta con control completo de despliegue. Hasta entonces `config.js` conserva `gasExecUrl` vacío para no prometer envío real a Google Sheets desde la app publicada.
 
-## Manejo de login colgado
+## Manejo de backend bloqueado
 
-`app.js` aplica timeout de 12 segundos a llamadas `fetch` contra Apps Script. Si GAS devuelve HTML de Google, acceso denegado o no responde, el usuario recibe un mensaje claro y el botón de ingreso se rehabilita.
+`app.js` aplica timeout de 12 segundos a llamadas `fetch` contra Apps Script. Si GAS devuelve HTML de Google, acceso denegado o no responde, el usuario recibe un mensaje claro y la respuesta queda como pendiente local.
 
 ## Acciones globales obligatorias
 
@@ -69,10 +68,10 @@ La barra superior incluye controles operativos persistentes:
 
 - `Instalar`: usa `beforeinstallprompt` si está disponible y muestra orientación si el navegador no expone el evento.
 - `Actualizar`: actualiza service workers, elimina cachés `encuesta-mipymes-*` y recarga.
-- `Sincronizar`: ejecuta la misma cola de pendientes que la pestaña `Sincronización`.
+- `Enviar pendientes`: ejecuta la misma cola de pendientes que la pestaña `Sincronización`.
 - `Hoja online`: visible solo para usuarios `admin`, abre `spreadsheetUrl`.
 
-El autorregistro público queda limitado a roles `encuestador` y `censista`. Roles `supervisor` y `admin` solo deben asignarse desde sesión administradora.
+El autorregistro público fue retirado del flujo de respondientes. Roles `supervisor` y `admin` solo deben manejarse en un flujo administrativo separado si el proyecto lo requiere.
 
 ## Permisos por rol en frontend
 
@@ -88,7 +87,7 @@ La pestaña `Seguimiento` es exclusiva para `admin` y se alimenta de `state.reco
 
 ## Ayuda contextual
 
-La interfaz usa ayudas `(i)` en login, autorregistro, bloques de formulario, preguntas y botones de guardado. En escritorio se muestran con hover; en móvil con foco/toque cuando el elemento es enfocable.
+La interfaz usa ayudas `(i)` en bloques de formulario, preguntas y botones de guardado/envío. En escritorio se muestran con hover; en móvil con foco/toque cuando el elemento es enfocable.
 
 Para preguntas del esquema, `fieldHelpText` genera la ayuda según `hint`, tipo de campo, obligatoriedad y unidad. No debe reemplazar validaciones: solo reduce errores de interpretación.
 

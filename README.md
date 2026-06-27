@@ -1,6 +1,6 @@
-# Encuesta MIPYMES - FAEDPYME 2026
+# Encuesta MIPYMES - Investigación 2026
 
-App web institucional para captura de la encuesta **FAEDPYME 2026: Factores de continuidad de la Mipyme**.
+App web institucional para captura de la encuesta **Investigación 2026: Factores de continuidad (supervivencia) de la Mipyme en Paraguay**.
 
 ## Arquitectura
 
@@ -8,11 +8,11 @@ App web institucional para captura de la encuesta **FAEDPYME 2026: Factores de c
 - Backend: Google Apps Script en `gas/`.
 - Base operativa: Google Sheets asociado a `encuestaMIPYMES.gsheet`.
 - Captura offline: localStorage con cola de sincronización.
-- Instrumento maestro: `encuestaMIPYMES.pdf`.
+- Instrumento maestro final: `FACEN _Cuestionario 2026 Factores de continuidad de las mipymes.docx`.
 
 ## Estado actual
 
-El formulario reproduce las 19 preguntas del PDF maestro, organizadas en bloques:
+El formulario reproduce las 19 preguntas del DOCX final, organizadas en bloques:
 
 - Identificación.
 - Bloque General Anual.
@@ -62,8 +62,8 @@ clasp push -f
 5. Crear una versión y deployment:
 
 ```bash
-clasp version "Encuesta MIPYMES FAEDPYME 2026 backend"
-clasp deploy -V VERSION -d "Encuesta MIPYMES FAEDPYME 2026 - web app publico"
+clasp version "Encuesta MIPYMES Investigacion 2026 backend"
+clasp deploy -V VERSION -d "Encuesta MIPYMES Investigacion 2026 - web app publico"
 ```
 
 6. En Apps Script, ejecutar `initWorkbook` una vez para crear hojas operativas.
@@ -78,33 +78,17 @@ El backend guarda en:
 
 El respaldo del Apps Script original clonado está en `gas_original/` para auditoría. Ese proyecto original apuntaba a la planilla `14yHdE3nZUBTXgY2I6UKFMmJ4KIj9gDinGVmt6e764ew`; el backend actual apunta a `1lfasg9YkGM_4jAuP6LDoZd-0aFxePBUksZB_1lJDKtQ`.
 
-## Usuario inicial del backend
+## Acceso público por correo
 
-`initWorkbook` crea un usuario inicial:
+La versión `0.2.0` elimina el login para respondientes. El enlace público abre directamente el formulario para que los contactos lo completen desde sus computadoras.
 
-- usuario: `admin`
-- usuario: `diego.meza`
-- contraseña por defecto para ambos: `123456`
-
-Estas credenciales también funcionan en modo local cuando el backend GAS todavía no está configurado. No registrar credenciales nuevas, tokens ni contraseñas personales en la bitácora.
-
-## Administración de usuarios
-
-La vista `Administración` permite:
-
-- Registrar nuevos usuarios con correo electrónico o formato `nombre.apellido`.
-- Registrar usuarios de campo como `encuestador` o `censista`.
-- Asignar roles superiores `supervisor` o `admin` solo desde una sesión administradora.
-- Cambiar la contraseña del usuario conectado.
-- Operar en modo local si el backend GAS aún no está público.
-
-El frontend corta cualquier intento de login contra GAS después de 12 segundos y muestra un mensaje claro. Si el backend no está configurado, el acceso se valida contra usuarios locales.
+El login local y la administración de usuarios ya no forman parte del flujo público. Si en el futuro se requiere un módulo administrativo, debe separarse del enlace enviado a respondientes.
 
 ## Control por rol
 
-- Usuarios auto registrados desde el enlace enviado por correo: al ingresar ven únicamente el `Formulario` para responder la encuesta. Mantienen acciones operativas globales de instalar, actualizar, sincronizar y salir.
-- El acceso puede crearse con correo electrónico o con usuario en formato `nombre.apellido`.
-- Usuarios `admin`: acceden a todos los módulos, incluidos registros, indicadores, sincronización, administración, hoja online y seguimiento de respuestas.
+- Respondientes externos: acceden directamente al `Formulario`.
+- No se solicita usuario ni contraseña al contacto que recibe el correo.
+- La trazabilidad se conserva con fecha, navegador/dispositivo, empresa, correo electrónico/RUC si fueron informados y estado de sincronización.
 
 ## Seguimiento admin
 
@@ -120,7 +104,7 @@ La app incluye botones persistentes para:
 
 - Instalar la app como PWA.
 - Actualizar caché y recargar versión.
-- Sincronizar pendientes.
+- Enviar pendientes.
 - Abrir la hoja online del registro, visible solo para `admin`.
 
 ## Experiencia móvil
@@ -129,22 +113,21 @@ El formulario está optimizado para carga en campo: escalas Likert 1-5 horizonta
 
 ## Envío por correo
 
-Para distribución por correo, usar el texto base en `docs/texto_correo_invitacion.md`. La pantalla de ingreso explica el flujo:
+Para distribución por correo, usar el texto base en `docs/texto_correo_invitacion.md`. El flujo esperado es:
 
-- Primera vez: `Crear acceso`.
-- Usuario: correo electrónico o `nombre.apellido`.
-- Luego: ingresar, completar formulario y guardar.
+- Abrir el enlace.
+- Completar el cuestionario.
+- Pulsar `Guardar y enviar encuesta`.
 - Los íconos `(i)` muestran ayuda contextual al pasar el cursor o tocar/enfocar el elemento.
 
 ## Validación mínima
 
 - Abrir localmente por servidor HTTP, no con `file://`.
-- Iniciar sesión en modo demo local si no hay backend.
 - Completar una encuesta.
 - Confirmar que queda en registros locales.
 - Confirmar cola pendiente si `gasExecUrl` está vacío.
 - Probar `/exec` cuando Apps Script esté publicado.
-- Probar login real y guardado contra Google Sheets.
+- Probar guardado real contra Google Sheets sin login de respondiente.
 
 ## Publicación
 

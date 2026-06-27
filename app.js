@@ -23,12 +23,16 @@
   async function init() {
     bindGlobalEvents();
     await loadSchema();
-    loadLocalUsers();
+    if (cfg.requireLogin === false) state.users = [];
+    else loadLocalUsers();
     loadSession();
     loadRecords();
     updateConnection();
     renderAdmin();
-    if (state.session) {
+    if (cfg.requireLogin === false) {
+      startPublicSession();
+      showApp();
+    } else if (state.session) {
       showApp();
     }
     window.addEventListener('online', updateConnection);
@@ -49,24 +53,29 @@
   }
 
   function bindGlobalEvents() {
-    $('#login-form').addEventListener('submit', handleLogin);
-    $('#show-register-btn').addEventListener('click', () => toggleAuxiliaryForm('public-register-form'));
-    $('#show-password-help-btn').addEventListener('click', () => toggleAuxiliaryForm('password-help-form'));
-    $('#public-register-form').addEventListener('submit', publicRegisterUser);
-    $('#password-help-form').addEventListener('submit', requestPasswordHelp);
-    $('#logout-btn').addEventListener('click', logout);
-    $('#install-btn').addEventListener('click', installApp);
-    $('#update-app-btn').addEventListener('click', updateApp);
-    $('#global-sync-btn').addEventListener('click', syncPending);
-    $('#open-sheet-btn').addEventListener('click', openSpreadsheet);
+    bindIfPresent('#login-form', 'submit', handleLogin);
+    bindIfPresent('#show-register-btn', 'click', () => toggleAuxiliaryForm('public-register-form'));
+    bindIfPresent('#show-password-help-btn', 'click', () => toggleAuxiliaryForm('password-help-form'));
+    bindIfPresent('#public-register-form', 'submit', publicRegisterUser);
+    bindIfPresent('#password-help-form', 'submit', requestPasswordHelp);
+    bindIfPresent('#logout-btn', 'click', logout);
+    bindIfPresent('#install-btn', 'click', installApp);
+    bindIfPresent('#update-app-btn', 'click', updateApp);
+    bindIfPresent('#global-sync-btn', 'click', syncPending);
+    bindIfPresent('#open-sheet-btn', 'click', openSpreadsheet);
     $$('.tab').forEach((btn) => btn.addEventListener('click', () => switchView(btn.dataset.view)));
     $$('[data-go]').forEach((btn) => btn.addEventListener('click', () => switchView(btn.dataset.go)));
-    $('#sync-btn').addEventListener('click', syncPending);
-    $('#export-csv-btn').addEventListener('click', exportCsv);
-    $('#search-records').addEventListener('input', renderRecords);
-    $('#status-filter').addEventListener('change', renderRecords);
-    $('#user-create-form').addEventListener('submit', createUser);
-    $('#password-change-form').addEventListener('submit', changePassword);
+    bindIfPresent('#sync-btn', 'click', syncPending);
+    bindIfPresent('#export-csv-btn', 'click', exportCsv);
+    bindIfPresent('#search-records', 'input', renderRecords);
+    bindIfPresent('#status-filter', 'change', renderRecords);
+    bindIfPresent('#user-create-form', 'submit', createUser);
+    bindIfPresent('#password-change-form', 'submit', changePassword);
+  }
+
+  function bindIfPresent(selector, eventName, handler) {
+    const node = $(selector);
+    if (node) node.addEventListener(eventName, handler);
   }
 
   async function loadSchema() {
@@ -86,6 +95,21 @@
 
   function saveSession() {
     localStorage.setItem(sessionKey, JSON.stringify(state.session));
+  }
+
+  function startPublicSession() {
+    state.session = {
+      token: 'public-response',
+      user: {
+        username: 'sin_login',
+        name: 'Acceso directo por correo',
+        role: 'respondiente'
+      },
+      publicAccess: true,
+      createdAt: new Date().toISOString()
+    };
+    localStorage.removeItem(sessionKey);
+    state.currentView = 'formulario';
   }
 
   function loadRecords() {
@@ -124,7 +148,7 @@
         }
       } else if (cfg.allowLocalDemoLogin) {
         const localUser = await findLocalUser(user, password);
-        if (!localUser) throw new Error('No se encontró ese acceso. Si recibió la encuesta por correo y es su primera vez, pulse Crear acceso.');
+        if (!localUser) throw new Error('No se encontró ese acceso. La versión pública para respondientes no requiere login.');
         result = { success: true, token: `local-${Date.now()}`, user: localUser };
       } else {
         throw new Error('No se pudo validar el acceso. Revise usuario, correo o contraseña.');
@@ -300,13 +324,20 @@
   function showApp() {
     $('#login-view').hidden = true;
     $('#app-view').hidden = false;
-    $('#session-user').textContent = `${state.session.user.name || state.session.user.username} · ${state.session.user.role || 'usuario'}`;
+    const publicMode = cfg.requireLogin === false;
+    $('#session-user').textContent = publicMode ? 'Acceso directo por correo' : `${state.session.user.name || state.session.user.username} · ${state.session.user.role || 'usuario'}`;
+    if ($('#logout-btn')) $('#logout-btn').hidden = publicMode;
     applyRoleAccess();
     refreshAll();
     switchView(canAccessView(state.currentView) ? state.currentView : defaultViewForRole());
   }
 
   function logout() {
+    if (cfg.requireLogin === false) {
+      startPublicSession();
+      showApp();
+      return;
+    }
     state.session = null;
     localStorage.removeItem(sessionKey);
     $('#app-view').hidden = true;
@@ -342,6 +373,7 @@
   function applyRoleAccess() {
     const admin = isAdmin();
     document.body.classList.toggle('field-user-mode', !!state.session && !admin);
+    document.body.classList.toggle('public-response-mode', cfg.requireLogin === false);
     $$('.tab').forEach((btn) => {
       btn.hidden = !admin && btn.dataset.view !== 'formulario';
     });
@@ -372,8 +404,8 @@
     const actions = document.createElement('div');
     actions.className = 'form-actions';
     actions.innerHTML = `
-      <button class="secondary-btn" type="button" id="save-draft-btn">Guardar borrador local ${infoTip('Guarda el avance en este dispositivo para terminar más tarde. Luego debe volver desde este mismo navegador.', false)}</button>
-      <button class="primary-btn" type="submit">Guardar encuesta ${infoTip('Guarda la respuesta completa. Si la app muestra pendiente, pulse Sincronizar cuando tenga conexión.', false)}</button>
+      <button class="secondary-btn" type="button" id="save-draft-btn">Guardar copia local ${infoTip('Guarda el avance en este navegador. Si el envío no está disponible, esta copia queda como respaldo local.', false)}</button>
+      <button class="primary-btn" type="submit">Guardar y enviar encuesta ${infoTip('Guarda la respuesta completa e intenta enviarla al backend institucional cuando esté configurado.', false)}</button>
     `;
     form.appendChild(actions);
     form.addEventListener('input', () => {
@@ -476,7 +508,14 @@
       return 'Ingrese solo números. Revise que el valor corresponda a la empresa encuestada.';
     }
     if (field.type === 'radio') return 'Seleccione una sola opción. Si se equivoca, puede tocar otra opción antes de guardar.';
-    if (field.type === 'likert') return 'Seleccione un valor de 1 a 5. 1 significa menor importancia o menor medida; 5 significa mayor importancia o mayor medida.';
+    if (field.type === 'likert') {
+      const scale = state.schema.scales[field.scale] || {};
+      const min = String(scale.min || 1);
+      const max = String(scale.max || 5);
+      const low = scale.labels?.[min] || 'valor menor';
+      const high = scale.labels?.[max] || 'valor mayor';
+      return `Seleccione un valor de ${min} a ${max}. ${min} significa "${low}" y ${max} significa "${high}".`;
+    }
     if (field.type === 'textarea') return 'Escriba un comentario breve y claro. No incluya contraseñas, datos bancarios ni información sensible innecesaria.';
     if (field.required) return 'Campo obligatorio. Debe completarlo antes de guardar la encuesta.';
     return 'Campo opcional. Complételo si cuenta con la información.';
@@ -558,7 +597,7 @@
       status: draftOnly ? 'pendiente' : 'pendiente',
       attempts: 0,
       lastError: '',
-      user: state.session?.user?.username || 'local',
+      user: respondentId(data),
       data
     };
     state.records.unshift(record);
@@ -566,8 +605,16 @@
     form.reset();
     applyConditions();
     updateProgress();
-    setOperationalStatus(draftOnly ? 'Borrador guardado localmente.' : 'Encuesta guardada localmente. Use Sincronizar cuando tenga conexión.');
+    if (!draftOnly && cfg.gasExecUrl) {
+      await syncPending();
+    } else {
+      setOperationalStatus(draftOnly ? 'Copia local guardada en este navegador.' : 'Encuesta guardada en este navegador. El envío a la planilla quedará pendiente hasta que el backend esté habilitado.');
+    }
     switchView(isAdmin() ? 'registros' : 'formulario');
+  }
+
+  function respondentId(data) {
+    return String(data.correo_electronico || data.ruc || data.empresa || 'sin_login').trim() || 'sin_login';
   }
 
   async function syncPending() {
@@ -584,7 +631,7 @@
     setOperationalStatus('Sincronizando pendientes...');
     for (const record of pending) {
       try {
-        const result = await apiCall('saveSurvey', { token: state.session.token, record, legacy: buildLegacyPayload(record) });
+        const result = await apiCall('saveSurvey', { token: state.session?.token || '', record, legacy: buildLegacyPayload(record), respondent: respondentId(record.data || {}) });
         if (!result.success) throw new Error(result.message || 'No se confirmó el guardado.');
         record.status = 'sincronizado';
         record.remoteId = result.remoteId || record.submissionId;
@@ -888,7 +935,7 @@
       <h3>Lectura operativa</h3>
       <p class="status-text">Registros en este dispositivo: ${state.records.length}</p>
       <p class="status-text">Promedio de empleados informado: ${avgEmployees ? avgEmployees.toFixed(1) : 'Sin datos'}</p>
-      <p class="status-text">Fuente del instrumento: encuestaMIPYMES.pdf</p>
+      <p class="status-text">Fuente del instrumento: cuestionario final DOCX 2026</p>
     `;
     return card;
   }
@@ -1034,7 +1081,7 @@
   }
 
   function sizeLabel(value) {
-    return ({ '1': '6 a 9', '2': '10 a 49', '3': '50 a 249' })[String(value || '')] || '';
+    return ({ '1': 'Hasta 10', '2': '11 a 30', '3': '31 o más' })[String(value || '')] || '';
   }
 
   function formatDate(value) {

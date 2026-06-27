@@ -3,7 +3,7 @@
 Asunto sugerido:
 
 ```text
-Encuesta MIPYMES FAEDPYME 2026 - enlace para responder
+Encuesta MIPYMES 2026 - enlace para responder
 ```
 
 Cuerpo sugerido:
@@ -11,23 +11,21 @@ Cuerpo sugerido:
 ```text
 Estimado/a:
 
-Le invitamos a completar la Encuesta MIPYMES FAEDPYME 2026: Factores de continuidad de la Mipyme.
+Le invitamos a completar la Encuesta MIPYMES 2026 sobre factores de continuidad de la Mipyme.
 
 Enlace de acceso:
 https://investigapyrm.github.io/encuestaMIPYMES/
 
 Instrucciones:
 
-1. Si es la primera vez que ingresa, pulse Crear acceso.
-2. Use su correo electrónico o un usuario simple como nombre.apellido.
-3. Cree una contraseña de al menos 6 caracteres.
-4. Luego pulse Ingresar con ese mismo usuario o correo y contraseña.
-5. Complete el cuestionario y pulse Guardar encuesta.
-6. Si la app muestra que hay datos pendientes, pulse Sincronizar cuando tenga conexión.
+1. Abra el enlace desde su computadora.
+2. Complete una respuesta por empresa.
+3. Al finalizar, pulse Guardar y enviar encuesta.
+4. Si la app muestra que hay datos pendientes, pulse Enviar pendientes cuando tenga conexión.
 
 Durante la carga encontrará íconos (i) con notas de ayuda. En computadora aparecen al pasar el cursor; en celular puede tocarlos.
 
-No incluya contraseñas, datos bancarios ni información sensible no solicitada por la encuesta.
+No necesita crear usuario ni contraseña. No incluya contraseñas, datos bancarios ni información sensible no solicitada por la encuesta.
 
 Muchas gracias por su colaboración.
 ```

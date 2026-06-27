@@ -1,5 +1,5 @@
 function getBootstrap(payload) {
-  var session = requireSession(payload.token);
+  var session = APP_CONFIG.REQUIRE_LOGIN === false ? publicSession({}) : requireSession(payload.token);
   audit('get_bootstrap', session.username, 'app', APP_CONFIG.APP_NAME, {});
   return {
     success: true,
@@ -12,9 +12,9 @@ function getBootstrap(payload) {
 }
 
 function saveSurvey(payload) {
-  var session = requireSession(payload.token);
   var record = payload.record || {};
   var data = record.data || {};
+  var session = APP_CONFIG.REQUIRE_LOGIN === false ? publicSession(data, payload.respondent) : requireSession(payload.token);
   validateSurvey(data);
   var sh = getSheet(SHEETS.RESPUESTAS, RESPONSE_HEADERS);
   var row = RESPONSE_HEADERS.map(function(header) {
@@ -34,6 +34,18 @@ function saveSurvey(payload) {
   }
   audit('save_survey', session.username, SHEETS.RESPUESTAS, remoteId, { empresa: data.empresa || '' });
   return { success: true, remoteId: remoteId };
+}
+
+function publicSession(data, respondent) {
+  var username = String(respondent || data.correo_electronico || data.ruc || data.empresa || 'sin_login').trim();
+  if (!username) username = 'sin_login';
+  if (username.length > 120) username = username.slice(0, 120);
+  return {
+    username: username,
+    name: 'Respondiente sin login',
+    role: 'respondiente',
+    publicAccess: true
+  };
 }
 
 function saveResponse(payload) {
@@ -139,5 +151,11 @@ function validateSurvey(data) {
   if (pct < 0 || pct > 100) throw new Error('El porcentaje de exportaciones debe estar entre 0 y 100.');
   if (pct > 0 && (data.q10_paises_exportacion === undefined || data.q10_paises_exportacion === '')) {
     throw new Error('Debe informar cantidad de países cuando exportaciones es mayor que 0.');
+  }
+  if (String(data.q18_experiencia_cierre || '') === '1' && !data.q18_causa_principal) {
+    throw new Error('Debe informar la causa principal cuando existió experiencia previa de cierre.');
+  }
+  if (String(data.q18_causa_principal || '') === 'otra' && !data.q18_causa_otra) {
+    throw new Error('Debe especificar la causa cuando selecciona Otra.');
   }
 }

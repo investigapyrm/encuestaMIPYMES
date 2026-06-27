@@ -1,8 +1,9 @@
 const APP_CONFIG = {
-  APP_NAME: 'FAEDPYME 2026 - Encuesta MIPYMES',
-  APP_VERSION: '0.1.7',
+  APP_NAME: 'Investigación 2026 - Encuesta MIPYMES',
+  APP_VERSION: '0.2.0',
   TIMEZONE: 'America/Asuncion',
   SPREADSHEET_ID: '1lfasg9YkGM_4jAuP6LDoZd-0aFxePBUksZB_1lJDKtQ',
+  REQUIRE_LOGIN: false,
   SESSION_TTL_SECONDS: 21600,
   SESSION_PREFIX: 'session:',
   PASSWORD_SALT_KEY: 'MIPYMES_PASSWORD_SALT'
@@ -20,7 +21,7 @@ const SHEETS = {
 
 const RESPONSE_HEADERS = [
   'submissionId', 'createdAt', 'syncedAt', 'source', 'user', 'status',
-  'empresa', 'correo_electronico', 'nif',
+  'empresa', 'correo_electronico', 'ruc',
   'q01_sector', 'q02_anio_fundacion', 'q03a_tamano_empresa', 'q03b_numero_medio_empleados',
   'q04_empresa_familiar', 'q05a_genero_gerente', 'q05b_edad_gerente',
   'q06_mujeres_equipo_directivo_pct', 'q07_gerente_estudios_universitarios',
@@ -45,7 +46,7 @@ const RESPONSE_HEADERS = [
   'q17_relevo_generacional', 'q17_conflictos_propiedad', 'q17_cansancio_gerencia',
   'q17_baja_respuesta_cambios', 'q17_conocimientos_profesionalizacion',
   'q17_baja_productividad', 'q17_oferta_compra',
-  'q18_experiencia_cierre', 'q19_opinion_abandono',
+  'q18_experiencia_cierre', 'q18_causa_principal', 'q18_causa_otra', 'q19_opinion_abandono',
   'raw_json'
 ];
 
