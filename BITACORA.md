@@ -1492,3 +1492,252 @@
 * No enviar campaña masiva hasta que la URL pública actualizada y el backend GAS estén verificados de punta a punta.
 * En el correo, indicar que no se necesita usuario ni contraseña.
 * Si se requiere administración, publicarla en un flujo separado del enlace enviado a respondientes.
+
+## 2026-06-28 13:37
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES Investigacion 2026
+* Cliente o institucion: investigapyrm
+* Ruta local: `J:\Mi unidad\encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL publica: `https://investigapyrm.github.io/encuestaMIPYMES/`
+* Responsable: Codex
+* Version revisada: `0.2.0` / cache `20260627-1` / Pages commit `ff264c3f0a6a09b9f15f1a7ddbaa91c3a2c5c9c7`
+
+### Objetivo de la intervencion
+
+* Verificar la situacion real de GitHub Pages desde `settings/pages`, la URL publica y los proximos pasos operativos.
+
+### Diagnostico inicial
+
+* GitHub remoto existe, es publico y tiene rama default `main`.
+* La carpeta local conserva los archivos del proyecto, pero la metadata Git local aparece como repositorio sin commits: `No commits yet on main...origin/main [gone]`.
+* Hay un lock local antiguo en `.git/refs/remotes/origin/main.lock`, creado el 2026-06-27 16:07, que impide actualizar `origin/main`.
+* El frontend publicado no tiene backend GAS activo porque `config.js` mantiene `gasExecUrl: ''`.
+
+### Acciones realizadas
+
+* Se reviso el protocolo institucional de appwebs, el manual maestro y la bitacora local.
+* Se consulto la API de GitHub Pages para `investigapyrm/encuestaMIPYMES`.
+* Se verifico la URL publica de GitHub Pages con cache-busting.
+* Se verificaron `config.js`, `service-worker.js` y `data/survey-schema.json` publicados.
+* Se consulto el ultimo build de GitHub Pages y el ultimo commit de `main`.
+* Se compararon hashes de blobs del arbol remoto `main` contra archivos locales versionables.
+* Se contrasto la carpeta local contra `FETCH_HEAD` y se detectaron cambios funcionales locales `0.2.1` no publicados.
+* Se reviso `clasp`, deployments GAS conocidos y validaciones sintacticas locales.
+
+### Archivos modificados
+
+* `BITACORA.md`
+* Copia central prevista/sincronizada: `G:\Mi unidad\MANUAL_MAESTRO_FORMATOS_FUNCIONES_APPWEB\BITACORAS_PROYECTOS\BITACORA_ENCUESTA_MIPYMES_FAEDPYME_2026.md`
+
+### Comandos o scripts ejecutados
+
+* `git status --branch --short`
+* `git remote -v`
+* `gh repo view investigapyrm/encuestaMIPYMES --json ...`
+* `gh api repos/investigapyrm/encuestaMIPYMES/pages`
+* `gh api repos/investigapyrm/encuestaMIPYMES/pages/builds/latest`
+* `gh api repos/investigapyrm/encuestaMIPYMES/commits/main`
+* `gh api repos/investigapyrm/encuestaMIPYMES/git/trees/main?recursive=1`
+* `Invoke-WebRequest https://investigapyrm.github.io/encuestaMIPYMES/?v=20260628-check`
+* `Invoke-WebRequest https://investigapyrm.github.io/encuestaMIPYMES/config.js?v=20260628-check`
+* `Invoke-WebRequest https://investigapyrm.github.io/encuestaMIPYMES/service-worker.js?v=20260628-check`
+* `Invoke-WebRequest https://investigapyrm.github.io/encuestaMIPYMES/data/survey-schema.json?v=20260628-check`
+* `clasp show-authorized-user`
+* `clasp deployments`
+* `clasp versions`
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* `python -m json.tool data\survey-schema.json`
+* `python -m json.tool manifest.json`
+* `python -m json.tool gas\appsscript.json`
+
+### Resultados verificados
+
+* GitHub Pages esta configurado y construido: `status: built`, `public: true`, `https_enforced: true`, fuente `main` en ruta `/`.
+* URL publica verificada con HTTP `200`: `https://investigapyrm.github.io/encuestaMIPYMES/`.
+* Ultimo build Pages: `1067413999`, commit `ff264c3f0a6a09b9f15f1a7ddbaa91c3a2c5c9c7`, creado 2026-06-27 20:07:37 UTC, sin error.
+* La publicacion sirve `index.html` con assets `styles.css`, `config.js` y `app.js` versionados como `20260627-1`.
+* `config.js` publicado informa `appVersion: '0.2.0'`, `buildDate: '2026-06-27'`, `requireLogin: false`, `allowLocalDemoLogin: false` y `gasExecUrl: ''`.
+* `service-worker.js` publicado usa cache `encuesta-mipymes-v20260627-1`.
+* `data/survey-schema.json` publico responde HTTP `200`, con titulo del instrumento y 12 bloques.
+* El arbol remoto publicado corresponde a `0.2.0`; la carpeta local contiene cambios funcionales `0.2.1` aun no publicados en `README.md`, `app.js`, `config.js`, `data/survey-schema.json`, `gas/Config.gs`, `gas/Utils.gs`, `index.html`, `service-worker.js` y `styles.css`, ademas de la actualizacion de `BITACORA.md`.
+* Archivos locales no publicados: `_fuentes/encestaMID_base.xlsx`, `_fuentes/encuestadigitalizacionMIPYMES.xlsx`, `_fuentes/encuestaMIPYMES.pdf` y `Comentarios_Cuestionario_Mipymnes.docx`.
+* `clasp` esta autenticado como `apoyomedicoips@gmail.com`; para este script devuelve `The caller does not have permission` en `deployments` y `versions`.
+* Deployment GAS antiguo `AKfycbxYh3Z-6FI0xl1eaOxluFUXqyPPkBtAxqDHTFkf6yANKch26DwQIGrbckZXuJ8qan_nzg` responde JSON anonimo con version interna `0.1.0`.
+* Deployment GAS mas reciente documentado `AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q` devuelve HTTP `403`.
+* Validaciones sintacticas locales JavaScript y JSON pasaron.
+
+### Pruebas realizadas
+
+* Verificacion de configuracion GitHub Pages por API.
+* Verificacion HTTP publica de la URL, config, service worker y schema con cache-busting.
+* Comparacion remoto/local por hash de blobs y posterior contraste con `git diff FETCH_HEAD`.
+* Prueba de acceso anonimo a deployments GAS conocidos.
+* Validacion sintactica local de frontend y manifiestos.
+
+### Errores o incidentes
+
+* GitHub Pages esta operativo, pero el sistema completo no esta operativo para recepcion centralizada porque el backend GAS activo no esta configurado en la app publicada.
+* La metadata Git local esta inconsistente: rama local sin commits, `origin/main` no actualizable por lock y procesos Git vivos al momento de la revision.
+* Hay cambios locales `0.2.1` preparados o pendientes que no estan en la URL publica; no deben confundirse con el estado publicado.
+* La cuenta `clasp` activa no tiene permiso sobre el Apps Script del proyecto.
+* El unico deployment GAS que responde anonimamente es antiguo (`0.1.0`) y no debe asumirse compatible con el frontend publicado `0.2.0` ni con los cambios locales `0.2.1` sin prueba de guardado.
+
+### Soluciones aplicadas
+
+* No se modifico codigo funcional.
+* Se documento el estado verificado y se separo Pages publicado de backend operativo.
+
+### Pendientes
+
+* Recuperar la metadata Git local: cerrar procesos Git, verificar que no haya operacion activa, retirar el lock huerfano si corresponde y ejecutar `git fetch origin main --prune`.
+* Decidir si los cambios locales `0.2.1` derivados de `Comentarios_Cuestionario_Mipymnes.docx` se publican ahora o se revisan antes de subirlos.
+* Reautenticar `clasp` con una cuenta que tenga permiso sobre `scriptId 1LlCl53ftjUPkWHV13GBInR9S-WTSFu83qf8ukXFihzlGIwMgqSrqwCBW`.
+* Subir/deployar el backend GAS que se decida publicar, preferentemente local `0.2.1` si se aprueban los ajustes de `Comentarios_Cuestionario_Mipymnes.docx`, con `REQUIRE_LOGIN: false`, y ejecutar `initWorkbook`.
+* Verificar anonimamente que `/exec` del deployment actual responda JSON y acepte `saveSurvey`.
+* Configurar `gasExecUrl` en `config.js` solo despues de la prueba anonima correcta.
+* Commit/push de la configuracion final y nueva verificacion de GitHub Pages con cache-busting.
+* Ejecutar prueba punta a punta: abrir URL publica, completar encuesta de prueba, guardar/enviar, confirmar fila en Google Sheets y revisar auditoria/errores.
+
+### Riesgos
+
+* Si se envia la encuesta ahora, las respuestas pueden quedar guardadas solo en el navegador del respondiente.
+* Usar el deployment GAS antiguo puede generar incompatibilidad de esquema o guardado incompleto.
+* Limpiar el lock Git sin cerrar procesos vivos puede dañar refs locales; hacerlo solo despues de confirmar que no hay operacion Git activa.
+
+### Recomendaciones
+
+* Considerar GitHub Pages como publicado y sano, pero no considerar la app completa como operativa hasta cerrar GAS + prueba de escritura real.
+* Mantener `_fuentes/` fuera del repositorio publico salvo decision explicita.
+* Antes de campana masiva, hacer una prueba real en navegador limpio o movil y guardar evidencia en bitacora.
+
+## 2026-06-28 13:50
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES Investigacion 2026
+* Cliente o institucion: investigapyrm / FACEN
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL publica: `https://investigapyrm.github.io/encuestaMIPYMES/`
+* Responsable: Codex
+* Version generada: `0.2.1` / schema `2026-06-28.1` / cache `20260628-1`
+
+### Objetivo de la intervencion
+
+* Resolver las solicitudes registradas en `Comentarios_Cuestionario_Mipymnes.docx` y ajustar la app web al cuestionario final sin login para respondientes por correo.
+
+### Diagnostico inicial
+
+* El DOCX de comentarios no contiene `comments.xml`; las solicitudes estan escritas como texto en el cuerpo del documento.
+* Las observaciones solicitaban mención institucional FACEN / Departamento de Tecnología de Producción, textos orientadores en preguntas 8, 9, 11, 12, 13, 16, 17 y 19, titulo/descripción del bloque de continuidad, y refuerzo de la pregunta 10 condicional.
+* La pregunta 10 ya tenia validacion frontend/backend para solicitar cantidad de paises cuando el porcentaje exportado es mayor que 0.
+* El backend GAS sigue sin `gasExecUrl` activo en frontend; por tanto no se considera validado el guardado real en Google Sheets.
+
+### Acciones realizadas
+
+* Se extrajo el texto de `Comentarios_Cuestionario_Mipymnes.docx`.
+* Se actualizo `data/survey-schema.json` a `2026-06-28.1`.
+* Se agrego la propiedad `intro` para mostrar preguntas orientadoras antes de grupos de afirmaciones.
+* Se ajusto `app.js` para renderizar `intro` y ocultarlo cuando el campo asociado es condicional y no corresponde.
+* Se agrego estilo `.question-intro` en `styles.css`.
+* Se incorporo mención visible a FACEN y al Departamento de Tecnología de Producción en `index.html`.
+* Se actualizo versionado de assets y service worker a `20260628-1`.
+* Se actualizo backend GAS a version `0.2.1` sin cambiar columnas.
+* Se actualizaron README, manual de usuario, manual tecnico, diccionario de datos y texto de correo.
+
+### Archivos modificados
+
+* `Comentarios_Cuestionario_Mipymnes.docx`
+* `data/survey-schema.json`
+* `app.js`
+* `styles.css`
+* `index.html`
+* `config.js`
+* `service-worker.js`
+* `gas/Config.gs`
+* `gas/Utils.gs`
+* `README.md`
+* `docs/manual_usuario.md`
+* `docs/manual_tecnico.md`
+* `docs/diccionario_datos.md`
+* `docs/texto_correo_invitacion.md`
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `python3` con `python-docx` para leer el DOCX de comentarios.
+* `python3` para actualizacion estructurada de `survey-schema.json`.
+* `node --check app.js`
+* `node --check config.js`
+* `node --check service-worker.js`
+* `python3 -m json.tool data/survey-schema.json`
+* `python3 -m json.tool manifest.json`
+* `python3 -m json.tool gas/appsscript.json`
+* Validacion sintactica GAS copiando temporalmente `gas/*.gs` como `.js`.
+* `git diff --check`
+* `python3 -m http.server 4173`
+* Chrome headless via DevTools Protocol para DOM y capturas.
+
+### Resultados verificados
+
+* La app local abre directamente el formulario sin login.
+* La cabecera y pantalla inicial mencionan FACEN y Departamento de Tecnología de Producción.
+* Se renderizan los textos orientadores de las preguntas 8, 9, 11, 12, 13, 16 y 17.
+* La pregunta 19 muestra la redaccion final solicitada.
+* El titulo `CONTINUIDAD / SUPERVIVENCIA DE LA EMPRESA` aparece al iniciar el bloque de continuidad.
+* La intro de la pregunta 10.2 queda oculta cuando el porcentaje exportado es 0 o vacio, y aparece al ingresar un valor mayor que 0.
+* La version publicada localmente usa assets `20260628-1`.
+* Capturas desktop y movil no muestran cortes criticos ni solapamientos del flujo principal.
+
+### Pruebas realizadas
+
+* Validacion JavaScript.
+* Validacion JSON.
+* Validacion GAS por copia temporal.
+* Revision de diferencias sin espacios problematicos.
+* Prueba DOM con Chrome/CDP:
+  * `appVisible: true`
+  * `loginHidden: true`
+  * `facen: true`
+  * `q10IntroHiddenBefore: true`
+  * `q10IntroHiddenAfterPctFive: false`
+* Capturas:
+  * `/tmp/encuesta_mipymes_20260628_desktop.png`
+  * `/tmp/encuesta_mipymes_20260628_mobile.png`
+
+### Errores o incidentes
+
+* `Comentarios_Cuestionario_Mipymnes.docx` no trae comentarios estructurados de Word; se resolvio extrayendo parrafos del cuerpo.
+* `chrome --dump-dom` quedo colgado por procesos auxiliares de Chrome; se reemplazo por prueba controlada con DevTools Protocol.
+* El backend GAS no fue desplegado ni activado en esta intervencion; `gasExecUrl` permanece vacio.
+
+### Soluciones aplicadas
+
+* Se agrego un mecanismo reutilizable de textos orientadores (`intro`) sin alterar los codigos de variables.
+* Se mantuvo el flujo sin login solicitado para respuestas por correo.
+* Se mantuvo separada la validacion frontend/Pages de la validacion backend/GAS.
+
+### Pendientes
+
+* Commit y push de los ajustes `0.2.1`.
+* Verificar propagacion en GitHub Pages con cache-busting.
+* Reautenticar `clasp` con cuenta con permiso sobre el proyecto Apps Script.
+* Publicar backend GAS actual, activar `/exec` publico y configurar `gasExecUrl` solo despues de verificar JSON anonimo.
+* Probar guardado real en Google Sheets antes de enviar la encuesta masivamente.
+
+### Riesgos
+
+* Sin backend GAS operativo, las respuestas quedan pendientes localmente en el navegador del respondiente.
+* La identidad sin login depende de empresa, correo y RUC informados por el respondiente.
+* Si el navegador conserva cache previa, el usuario debe usar el boton `Actualizar` o abrir con cache-busting hasta que el service worker nuevo se instale.
+
+### Recomendaciones
+
+* Incorporar al manual maestro el patron `intro` para encuestas donde una pregunta orientadora debe preceder una matriz de afirmaciones sin crear una variable nueva.
+* No enviar campana masiva hasta verificar una respuesta real guardada en Sheets.
+* Mantener la administracion separada del enlace publico enviado por correo.

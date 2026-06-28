@@ -1,6 +1,7 @@
 # Diccionario de datos
 
 Fuente del instrumento: `FACEN _Cuestionario 2026 Factores de continuidad de las mipymes.docx`.
+Fuente de ajustes finales de redacción: `Comentarios_Cuestionario_Mipymnes.docx`.
 
 ## Metadatos
 
@@ -39,3 +40,7 @@ El esquema completo está en `data/survey-schema.json`. Las escalas usadas son:
 | Importancia de innovaciones | `1` muy poca, `5` mucha. |
 | Factores de abandono | `1` nada importante, `5` muy importante. |
 | Causa principal de cierre | `quiebra`, `abandono`, `salida_estrategica`, `otra`. |
+
+## Textos orientadores
+
+Los textos orientadores incorporados en `data/survey-schema.json` mediante la propiedad `intro` no son variables de respuesta. Se muestran antes de grupos de afirmaciones para mejorar comprensión del informante y mantener las variables originales sin cambios.

@@ -11,6 +11,8 @@ La app pública no requiere usuario ni contraseña. Si recibió el enlace por co
 
 Los íconos `(i)` muestran notas de ayuda. En computadora aparecen al pasar el cursor; en celular o tablet puede tocarlos o enfocarlos.
 
+La encuesta corresponde a la Investigación 2026 sobre factores de continuidad de la Mipyme en Paraguay, realizada por la FACEN desde el Departamento de Tecnología de Producción.
+
 ## Cargar encuesta
 
 El enlace abre directamente el cuestionario. No hay pantalla de login para respondientes.
@@ -22,6 +24,8 @@ El enlace abre directamente el cuestionario. No hay pantalla de login para respo
 5. En la pregunta 13, indicar primero si realizó la innovación. La importancia se habilita cuando corresponde.
 6. En la pregunta 18, si respondió que tuvo experiencia previa de cierre, indicar la causa principal.
 7. Guardar y enviar encuesta.
+
+Algunos bloques muestran una pregunta orientadora antes de las afirmaciones. Ese texto ayuda a interpretar la escala, pero no reemplaza la selección de cada ítem obligatorio.
 
 En móvil, las escalas de 1 a 5 se muestran como botones horizontales compactos. Al tocar una opción, la app avanza suavemente hacia el siguiente campo visible para acelerar la carga.
 

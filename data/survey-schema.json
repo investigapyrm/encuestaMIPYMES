@@ -1,12 +1,13 @@
 {
-  "schema_version": "2026-06-27.1",
+  "schema_version": "2026-06-28.1",
   "title": "Investigación 2026: Factores de continuidad (supervivencia) de la Mipyme en Paraguay",
   "source": {
     "document": "FACEN _Cuestionario 2026 Factores de continuidad de las mipymes.docx",
     "spreadsheet_shortcut": "encuestaMIPYMES.gsheet",
     "spreadsheet_id": "1lfasg9YkGM_4jAuP6LDoZd-0aFxePBUksZB_1lJDKtQ",
-    "extraction_date": "2026-06-27",
-    "notes": "Esquema actualizado desde el DOCX final indicado por el usuario como instrumento maestro. No contiene respuestas individuales."
+    "extraction_date": "2026-06-28",
+    "notes": "Esquema actualizado desde el DOCX final y las solicitudes de ajuste recibidas en Comentarios_Cuestionario_Mipymnes.docx. No contiene respuestas individuales.",
+    "comments_document": "Comentarios_Cuestionario_Mipymnes.docx"
   },
   "scales": {
     "likert_1_5_measure": {
@@ -247,7 +248,8 @@
       "type": "likert",
       "required": true,
       "block": "gobierno",
-      "scale": "likert_1_5_measure"
+      "scale": "likert_1_5_measure",
+      "intro": "¿Qué planteamiento de gobierno corporativo tiene para los próximos 2-3 años?"
     },
     {
       "code": "q08_directivos_externos",
@@ -287,7 +289,8 @@
       "type": "radio",
       "required": true,
       "block": "innovacion",
-      "scale": "evolution_1_3_last"
+      "scale": "evolution_1_3_last",
+      "intro": "En su opinión, ¿cuál ha sido la evolución y expectativas de su empresa en las siguientes variables?"
     },
     {
       "code": "q09_ventas_2026",
@@ -352,7 +355,9 @@
         "field": "q10_exportaciones_pct",
         "operator": ">",
         "value": 0
-      }
+      },
+      "intro": "Si el porcentaje anterior es superior a 0, preguntar: ¿a cuántos países?",
+      "hint": "Este campo se habilita solo cuando el porcentaje de ventas internacionales es mayor que 0."
     },
     {
       "code": "q11_situacion_economica",
@@ -360,7 +365,8 @@
       "type": "likert",
       "required": true,
       "block": "entorno",
-      "scale": "likert_nada_mucho"
+      "scale": "likert_nada_mucho",
+      "intro": "¿En qué medida su entorno empresarial le resulta favorable?"
     },
     {
       "code": "q11_infraestructuras",
@@ -400,7 +406,8 @@
       "type": "likert",
       "required": true,
       "block": "rendimiento",
-      "scale": "likert_peor_mejor"
+      "scale": "likert_peor_mejor",
+      "intro": "En comparación con sus competidores directos, indique cuál es su posición actual en los siguientes indicadores de rendimiento:"
     },
     {
       "code": "q12_eficiencia_procesos",
@@ -456,7 +463,8 @@
       "type": "radio",
       "required": true,
       "block": "innovaciones_realizadas",
-      "scale": "yes_no_1_0"
+      "scale": "yes_no_1_0",
+      "intro": "Indique si su empresa ha realizado, en los dos últimos años (2024-2025), las siguientes innovaciones y, en caso afirmativo, señale el grado de importancia para su empresa de cada una de ellas:"
     },
     {
       "code": "q13_01_importancia",
@@ -749,7 +757,8 @@
       "type": "likert",
       "required": true,
       "block": "continuidad_costes",
-      "scale": "likert_nada_importante"
+      "scale": "likert_nada_importante",
+      "intro": "Valore ahora, según su experiencia, la influencia de los siguientes factores de coste:"
     },
     {
       "code": "q16_energia_materias",
@@ -789,7 +798,8 @@
       "type": "likert",
       "required": true,
       "block": "continuidad_interna",
-      "scale": "likert_nada_importante"
+      "scale": "likert_nada_importante",
+      "intro": "Seguidamente, de acuerdo con su experiencia, le pedimos que valore la importancia de diversos factores internos en las decisiones de abandono de la actividad empresarial:"
     },
     {
       "code": "q17_conflictos_propiedad",
@@ -891,17 +901,18 @@
     },
     {
       "code": "q19_opinion_abandono",
-      "label": "19. Opinión para comprender las razones que conllevan el abandono de la actividad empresarial en las Mipymes",
+      "label": "19. Para terminar, puede añadir cualquier opinión que ayude a comprender las razones que conllevan el abandono de la actividad empresarial en las Mipymes",
       "type": "textarea",
       "required": false,
-      "block": "cierre"
+      "block": "cierre",
+      "hint": "Comentario opcional. No incluya contraseñas, datos bancarios ni información sensible innecesaria."
     }
   ],
   "blocks": [
     {
       "id": "identificacion",
       "title": "Identificación",
-      "description": "Datos básicos de la empresa respondiente. La información será tratada con confidencialidad según la Ley N° 1682/2001."
+      "description": "Datos básicos de la empresa respondiente. Investigación realizada por la FACEN desde el Departamento de Tecnología de Producción. La información será tratada con confidencialidad según la Ley N° 1682/2001."
     },
     {
       "id": "general",
@@ -916,27 +927,27 @@
     {
       "id": "innovacion",
       "title": "Innovación y rendimiento",
-      "description": "Evolución, expectativas y presencia internacional."
+      "description": "Evolución, expectativas y presencia internacional de la empresa."
     },
     {
       "id": "entorno",
       "title": "Entorno empresarial",
-      "description": "Factores del entorno que pueden resultar favorables o desfavorables."
+      "description": "¿En qué medida su entorno empresarial le resulta favorable?"
     },
     {
       "id": "rendimiento",
       "title": "Rendimiento frente a competidores",
-      "description": "Posición actual de la empresa respecto a competidores directos."
+      "description": "En comparación con sus competidores directos, indique cuál es su posición actual en los siguientes indicadores de rendimiento:"
     },
     {
       "id": "innovaciones_realizadas",
       "title": "Innovaciones realizadas 2024-2025",
-      "description": "Innovaciones realizadas y nivel de importancia cuando corresponda."
+      "description": "Indique si su empresa ha realizado, en los dos últimos años (2024-2025), las siguientes innovaciones y, en caso afirmativo, señale el grado de importancia para su empresa de cada una de ellas:"
     },
     {
       "id": "continuidad_financiera",
-      "title": "Continuidad: factores económico-financieros",
-      "description": "Importancia de factores financieros en el abandono de actividad empresarial."
+      "title": "CONTINUIDAD / SUPERVIVENCIA DE LA EMPRESA",
+      "description": "Las siguientes preguntas no se refieren necesariamente a la situación actual de su empresa, sino a su opinión general sobre los factores que pueden afectar a la continuidad o supervivencia de las Mipymes."
     },
     {
       "id": "continuidad_externa",
@@ -946,12 +957,12 @@
     {
       "id": "continuidad_costes",
       "title": "Continuidad: factores de coste",
-      "description": "Influencia de distintos factores de coste."
+      "description": "Valore ahora, según su experiencia, la influencia de los siguientes factores de coste:"
     },
     {
       "id": "continuidad_interna",
       "title": "Continuidad: factores internos",
-      "description": "Factores internos asociados a decisiones de abandono."
+      "description": "Seguidamente, de acuerdo con su experiencia, le pedimos que valore la importancia de diversos factores internos en las decisiones de abandono de la actividad empresarial:"
     },
     {
       "id": "cierre",

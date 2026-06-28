@@ -6,7 +6,7 @@
 - `styles.css`: estilos institucionales.
 - `app.js`: renderizado del formulario público, cola local, registros, indicadores, permisos por rol y seguimiento técnico.
 - `config.js`: versión, ID de planilla, URL del backend y modo de acceso público.
-- `data/survey-schema.json`: esquema del instrumento derivado del DOCX final.
+- `data/survey-schema.json`: esquema del instrumento derivado del DOCX final y del DOCX de comentarios finales.
 - `gas/`: backend Apps Script.
 - `gas_original/`: respaldo del Apps Script existente antes de la adaptación del instrumento 2026.
 
@@ -40,7 +40,7 @@ Hojas esperadas:
 
 ## Seguridad y acceso público
 
-La versión `0.2.0` está orientada a envío por correo a contactos externos. El respondiente no debe crear usuario ni contraseña; el enlace abre directamente el formulario. Para producción:
+La versión `0.2.1` está orientada a envío por correo a contactos externos. El respondiente no debe crear usuario ni contraseña; el enlace abre directamente el formulario. Para producción:
 
 - Definir `gasExecUrl`.
 - Ejecutar `initWorkbook`.
@@ -77,9 +77,9 @@ El autorregistro público fue retirado del flujo de respondientes. Roles `superv
 
 `app.js` centraliza permisos con `isAdmin`, `canAccessView`, `defaultViewForRole` y `applyRoleAccess`.
 
-- `encuestador` y `censista`: solo pueden abrir `Formulario`.
-- Usuarios auto registrados desde correo quedan como `encuestador` por defecto.
-- `validateUsername` acepta correo electrónico o formato `nombre.apellido`.
+- `respondiente`: sesión pública local usada cuando `requireLogin` es `false`; solo puede abrir `Formulario`.
+- `encuestador` y `censista`: roles conservados para un eventual flujo interno, solo pueden abrir `Formulario`.
+- `validateUsername` acepta correo electrónico o formato `nombre.apellido`, pero no se usa en el enlace público sin login.
 - `admin`: puede abrir todos los módulos y la hoja online.
 - Cualquier intento de cambiar a una vista no permitida se redirige a `Formulario`.
 
@@ -90,6 +90,8 @@ La pestaña `Seguimiento` es exclusiva para `admin` y se alimenta de `state.reco
 La interfaz usa ayudas `(i)` en bloques de formulario, preguntas y botones de guardado/envío. En escritorio se muestran con hover; en móvil con foco/toque cuando el elemento es enfocable.
 
 Para preguntas del esquema, `fieldHelpText` genera la ayuda según `hint`, tipo de campo, obligatoriedad y unidad. No debe reemplazar validaciones: solo reduce errores de interpretación.
+
+El esquema también admite `intro` por campo. La app lo renderiza antes del primer ítem de un grupo cuando el instrumento necesita una pregunta orientadora visible seguida de afirmaciones, como en preguntas 8, 9, 11, 12, 13, 16 y 17.
 
 ## Formulario móvil
 

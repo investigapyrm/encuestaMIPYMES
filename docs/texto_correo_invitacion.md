@@ -11,7 +11,7 @@ Cuerpo sugerido:
 ```text
 Estimado/a:
 
-Le invitamos a completar la Encuesta MIPYMES 2026 sobre factores de continuidad de la Mipyme.
+Le invitamos a completar la Encuesta MIPYMES 2026 sobre factores de continuidad de la Mipyme en Paraguay, realizada por la FACEN desde el Departamento de Tecnología de Producción.
 
 Enlace de acceso:
 https://investigapyrm.github.io/encuestaMIPYMES/

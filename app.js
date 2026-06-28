@@ -397,7 +397,16 @@
       section.className = 'form-block';
       const blockHelp = block.description || 'Complete este bloque con la información disponible de la empresa.';
       section.innerHTML = `<h3>${escapeHtml(block.title)} ${infoTip(blockHelp)}</h3>${block.description ? `<p class="form-block-description">${escapeHtml(block.description)}</p>` : ''}`;
-      block.fields.forEach((field) => section.appendChild(renderField(field)));
+      block.fields.forEach((field) => {
+        if (field.intro) {
+          const intro = document.createElement('p');
+          intro.className = 'question-intro';
+          intro.dataset.introFor = field.code;
+          intro.textContent = field.intro;
+          section.appendChild(intro);
+        }
+        section.appendChild(renderField(field));
+      });
       form.appendChild(section);
     });
 
@@ -548,6 +557,8 @@
       const row = $(`[data-code="${cssEscape(field.code)}"]`);
       if (!row) return;
       const visible = !field.condition || evaluateCondition(field.condition, values);
+      const intro = $(`[data-intro-for="${cssEscape(field.code)}"]`);
+      if (intro) intro.classList.toggle('hidden', !visible);
       row.classList.toggle('hidden', !visible);
       $$('input, textarea, select', row).forEach((input) => {
         input.disabled = !visible;

@@ -84,10 +84,10 @@ button {
 }
 
 .survey-mark.compact {
-  width: 44px;
+  width: 56px;
   height: 44px;
   margin-bottom: 0;
-  font-size: 0.86rem;
+  font-size: 0.78rem;
 }
 
 .eyebrow {
@@ -538,6 +538,20 @@ textarea:focus {
 .form-block-description {
   color: var(--muted);
   margin: -6px 0 16px;
+}
+
+.question-intro {
+  margin: 14px 0 8px;
+  padding: 12px 14px;
+  border-left: 4px solid var(--teal);
+  background: rgba(0, 168, 150, 0.08);
+  color: var(--ink);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.question-intro.hidden {
+  display: none;
 }
 
 .field-row {

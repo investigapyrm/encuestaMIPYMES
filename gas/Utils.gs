@@ -7,7 +7,7 @@ function initWorkbook() {
   getSheet(SHEETS.ERRORES, ERROR_HEADERS);
   var versions = getSheet(SHEETS.VERSIONES, VERSION_HEADERS);
   if (versions.getLastRow() < 2) {
-    versions.appendRow([nowIso(), APP_CONFIG.APP_VERSION, '2026-06-27.1', 'Inicialización de estructura operativa sin login para respondientes']);
+    versions.appendRow([nowIso(), APP_CONFIG.APP_VERSION, '2026-06-28.1', 'Estructura operativa sin login con ajustes finales de textos orientadores del cuestionario']);
   }
   return { success: true };
 }

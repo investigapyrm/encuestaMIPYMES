@@ -9,6 +9,7 @@ App web institucional para captura de la encuesta **Investigación 2026: Factore
 - Base operativa: Google Sheets asociado a `encuestaMIPYMES.gsheet`.
 - Captura offline: localStorage con cola de sincronización.
 - Instrumento maestro final: `FACEN _Cuestionario 2026 Factores de continuidad de las mipymes.docx`.
+- Ajustes finales de redacción: `Comentarios_Cuestionario_Mipymnes.docx`.
 
 ## Estado actual
 
@@ -23,6 +24,8 @@ El formulario reproduce las 19 preguntas del DOCX final, organizadas en bloques:
 - Innovaciones realizadas 2024-2025.
 - Bloque Temático: Continuidad.
 - Cierre y comentarios finales.
+
+La versión `0.2.1` incorpora las solicitudes de `Comentarios_Cuestionario_Mipymnes.docx`: mención institucional FACEN / Departamento de Tecnología de Producción, textos orientadores visibles en preguntas 8, 9, 11, 12, 13, 16, 17 y 19, y refuerzo del condicional de la pregunta 10 para cantidad de países cuando el porcentaje exportado es mayor que 0.
 
 ## Configuración
 
@@ -80,7 +83,7 @@ El respaldo del Apps Script original clonado está en `gas_original/` para audit
 
 ## Acceso público por correo
 
-La versión `0.2.0` elimina el login para respondientes. El enlace público abre directamente el formulario para que los contactos lo completen desde sus computadoras.
+La versión `0.2.1` mantiene eliminado el login para respondientes. El enlace público abre directamente el formulario para que los contactos lo completen desde sus computadoras.
 
 El login local y la administración de usuarios ya no forman parte del flujo público. Si en el futuro se requiere un módulo administrativo, debe separarse del enlace enviado a respondientes.
 
