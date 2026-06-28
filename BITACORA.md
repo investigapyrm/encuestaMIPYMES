@@ -1741,3 +1741,84 @@
 * Incorporar al manual maestro el patron `intro` para encuestas donde una pregunta orientadora debe preceder una matriz de afirmaciones sin crear una variable nueva.
 * No enviar campana masiva hasta verificar una respuesta real guardada en Sheets.
 * Mantener la administracion separada del enlace publico enviado por correo.
+
+## 2026-06-28 13:54
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES Investigacion 2026
+* Cliente o institucion: investigapyrm / FACEN
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL publica: `https://investigapyrm.github.io/encuestaMIPYMES/`
+* Responsable: Codex
+* Version publicada: `0.2.1` / cache `20260628-1`
+
+### Objetivo de la intervencion
+
+* Cerrar publicacion en GitHub Pages y verificar la version `0.2.1` posterior a los ajustes del DOCX de comentarios.
+
+### Acciones realizadas
+
+* Commit local de los ajustes finales.
+* Push a `origin/main`.
+* Verificacion de GitHub Pages con cache-busting.
+* Verificacion DOM publica con Chrome headless via DevTools Protocol.
+
+### Archivos modificados
+
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `git add ...`
+* `git commit -m "Apply final questionnaire comment adjustments"`
+* `git push origin main`
+* `git ls-remote origin refs/heads/main`
+* Verificacion HTTP publica de `index.html`, `config.js`, `service-worker.js` y `data/survey-schema.json`.
+* Chrome/CDP contra `https://investigapyrm.github.io/encuestaMIPYMES/?v=20260628-public`.
+
+### Resultados verificados
+
+* Commit publicado: `e851302` (`Apply final questionnaire comment adjustments`).
+* `origin/main` apunta a `e851302387d25eb7afd8eb9da2f140aba94adbdd`.
+* GitHub Pages sirve assets `20260628-1`.
+* `config.js` publico informa `appVersion: "0.2.1"`, `requireLogin: false` y schema `data/survey-schema.json?v=20260628-1`.
+* `service-worker.js` publico usa cache `encuesta-mipymes-v20260628-1`.
+* `survey-schema.json` publico informa `schema_version: "2026-06-28.1"` y `comments_document: "Comentarios_Cuestionario_Mipymnes.docx"`.
+* DOM publico verificado:
+  * `appVisible: true`
+  * `loginHidden: true`
+  * `version: 0.2.1`
+  * `facen: true`
+  * `q8Intro: true`
+  * `q14Title: true`
+  * `q19Text: true`
+  * `q10IntroHiddenBefore: true`
+  * `q10IntroHiddenAfterPctFive: false`
+
+### Pruebas realizadas
+
+* Verificacion de commit remoto.
+* Verificacion HTTP publica con cache-busting.
+* Verificacion DOM publica con navegador headless.
+
+### Errores o incidentes
+
+* GitHub Pages sirvio la version anterior en los dos primeros intentos; en el tercer intento ya sirvio `0.2.1`.
+* El backend GAS sigue pendiente; no se probo escritura real en Google Sheets.
+
+### Pendientes
+
+* Publicar y validar Apps Script `/exec`.
+* Configurar `gasExecUrl` solo despues de confirmar JSON anonimo y escritura real.
+* Ejecutar prueba punta a punta con registro de prueba en Google Sheets antes de envio masivo.
+
+### Riesgos
+
+* La app visible esta publicada, pero el sistema completo aun no esta operativo para recepcion centralizada si `gasExecUrl` sigue vacio.
+
+### Recomendaciones
+
+* Compartir el enlace publico solo para revision del formulario hasta cerrar backend.
+* Para campana masiva, exigir evidencia de fila en Google Sheets y auditoria sin login.
