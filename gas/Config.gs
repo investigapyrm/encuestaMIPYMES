@@ -1,6 +1,6 @@
 const APP_CONFIG = {
   APP_NAME: 'Investigación 2026 - Encuesta MIPYMES',
-  APP_VERSION: '0.2.1',
+  APP_VERSION: '0.2.2',
   TIMEZONE: 'America/Asuncion',
   SPREADSHEET_ID: '1lfasg9YkGM_4jAuP6LDoZd-0aFxePBUksZB_1lJDKtQ',
   REQUIRE_LOGIN: false,

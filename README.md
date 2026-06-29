@@ -42,13 +42,13 @@ rootDir: gas
 gasExecUrl: 'https://script.google.com/macros/s/DEPLOYMENT_ID/exec'
 ```
 
-Deployment creado durante la intervención:
+Deployment actualizado durante la activación del backend:
 
 ```text
-https://script.google.com/macros/s/AKfycbxYh3Z-6FI0xl1eaOxluFUXqyPPkBtAxqDHTFkf6yANKch26DwQIGrbckZXuJ8qan_nzg/exec
+https://script.google.com/macros/s/AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q/exec
 ```
 
-Estado: creado, pero pendiente de habilitación pública. La prueba anónima devolvió página de acceso denegado.
+Estado: código backend `0.2.2` subido con `clasp push -f` y redeployado como versión 10, pero pendiente de habilitación pública desde la UI de Apps Script. La prueba anónima devuelve página HTML `Acceso denegado`, por lo que `config.js` conserva `gasExecUrl` vacío.
 
 3. Autenticar `clasp` con una cuenta editora del proyecto:
 
@@ -62,11 +62,12 @@ clasp login
 clasp push -f
 ```
 
-5. Crear una versión y deployment:
+5. Crear una versión y deployment o redeployar el deployment existente:
 
 ```bash
 clasp version "Encuesta MIPYMES Investigacion 2026 backend"
 clasp deploy -V VERSION -d "Encuesta MIPYMES Investigacion 2026 - web app publico"
+clasp deploy -i DEPLOYMENT_ID -V VERSION -d "Encuesta MIPYMES backend publico sin login"
 ```
 
 6. En Apps Script, ejecutar `initWorkbook` una vez para crear hojas operativas.

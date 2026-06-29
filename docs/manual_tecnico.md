@@ -40,7 +40,7 @@ Hojas esperadas:
 
 ## Seguridad y acceso público
 
-La versión `0.2.1` está orientada a envío por correo a contactos externos. El respondiente no debe crear usuario ni contraseña; el enlace abre directamente el formulario. Para producción:
+La versión `0.2.1` del frontend está orientada a envío por correo a contactos externos. El respondiente no debe crear usuario ni contraseña; el enlace abre directamente el formulario. El backend Apps Script fue preparado como `0.2.2` para guardado público sin login. Para producción:
 
 - Definir `gasExecUrl`.
 - Ejecutar `initWorkbook`.
@@ -51,12 +51,14 @@ La versión `0.2.1` está orientada a envío por correo a contactos externos. El
 
 El proyecto GAS asociado fue clonado y respaldado. El backend adaptado fue subido previamente con `clasp push -f` al `scriptId` `1LlCl53ftjUPkWHV13GBInR9S-WTSFu83qf8ukXFihzlGIwMgqSrqwCBW`.
 
-Deployments creados:
+Deployments revisados/creados:
 
 - `AKfycbzR2BL7Z0JfqAxbkLCO-AK9FucNl7ab-dLtoZgie2qk8VhsqBlFVvQc6_KHtJ0xiLKxFA` versión 1.
 - `AKfycbxYh3Z-6FI0xl1eaOxluFUXqyPPkBtAxqDHTFkf6yANKch26DwQIGrbckZXuJ8qan_nzg` versión 2.
+- `AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q` redeployado a versión 10 (`0.2.2`).
+- `AKfycbxGPhOWfpDJUaJ9k2XuJXuM4DAT911QJSaF6AHcAwlDrYCl0TQC0wzgFis72fxFUcUsdw` creado como deployment alternativo versión 10.
 
-La prueba anónima de `/exec` devolvió acceso denegado. Falta habilitar el web app con acceso público desde Apps Script o desde una cuenta con control completo de despliegue. Hasta entonces `config.js` conserva `gasExecUrl` vacío para no prometer envío real a Google Sheets desde la app publicada.
+La prueba anónima de `/exec` devolvió acceso denegado en los deployments versión 10. Falta editar el Web App desde la UI de Apps Script y dejar el acceso como `Anyone / Cualquier persona`, o configurar correctamente el deployment `@HEAD` con acceso público. Hasta entonces `config.js` conserva `gasExecUrl` vacío para no prometer envío real a Google Sheets desde la app publicada.
 
 ## Manejo de backend bloqueado
 

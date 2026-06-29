@@ -1822,3 +1822,115 @@
 
 * Compartir el enlace publico solo para revision del formulario hasta cerrar backend.
 * Para campana masiva, exigir evidencia de fila en Google Sheets y auditoria sin login.
+
+## 2026-06-28 21:37
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES Investigacion 2026
+* Cliente o institucion: investigapyrm / FACEN
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL publica frontend: `https://investigapyrm.github.io/encuestaMIPYMES/`
+* URL backend indicada: `https://script.google.com/macros/s/AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q/exec`
+* Responsable: Codex
+* Version frontend publicada: `0.2.1` / cache `20260628-1`
+* Version backend subida: `0.2.2` / Apps Script version `10`
+
+### Objetivo de la intervencion
+
+* Verificar la implementacion Apps Script indicada por el usuario, activar backend sin login si el `/exec` respondia JSON publico y conectar `gasExecUrl` solo con evidencia de escritura real.
+
+### Diagnostico inicial
+
+* La URL indicada respondia inicialmente como backend antiguo `0.1.7`.
+* `GET /exec` devolvia JSON publico, pero con `app: FAEDPYME 2026 - Encuesta MIPYMES` y `version: 0.1.7`.
+* `POST getBootstrap` devolvia `{"success":false,"message":"Sesión inválida o vencida."}`.
+* `POST saveSurvey` con registro tecnico devolvia la misma falla de sesion.
+* El clon remoto del Apps Script confirmo que el backend remoto aun usaba `nif`, no tenia `REQUIRE_LOGIN: false`, exigia `requireSession()` y no tenia campos `q18_causa_principal` ni `q18_causa_otra`.
+
+### Acciones realizadas
+
+* Se clono el Apps Script remoto en `/tmp/encuesta_mipymes_clasp_remote` para comparar sin pisar el repo.
+* Se verifico que `clasp` esta autenticado como `monitorimpactosocial@gmail.com` y tiene acceso al proyecto.
+* Se subio el backend local con `clasp push -f`.
+* Se creo Apps Script version `10` con descripcion `Encuesta MIPYMES 0.2.2 backend publico sin login`.
+* Se redeployo el deployment indicado por el usuario a `@10`.
+* Se creo un deployment alternativo `AKfycbxGPhOWfpDJUaJ9k2XuJXuM4DAT911QJSaF6AHcAwlDrYCl0TQC0wzgFis72fxFUcUsdw @10`.
+* Se mantuvo `config.js` con `gasExecUrl: ''` porque las pruebas anonimas devolvieron `403`.
+* Se actualizaron `README.md` y `docs/manual_tecnico.md` para documentar el estado real.
+
+### Archivos modificados
+
+* `gas/Config.gs`
+* `gas/Utils.gs`
+* `README.md`
+* `docs/manual_tecnico.md`
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `curl -L` contra `/exec`.
+* `curl -L -H 'Content-Type: application/json' --data '{"action":"getBootstrap","payload":{}}'`.
+* `python3` para `POST saveSurvey` tecnico `TEST-BACKEND-20260629-002`.
+* `clasp show-authorized-user`
+* `clasp deployments`
+* `clasp versions`
+* `clasp clone 1LlCl53ftjUPkWHV13GBInR9S-WTSFu83qf8ukXFihzlGIwMgqSrqwCBW`
+* `clasp push -f`
+* `clasp version "Encuesta MIPYMES 0.2.2 backend publico sin login"`
+* `clasp deploy -i AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q -V 10 -d "Encuesta MIPYMES 0.2.2 backend publico sin login"`
+* `clasp deploy -V 10 -d "Encuesta MIPYMES 0.2.2 backend publico sin login - deployment alternativo"`
+* `node --check app.js config.js service-worker.js`
+* `python3 -m json.tool data/survey-schema.json manifest.json gas/appsscript.json`
+* Validacion GAS copiando temporalmente `gas/*.gs` como `.js`.
+
+### Resultados verificados
+
+* Apps Script version `10` creada.
+* Deployment indicado por el usuario quedo en `@10`.
+* Deployment alternativo version `10` creado.
+* El codigo remoto ya fue actualizado desde el backend local `0.2.2`.
+* Ambos deployments version `10` devuelven `HTTP 403` con HTML `Acceso denegado` antes de ejecutar el codigo.
+* El deployment `@HEAD` devuelve HTML indicando falta de permiso para acceder al documento solicitado.
+* No se configuro `gasExecUrl` en el frontend publicado porque no existe respuesta JSON anonima valida.
+* No se verifico escritura real en Google Sheets porque el POST queda bloqueado por permisos del Web App.
+
+### Pruebas realizadas
+
+* GET anonimo a `/exec`.
+* POST anonimo `getBootstrap`.
+* POST anonimo `saveSurvey` con payload tecnico.
+* Comparacion de Apps Script remoto vs backend local.
+* Validacion sintactica local JS/JSON/GAS.
+
+### Errores o incidentes
+
+* Antes de subir version 10, el deployment indicado respondia publicamente pero con backend viejo `0.1.7` y login obligatorio.
+* Despues del redeploy a version 10, Google Apps Script devolvio `403 Acceso denegado`.
+* Segun el manual maestro, `clasp redeploy` puede resetear permisos a `Solo yo`; debe corregirse desde la UI de Apps Script antes de activar `gasExecUrl`.
+* `clasp run initWorkbook` devolvio `Script function not found. Please make sure script is deployed as API executable`; no se uso como prueba de produccion.
+
+### Soluciones aplicadas
+
+* Backend local actualizado y subido a Apps Script como version `0.2.2`.
+* Frontend mantenido sin `gasExecUrl` para no romper el formulario publico.
+* Documentacion actualizada con deployment, version y bloqueo real.
+
+### Pendientes
+
+* En Apps Script, ir a `Deploy > Manage deployments`, editar el deployment `AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q`, confirmar version `10`, tipo `Web app`, ejecutar como cuenta propietaria/deploying user y acceso `Anyone / Cualquier persona`.
+* Autorizar scopes si Apps Script lo solicita.
+* Probar anonimamente que `/exec` devuelva JSON `success:true`, `version:"0.2.2"`.
+* Probar `saveSurvey` anonimo y confirmar fila en Google Sheets.
+* Recién despues configurar `gasExecUrl` en `config.js`, subir GitHub Pages y verificar punta a punta.
+
+### Riesgos
+
+* Si se activa `gasExecUrl` ahora, los respondientes verian errores de envio porque el backend devuelve 403.
+* El deployment alternativo creado tambien esta bloqueado; no debe usarse hasta corregir permisos.
+
+### Recomendaciones
+
+* Usar la URL indicada por el usuario solo despues de corregir permisos y verificar JSON anonimo.
+* Para evitar resets por `clasp redeploy`, configurar un deployment `@HEAD` con acceso `Cualquier persona` desde la UI y no redeployarlo desde CLI.
