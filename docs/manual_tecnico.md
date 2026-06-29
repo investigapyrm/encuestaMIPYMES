@@ -58,7 +58,7 @@ Deployments revisados/creados:
 - `AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q` redeployado a versión 10 (`0.2.2`).
 - `AKfycbxGPhOWfpDJUaJ9k2XuJXuM4DAT911QJSaF6AHcAwlDrYCl0TQC0wzgFis72fxFUcUsdw` creado como deployment alternativo versión 10.
 
-La prueba anónima de `/exec` devolvió acceso denegado en los deployments versión 10. Falta editar el Web App desde la UI de Apps Script y dejar el acceso como `Anyone / Cualquier persona`, o configurar correctamente el deployment `@HEAD` con acceso público. Hasta entonces `config.js` conserva `gasExecUrl` vacío para no prometer envío real a Google Sheets desde la app publicada.
+El deployment `AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q` fue actualizado por el usuario a versión 11 como Web App. La prueba anónima de `/exec` devuelve JSON `success:true`, `version:"0.2.2"`, `getBootstrap` responde como `respondiente` sin login y `saveSurvey` aceptó el registro técnico `TEST-BACKEND-20260629-003`.
 
 ## Manejo de backend bloqueado
 

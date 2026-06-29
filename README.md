@@ -48,7 +48,7 @@ Deployment actualizado durante la activación del backend:
 https://script.google.com/macros/s/AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q/exec
 ```
 
-Estado: código backend `0.2.2` subido con `clasp push -f` y redeployado como versión 10, pero pendiente de habilitación pública desde la UI de Apps Script. La prueba anónima devuelve página HTML `Acceso denegado`, por lo que `config.js` conserva `gasExecUrl` vacío.
+Estado: backend `0.2.2` activo en Apps Script versión 11. La prueba anónima de `/exec` devuelve JSON `success:true` y `saveSurvey` aceptó un registro técnico, por lo que `config.js` apunta a este endpoint.
 
 3. Autenticar `clasp` con una cuenta editora del proyecto:
 

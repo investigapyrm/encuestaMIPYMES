@@ -1934,3 +1934,112 @@
 
 * Usar la URL indicada por el usuario solo despues de corregir permisos y verificar JSON anonimo.
 * Para evitar resets por `clasp redeploy`, configurar un deployment `@HEAD` con acceso `Cualquier persona` desde la UI y no redeployarlo desde CLI.
+
+## 2026-06-28 21:48
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES Investigacion 2026
+* Cliente o institucion: investigapyrm / FACEN
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL publica frontend: `https://investigapyrm.github.io/encuestaMIPYMES/`
+* URL backend activa: `https://script.google.com/macros/s/AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q/exec`
+* Responsable: Codex
+* Version backend verificada: `0.2.2` / Apps Script deployment `@11`
+* Version frontend local preparada: `0.2.2` / cache `20260629-1`
+
+### Objetivo de la intervencion
+
+* Verificar el deployment version 11 indicado por el usuario, activar el backend en `config.js` y confirmar guardado real desde la app.
+
+### Diagnostico inicial
+
+* `clasp deployments` muestra el deployment indicado por el usuario en `@11`.
+* El endpoint `/exec` ya no devuelve `403`; responde JSON publico.
+* Se debia validar no solo `curl`, sino tambien POST desde navegador por posible CORS.
+
+### Acciones realizadas
+
+* Se verifico `GET /exec`.
+* Se verifico `POST getBootstrap`.
+* Se ejecuto `POST saveSurvey` tecnico directo contra Apps Script.
+* Se comprobo CORS desde navegador: `Content-Type: application/json` falla con `Failed to fetch`; `Content-Type: text/plain;charset=utf-8` funciona.
+* Se confirmo que `app.js` ya usa `text/plain;charset=utf-8` en `apiCall`.
+* Se activo `gasExecUrl` en `config.js`.
+* Se actualizo frontend a `0.2.2`, `buildDate: 2026-06-29` y cache `20260629-1`.
+* Se ejecuto prueba local de formulario completo contra backend real.
+
+### Archivos modificados
+
+* `config.js`
+* `index.html`
+* `service-worker.js`
+* `README.md`
+* `docs/manual_tecnico.md`
+* `BITACORA.md`
+
+### Comandos o scripts ejecutados
+
+* `clasp deployments`
+* `curl -L` contra `/exec`
+* `curl -L -H 'Content-Type: application/json' --data '{"action":"getBootstrap","payload":{}}'`
+* `python3` para `POST saveSurvey` tecnico.
+* Chrome headless via DevTools Protocol para prueba CORS.
+* `python3 -m http.server 4173`
+* Chrome headless via DevTools Protocol para prueba local de formulario completo.
+* `node --check app.js config.js service-worker.js`
+* `python3 -m json.tool data/survey-schema.json manifest.json gas/appsscript.json`
+* Validacion GAS copiando temporalmente `gas/*.gs` como `.js`.
+* `git diff --check`
+
+### Resultados verificados
+
+* `GET /exec` devuelve JSON `success:true`, `app:"Investigación 2026 - Encuesta MIPYMES"`, `version:"0.2.2"`.
+* `POST getBootstrap` devuelve `success:true`, usuario `respondiente`, `publicAccess:true`, sin login.
+* `POST saveSurvey` directo devuelve `{"success":true,"remoteId":"TEST-BACKEND-20260629-003"}`.
+* Prueba local desde la app devuelve:
+  * `status: "sincronizado"`
+  * `remoteId: "SUB-1782694087001"`
+  * `appVersion: "0.2.2"`
+  * `gasExecUrl` activo.
+* Registros tecnicos creados para excluir del analisis:
+  * `TEST-BACKEND-20260629-003`
+  * Empresa `PRUEBA_TECNICA_NO_USAR_2026_06_29_003`
+  * Empresa `PRUEBA_FRONTEND_NO_USAR_2026_06_29_001`
+  * Remote/local submission `SUB-1782694087001`
+
+### Pruebas realizadas
+
+* Healthcheck GAS anonimo.
+* Bootstrap GAS anonimo.
+* Escritura directa a Apps Script/Sheets.
+* CORS desde navegador.
+* Envio real desde formulario local hacia backend.
+
+### Errores o incidentes
+
+* El POST con `Content-Type: application/json` falla desde navegador por CORS/preflight.
+* El POST con `text/plain;charset=utf-8` funciona y es el modo usado por la app.
+
+### Soluciones aplicadas
+
+* Se activo `gasExecUrl` solo despues de comprobar JSON publico y `saveSurvey`.
+* Se mantuvo `apiCall` con `text/plain;charset=utf-8`.
+* Se actualizo cache-busting para publicar el cambio en GitHub Pages.
+
+### Pendientes
+
+* Commit/push.
+* Verificar propagacion en GitHub Pages.
+* Ejecutar prueba publica desde la URL final y confirmar estado `sincronizado`.
+
+### Riesgos
+
+* Los registros tecnicos deben excluirse del analisis.
+* Si un navegador mantiene cache anterior, se debe usar `Actualizar` o abrir con `?v=20260629-1`.
+
+### Recomendaciones
+
+* Mantener `text/plain;charset=utf-8` para llamadas Apps Script desde GitHub Pages.
+* Antes de envio masivo, revisar en Google Sheets que los registros tecnicos sean identificables y no entren en resultados.
