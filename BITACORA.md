@@ -2043,3 +2043,68 @@
 
 * Mantener `text/plain;charset=utf-8` para llamadas Apps Script desde GitHub Pages.
 * Antes de envio masivo, revisar en Google Sheets que los registros tecnicos sean identificables y no entren en resultados.
+
+## 2026-06-28 21:53
+
+### Proyecto
+
+* Nombre: Encuesta MIPYMES Investigacion 2026
+* Cliente o institucion: investigapyrm / FACEN
+* Ruta local: `/Users/diegobernardomezabogado/Library/CloudStorage/GoogleDrive-investigapyrm@gmail.com/Mi unidad/encuestaMIPYMES_repo`
+* Repositorio: `https://github.com/investigapyrm/encuestaMIPYMES.git`
+* URL publica frontend: `https://investigapyrm.github.io/encuestaMIPYMES/`
+* URL backend activa: `https://script.google.com/macros/s/AKfycbwOgnPfHcVQBAeRwpFZ8IHKnP9BbFyyPXT4BRo9PtdtNJEdXa8DJ4V7qMzvnGzaEt8h1Q/exec`
+* Responsable: Codex
+* Version publicada: `0.2.2` / cache `20260629-1`
+
+### Objetivo de la intervencion
+
+* Cerrar la publicacion GitHub Pages con backend GAS activo y validar envio real desde la URL publica.
+
+### Acciones realizadas
+
+* Commit y push de la activacion `gasExecUrl`.
+* Verificacion de propagacion GitHub Pages.
+* Prueba publica desde navegador limpio contra `https://investigapyrm.github.io/encuestaMIPYMES/?live-test=20260629-1`.
+
+### Comandos o scripts ejecutados
+
+* `git commit -m "Activate GAS backend for public survey sync"`
+* `git push origin main`
+* Verificacion HTTP publica de `index.html`, `config.js`, `service-worker.js` y `survey-schema.json`.
+* Chrome headless via DevTools Protocol contra URL publica.
+
+### Resultados verificados
+
+* GitHub Pages sirve assets `20260629-1`.
+* `config.js` publico informa `appVersion: "0.2.2"` y `gasExecUrl` activo.
+* `service-worker.js` publico usa cache `encuesta-mipymes-v20260629-1`.
+* Prueba publica desde la app:
+  * `status: "sincronizado"`
+  * `remoteId: "SUB-1782694390504"`
+  * `appVersion: "0.2.2"`
+  * `schemaUrl: "data/survey-schema.json?v=20260629-1"`
+
+### Pruebas realizadas
+
+* Verificacion de publicacion GitHub Pages con cache-busting.
+* Prueba de formulario publico contra Apps Script.
+* Confirmacion de estado local `sincronizado` despues de respuesta exitosa del backend.
+
+### Errores o incidentes
+
+* La primera evaluacion de navegador se ejecuto antes de que el DOM estuviera disponible y devolvio `form not found`; se repitio contra la pestaña ya cargada y la prueba fue exitosa.
+
+### Pendientes
+
+* Excluir registros tecnicos del analisis.
+* Revisar una muestra en Google Sheets antes de enviar campana masiva para confirmar visualmente columnas y auditoria.
+
+### Riesgos
+
+* Los registros de prueba existen en Sheets y deben filtrarse.
+
+### Recomendaciones
+
+* Usar `https://investigapyrm.github.io/encuestaMIPYMES/?v=20260629-1` como enlace de revision final.
+* Si se envia por correo, indicar que no requiere usuario ni contrasena.
